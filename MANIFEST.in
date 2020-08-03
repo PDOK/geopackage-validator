@@ -1,0 +1,7 @@
+# Include docs in the root.
+include *.md
+# Include everything in our project directory.
+graft geopackage_validator
+# Exclude byte-compiled code
+global-exclude __pycache__
+global-exclude *.py[co]

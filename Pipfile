@@ -1,0 +1,30 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+"black" = "==19.*"
+"flake8" = "*"
+"ipdb" = "*"
+"ipython" = "*"
+"pytest" = "==5.4.*"
+"pytest-black" = "*"
+"pytest-flakes" = "*"
+"pytest-mock" = "*"
+"zest.releaser" = "*"
+
+[packages]
+# === This package ===
+# Should always be installed like this, else setup.py is bypassed (and we would
+# have to modify PYTHONPATH at several points in the project)
+"geopackage-validator" = {path = ".", editable = true}
+"Click" = "==7.*"
+"click-log" = "==0.3.*"
+
+[requires]
+python_version = "3.8"
+
+[pipenv]
+# This is necessary to be able to install black and pipenv-black.
+allow_prereleases = true

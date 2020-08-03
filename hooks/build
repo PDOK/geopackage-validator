@@ -1,0 +1,12 @@
+#!/bin/bash
+# $IMAGE_NAME var is injected into the build so the tag is correct.
+
+build_date=$(date -u +”%Y-%m-%dT%H:%M:%SZ”)
+git_commit_hash=$(git rev-parse —-short HEAD)
+version=$(grep -oP '(?<=version = \")\d+\.\d+\.\w+' ../setup.py)
+
+docker build \
+  --build-arg BUILD_DATE=$build_date \
+  --build-arg GIT_COMMIT_HASH=git_commit_hash \
+  --build-arg VERSION=$version \
+  -t $IMAGE_NAME .
