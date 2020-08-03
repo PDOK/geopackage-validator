@@ -13,6 +13,7 @@ name = "pypi"
 "pytest-flakes" = "*"
 "pytest-mock" = "*"
 "zest.releaser" = "*"
+"GDAL" = "==3.0.4"
 
 [packages]
 # === This package ===

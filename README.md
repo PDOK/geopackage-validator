@@ -12,21 +12,23 @@ We can be installed with:
 pip install geopackage-validator
 ```
 
+### GDAL
+
+This package uses bindings for GDAL and has a runtime dependency on an installed GDAL (when not running through Docker)
 
 ## Development installation of this project itself
 
 We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
 around pip and virtualenv. Install that first with `pip install pipenv`. Then run:
 
-**Bash:**
-```bash
-PIPENV_VENV_IN_PROJECT=1 pipenv install --python 3.8 --dev
-```
+Install the GDAL native library and development headers:
 
-**Windows CMD prompt:**
-```
-set PIPENV_VENV_IN_PROJECT=1
-pipenv install --python 3.8 --dev
+```bash
+sudo apt-get update
+sudo apt-get install gdal-bin libgdal-dev -y
+export CPLUS_INCLUDE_PATH=/usr/include/gdal
+export C_INCLUDE_PATH=/usr/include/gdal
+PIPENV_VENV_IN_PROJECT=1 pipenv install --python 3.8 --dev
 ```
 
 
@@ -34,7 +36,7 @@ In case you do not have python 3.8 on your machine, install python using
 [pyenv](https://github.com/pyenv/pyenv) and try the previous command again.
 See install pyenv below for instructions. 
 
-There will be a script you can run like this::
+There will be a script you can run like this:
 
 ```bash
 pipenv run geopackage-validator

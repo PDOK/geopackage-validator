@@ -3,7 +3,6 @@
 
 import pytest
 
-
 from geopackage_validator.core import main
 
 
