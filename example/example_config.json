@@ -1,0 +1,10 @@
+{
+  "projection": "4258",
+  "tables": [
+    {
+      "name": "pd-nl-lau-2018"
+    }, {
+      "name": "other_test_table"
+    }
+  ]
+}

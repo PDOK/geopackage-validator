@@ -1,10 +1,13 @@
-FROM python:3.8-slim AS base
-# We choose python-slim instead of alpine, a buildspeed vs image size tradeoff.
+FROM pdok/gdal:0.8.1 AS base
 
 # In case you need base debian dependencies install them here.
-# RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
-# #        TODO list depencies here \
-#    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
+    libgdal-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # --- COMPILE-IMAGE ---
 FROM base AS compile-image
@@ -13,11 +16,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install dev dependencies
 RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
         gcc \
-        python3-dev && \
+        g++ \
+        python3-dev \
+        python3-pip \
+        && \
         apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade --no-cache-dir setuptools pip
-RUN pip install --no-cache-dir pipenv
+RUN pip3 install --upgrade --no-cache-dir setuptools pip
+RUN pip3 install --no-cache-dir pipenv
 
 # Copy source
 WORKDIR /code
@@ -25,6 +31,8 @@ COPY . /code
 
 # Install packages, including the dev (test) packages.
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv --three
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
 RUN pipenv sync --dev
 
 # Run pytest tests.

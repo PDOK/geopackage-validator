@@ -9,10 +9,10 @@ long_description = "\n\n".join([open("README.md").read(), open("CHANGES.md").rea
 def parse_pipfile():
     """Reads package requirements from Pipfile."""
     cfg = ConfigParser()
-    cfg.read('Pipfile')
-    dev_packages = [p.strip('"') for p in cfg['dev-packages']]
+    cfg.read("Pipfile")
+    dev_packages = [p.strip('"') for p in cfg["dev-packages"]]
     relevant_packages = [
-        p.strip('"') for p in cfg['packages'] if "geopackage-validator" not in p
+        p.strip('"') for p in cfg["packages"] if "geopackage-validator" not in p
     ]
     return relevant_packages, dev_packages
 
@@ -32,7 +32,7 @@ setup(
     author="Daan van Etten",
     author_email="daan.vanetten@kadaster.nl",
     url="https://github.com/PDOK/geopackage-validator",
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(exclude=["tests"]),
     include_package_data=True,
     zip_safe=False,
     install_requires=install_requirements,

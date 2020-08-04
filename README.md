@@ -1,7 +1,6 @@
 # geopackage-validator
 Introduction
 
-Usage, etc.
 
 
 ## Installation
@@ -16,6 +15,32 @@ pip install geopackage-validator
 
 This package uses bindings for GDAL and has a runtime dependency on an installed GDAL (when not running through Docker)
 
+## Usage
+
+```
+NAME:
+   geopackage-validator local - geopackage validator validating a local file
+
+USAGE:
+   geopackage-validator local [command options] [arguments...]
+
+OPTIONS:
+   --config-path value  Path pointing to a json file with configuration (./config.json) [$CONFIG_PATH]
+   --gpkg-path value    Path pointing to the geopackage (./geopackage.gpkg) [$GPKG_PATH]
+```
+
+# Running
+
+Place your geopackage in the example directory.
+
+You can run this tool from a directory containing geopackages. The tool will then attempt to validate all geopackages present in the directory.
+
+e.g.
+* docker  build -t test .
+local
+* docker run --rm -v $(pwd)/example:/example test geopackage-validator local --config-path /example/example_config.json --gpkg-path /example/<GEOPACKAGE>
+
+
 ## Development installation of this project itself
 
 We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
@@ -26,6 +51,16 @@ Install the GDAL native library and development headers:
 ```bash
 sudo apt-get update
 sudo apt-get install gdal-bin libgdal-dev -y
+```
+
+Make sure you have GDAL version 3.0.4:
+```bash
+$ gdalinfo --version
+GDAL 3.0.4, released 2020/01/28
+```
+
+Then install the dependencies of this project:
+```bash
 export CPLUS_INCLUDE_PATH=/usr/include/gdal
 export C_INCLUDE_PATH=/usr/include/gdal
 PIPENV_VENV_IN_PROJECT=1 pipenv install --python 3.8 --dev

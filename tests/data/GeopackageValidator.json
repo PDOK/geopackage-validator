@@ -1,0 +1,23 @@
+{
+  "projection": "28992",
+  "tables": [
+    {
+      "name": "PointLayerContainsPoints"
+    },
+    {
+      "name": "LineLayerContainsLines"
+    },
+    {
+      "name": "PolygonLayerContainsPolygons"
+    },
+    {
+      "name": "LineLayerContainsLines"
+    },
+    {
+      "name": "MultiPloygonLayerContainsMultiPolygons"
+    },
+    {
+      "name": "InvalidLayer"
+    }
+  ]
+}
