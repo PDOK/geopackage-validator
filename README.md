@@ -44,9 +44,9 @@ local
 ## Development installation of this project itself
 
 We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
-around pip and virtualenv. Install that first with `pip install pipenv`. Then run:
+around pip and virtualenv. Install that first with `pip install pipenv`.
 
-Install the GDAL native library and development headers:
+Install the GDAL native library version 3.0.4 and development headers:
 
 ```bash
 sudo apt-get update
