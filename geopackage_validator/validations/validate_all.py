@@ -2,6 +2,7 @@ import sys
 
 from osgeo import ogr
 
+from geopackage_validator.errors.validation_errors import create_errormessage
 from geopackage_validator.validations.geometry_check import (
     geometry_check,
     geometry_check_query,
@@ -30,5 +31,4 @@ def validate_all(filename, errors):
         errors.extend(geometry_check(geometries))
 
     except:
-        print("Unexpected error:", sys.exc_info()[0])
-        raise
+        errors.append(create_errormessage("system", error=sys.exc_info()[0]))

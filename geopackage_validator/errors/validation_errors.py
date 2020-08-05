@@ -1,6 +1,10 @@
 # Centralized overview of error messages so they can be maintained without having to look all over the code.
 
 ERROR_MESSAGES = {
+    "system": {
+        "errortype": "UNKNOWN",
+        "errormessage_template": "Unexpected error occured: {error}",
+    },
     "layername": {
         "errortype": "R1",
         "errormessage_template": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. Error layer: {layer}",
