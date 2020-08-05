@@ -6,7 +6,7 @@ version = "0.1.dev0"
 long_description = "\n\n".join([open("README.md").read(), open("CHANGES.md").read()])
 
 
-def parse_pipfile():
+def parse_pipfile(development = False):
     """Reads package requirements from Pipfile."""
     cfg = ConfigParser()
     cfg.read("Pipfile")
@@ -14,11 +14,10 @@ def parse_pipfile():
     relevant_packages = [
         p.strip('"') for p in cfg["packages"] if "geopackage-validator" not in p
     ]
-    return relevant_packages, dev_packages
-
-
-# We use Pipenv. Please set requirements in Pipfile.
-install_requirements, tests_requirements = parse_pipfile()
+    if development:
+        return dev_packages
+    else:
+        return relevant_packages
 
 
 setup(
@@ -35,8 +34,8 @@ setup(
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
     zip_safe=False,
-    install_requires=install_requirements,
-    tests_require=tests_requirements,
+    install_requires=parse_pipfile(),
+    tests_require=parse_pipfile(True),
     entry_points={
         "console_scripts": [
             "geopackage-validator = geopackage_validator.cli:geopackage_validator_command"
