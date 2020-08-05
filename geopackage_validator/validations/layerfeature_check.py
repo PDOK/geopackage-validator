@@ -1,3 +1,6 @@
+from geopackage_validator.errors.validation_errors import create_errormessage
+
+
 def layerfeature_check_query(dataset):
     for i in range(dataset.GetLayerCount()):
         layer = dataset.GetLayerByIndex(i)
@@ -12,12 +15,7 @@ def layerfeature_check(layerfeaturecount_list=None):
     for layername, feature_count in layerfeaturecount_list:
         if feature_count == 0:
             errors.append(
-                {
-                    "errortype": "R2",
-                    "errormessage": "Layers must have at least one feature. Error layer: {layer}".format(
-                        layer=layername
-                    ),
-                }
+                create_errormessage(err_index="layerfeature", layer=layername)
             )
 
     return errors

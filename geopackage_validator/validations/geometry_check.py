@@ -1,3 +1,6 @@
+from geopackage_validator.errors.validation_errors import create_errormessage
+
+
 def geometry_check_query(dataset):
     for layer_index in range(dataset.GetLayerCount()):
         layer = dataset.GetLayerByIndex(layer_index)
@@ -23,14 +26,12 @@ def geometry_check(geometry_check_list=None):
     for geometry in geometry_check_list:
         if geometry[1] not in VALID_GEOMETRIES:
             errors.append(
-                {
-                    "errortype": "R3",
-                    "errormessage": "Layer features should have a valid geometry (one of {valid_geometries}). Error layer: {layer}, found geometry: {found_geometry}".format(
-                        layer=geometry[0],
-                        found_geometry=geometry[1],
-                        valid_geometries=",".join(VALID_GEOMETRIES),
-                    ),
-                }
+                create_errormessage(
+                    err_index="geometry",
+                    layer=geometry[0],
+                    found_geometry=geometry[1],
+                    valid_geometries=",".join(VALID_GEOMETRIES),
+                )
             )
 
     return errors

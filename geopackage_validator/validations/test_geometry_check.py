@@ -15,10 +15,13 @@ def test_valid_geometries():
 
 
 def test_invalid_geometry():
-    assert len(geometry_check([("layer2", "WRONG_GEOMETRY")])) == 1
+    errors = geometry_check([("layer2", "WRONG_GEOMETRY")])
+    assert len(errors) == 1
+    assert errors[0] == {
+        "errormessage": "Layer features should have a valid geometry (one of POINT,LINESTRING,POLYGON,MULTIPOINT,MULTILINESTRING,MULTIPOLYGON). Error layer: layer2, found geometry: WRONG_GEOMETRY",
+        "errortype": "R3",
+    }
 
 
 def test_mixed_geometries():
-    assert (
-        len(geometry_check([("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT"),])) == 1
-    )
+    assert len(geometry_check([("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")])) == 1

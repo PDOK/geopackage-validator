@@ -1,5 +1,7 @@
 import re
 
+from geopackage_validator.errors.validation_errors import create_errormessage
+
 
 def layername_check_query(dataset):
     for i in range(dataset.GetLayerCount()):
@@ -15,13 +17,6 @@ def layername_check(layername_list=None):
     for layername in layername_list:
         match_valid = re.fullmatch(r"^[a-z][a-z0-9_]*$", layername)
         if match_valid is None:
-            errors.append(
-                {
-                    "errortype": "R1",
-                    "errormessage": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. Error layer: {layer}".format(
-                        layer=layername
-                    ),
-                }
-            )
+            errors.append(create_errormessage(err_index="layername", layer=layername))
 
     return errors
