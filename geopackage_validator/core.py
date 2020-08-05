@@ -1,5 +1,6 @@
 import logging
 
+from geopackage_validator.errors.validation_errors import create_errormessage
 from geopackage_validator.gdal.prerequisites import (
     check_gdal_installed,
     check_gdal_version,
@@ -22,9 +23,9 @@ def main():
     errors = []
 
     # Register GDAL error handler function
-    def gdal_error_handler(err_class, err_num, err_msg):
-        err_msg = err_msg.replace("\n", " ")
-        errors.append({"errortype": "R0", "errormessage": err_msg})
+    def gdal_error_handler(err_class, err_num, error):
+        error = err_msg.replace("\n", " ")
+        errors.append(create_errormessage("gdal", error=error))
 
     init_gdal(gdal_error_handler)
 

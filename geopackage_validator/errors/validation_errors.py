@@ -5,6 +5,10 @@ ERROR_MESSAGES = {
         "errortype": "UNKNOWN",
         "errormessage_template": "Unexpected error occured: {error}",
     },
+    "gdal": {
+        "errortype": "UNKNOWN_GDAL",
+        "errormessage_template": "Unexpected GDAL error occured: {error}",
+    },
     "layername": {
         "errortype": "R1",
         "errormessage_template": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. Error layer: {layer}",
