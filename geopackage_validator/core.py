@@ -6,6 +6,8 @@ from geopackage_validator.gdal.prerequisites import (
 )
 from geopackage_validator.validations.validate_all import validate_all
 
+import json
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,8 +19,17 @@ def main():
     # Explicit import
     from geopackage_validator.gdal.init import init_gdal
 
-    init_gdal()
+    errors = []
 
-    validate_all()
+    # Register GDAL error handler function
+    def gdal_error_handler(err_class, err_num, err_msg):
+        err_msg = err_msg.replace("\n", " ")
+        errors.append({"errortype": "R0", "errormessage": err_msg})
+
+    init_gdal(gdal_error_handler)
+
+    validate_all("tests/data/GeopackageValidator.gpkg", errors)
+
+    print(json.dumps(errors, indent=4, sort_keys=True))
 
     print("Validation done")
