@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
-"""TODO Docstring."""
+"""Main CLI entry for the Geopackage validator tool."""
+# Setup logging before package imports.
 import logging
-import sys
 
 import click
 import click_log
 
-# Setup logging before package imports.
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
 
 from geopackage_validator.core import main
 from geopackage_validator.error import AppError
+import sys, os
+
+from minio import Minio
+import tempfile
 
 
 @click.group()
@@ -44,18 +47,16 @@ def geopackage_validator_command_local(gpkg_path):
 
 
 @cli.command(name="s3", help="Geopackage validator validating file from s3 storage")
-@click.option("--s3-endpoint-no-protocol", required=True,
+@click.option(
+    "--s3-endpoint-no-protocol",
+    required=True,
     help="Endpoint for the s3 service without protocol",
 )
 @click.option(
-    "--s3-access-key",
-    required=True,
-    help="Access key for the s3 service",
+    "--s3-access-key", required=True, help="Access key for the s3 service",
 )
 @click.option(
-    "--s3-secret-key",
-    required=True,
-    help="Secret key for the s3 service",
+    "--s3-secret-key", required=True, help="Secret key for the s3 service",
 )
 @click.option(
     "--s3-bucket",
@@ -63,14 +64,40 @@ def geopackage_validator_command_local(gpkg_path):
     help="Bucket where the geopackage is on the s3 service",
 )
 @click.option(
-    "--s3-key",
-    required=True,
-    help="Key where the geopackage is in the bucket",
+    "--s3-key", required=True, help="Key where the geopackage is in the bucket",
 )
 @click_log.simple_verbosity_option(logger)
-def geopackage_validator_command_s3(s3endpoint, s3accesskey, s3secretkey, s3bucket, s3key):
+def geopackage_validator_command_s3(
+    s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
+):
     try:
-        main("")
+        minio_client = Minio(
+            s3_endpoint_no_protocol, access_key=s3_access_key, secret_key=s3_secret_key, secure=False
+        )
+
+        if not minio_client.bucket_exists(s3_bucket):
+            logger.error("S3 bucket does not exist")
+            return
+
+        try:
+            minio_client.stat_object(bucket_name=s3_bucket, object_name=s3_key)
+        except:
+            logger.error("S3 file does not exist in bucket")
+            return
+
+        # Make temporary filename
+        localfile = tempfile.NamedTemporaryFile(delete=False)
+        localfilename = localfile.name + ".gpkg"
+        localfile.close()
+        try:
+            # Download file
+            minio_client.fget_object(
+                bucket_name=s3_bucket, object_name=s3_key, file_path=localfilename
+            )
+
+            main(localfilename)
+        finally:
+            os.unlink(localfilename)
     except AppError:
         logger.exception("geopackage_validator failed:")
         sys.exit(1)
