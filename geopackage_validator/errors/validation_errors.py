@@ -21,6 +21,10 @@ ERROR_MESSAGES = {
         "errortype": "R3",
         "errormessage_template": "Layer features should have a valid geometry (one of {valid_geometries}). Error layer: {layer}, found geometry: {found_geometry}",
     },
+    "db_views": {
+        "errortype": "R4",
+        "errormessage_template": "There should be no views in the database. Found view: {view}",
+    },
 }
 
 

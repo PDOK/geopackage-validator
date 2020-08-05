@@ -24,8 +24,7 @@ def main():
 
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
-        error = err_msg.replace("\n", " ")
-        errors.append(create_errormessage("gdal", error=error))
+        errors.append(create_errormessage("gdal", error=error.replace("\n", " ")))
 
     init_gdal(gdal_error_handler)
 
