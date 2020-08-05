@@ -23,7 +23,7 @@ def cli():
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command():
     """
-    TODO Docstring.
+    Validate the given Geopackage
     """
     try:
         main()
