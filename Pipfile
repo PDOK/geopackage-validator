@@ -13,7 +13,6 @@ name = "pypi"
 "pytest-flakes" = "*"
 "pytest-mock" = "*"
 "zest.releaser" = "*"
-"GDAL" = "==3.0.4"
 
 [packages]
 # === This package ===
@@ -22,6 +21,7 @@ name = "pypi"
 "geopackage-validator" = {path = ".", editable = true}
 "Click" = "==7.*"
 "click-log" = "==0.3.*"
+"gdal" = "==3.0.4"
 
 [requires]
 python_version = "3.8"
