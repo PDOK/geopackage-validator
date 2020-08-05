@@ -20,13 +20,27 @@ def cli():
 
 
 @cli.command(name="geopackage_validator")
+@click.option(
+    "--gpkg-path",
+    required=True,
+    default=None,
+    help="Path pointing to the geopackage.gpkg file",
+    type=click.types.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
+    ),
+)
 @click_log.simple_verbosity_option(logger)
-def geopackage_validator_command():
+def geopackage_validator_command(gpkg_path):
     """
     Validate the given Geopackage
     """
     try:
-        main()
+        main(gpkg_path)
     except AppError:
         logger.exception("geopackage_validator failed:")
         sys.exit(1)

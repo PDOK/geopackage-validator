@@ -12,12 +12,12 @@ import json
 logger = logging.getLogger(__name__)
 
 
-def main():
+def main(gpkg_path):
     """Starts the geopackage validation."""
     check_gdal_installed()
     check_gdal_version()
 
-    # Explicit import
+    # Explicit import here
     from geopackage_validator.gdal.init import init_gdal
 
     errors = []
@@ -28,8 +28,6 @@ def main():
 
     init_gdal(gdal_error_handler)
 
-    validate_all("tests/data/GeopackageValidator.gpkg", errors)
+    validate_all(gpkg_path, errors)
 
     print(json.dumps(errors, indent=4, sort_keys=True))
-
-    print("Validation done")
