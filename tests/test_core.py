@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Tests for core.py"""
 
-import pytest
+# import pytest
 
 from geopackage_validator.core import main
 
