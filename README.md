@@ -37,8 +37,7 @@ You can run this tool from a directory containing geopackages. The tool will the
 
 e.g.
 * docker  build -t test .
-local
-* docker run --rm -v $(pwd)/example:/example test geopackage-validator local --config-path /example/example_config.json --gpkg-path /example/<GEOPACKAGE>
+* docker run --rm test
 
 
 ## Development installation of this project itself

@@ -6,7 +6,7 @@ version = "0.1.dev0"
 long_description = "\n\n".join([open("README.md").read(), open("CHANGES.md").read()])
 
 
-def parse_pipfile(development = False):
+def parse_pipfile(development=False):
     """Reads package requirements from Pipfile."""
     cfg = ConfigParser()
     cfg.read("Pipfile")
