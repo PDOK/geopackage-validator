@@ -19,7 +19,7 @@ def cli():
     pass
 
 
-@cli.command(name="geopackage_validator")
+@cli.command(name="local", help="Geopackage validator validating a local file")
 @click.option(
     "--gpkg-path",
     required=True,
@@ -35,12 +35,42 @@ def cli():
     ),
 )
 @click_log.simple_verbosity_option(logger)
-def geopackage_validator_command(gpkg_path):
-    """
-    Validate the given Geopackage
-    """
+def geopackage_validator_command_local(gpkg_path):
     try:
         main(gpkg_path)
+    except AppError:
+        logger.exception("geopackage_validator failed:")
+        sys.exit(1)
+
+
+@cli.command(name="s3", help="Geopackage validator validating file from s3 storage")
+@click.option("--s3-endpoint-no-protocol", required=True,
+    help="Endpoint for the s3 service without protocol",
+)
+@click.option(
+    "--s3-access-key",
+    required=True,
+    help="Access key for the s3 service",
+)
+@click.option(
+    "--s3-secret-key",
+    required=True,
+    help="Secret key for the s3 service",
+)
+@click.option(
+    "--s3-bucket",
+    required=True,
+    help="Bucket where the geopackage is on the s3 service",
+)
+@click.option(
+    "--s3-key",
+    required=True,
+    help="Key where the geopackage is in the bucket",
+)
+@click_log.simple_verbosity_option(logger)
+def geopackage_validator_command_s3(s3endpoint, s3accesskey, s3secretkey, s3bucket, s3key):
+    try:
+        main("")
     except AppError:
         logger.exception("geopackage_validator failed:")
         sys.exit(1)

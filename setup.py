@@ -38,7 +38,7 @@ setup(
     tests_require=parse_pipfile(True),
     entry_points={
         "console_scripts": [
-            "geopackage-validator = geopackage_validator.cli:geopackage_validator_command"
+            "geopackage-validator = geopackage_validator.cli:cli"
         ]
     },
 )
