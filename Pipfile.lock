@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "dcb1ba56d8ac2123bde3c661a71bdf4ae6aa9c8df514de1ca007e9df1b559510"
+            "sha256": "b0c49ea704f7cdffc36e256f30ea1133ab1b218a7e1d7966b210ba2e31e82248"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -38,6 +38,10 @@
             ],
             "index": "pypi",
             "version": "==3.0.4"
+        },
+        "geopackage-validator": {
+            "editable": true,
+            "path": "."
         }
     },
     "develop": {
