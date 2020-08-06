@@ -5,7 +5,10 @@ def geometry_type_check_query(dataset):
     for layer_index in range(dataset.GetLayerCount()):
         layer = dataset.GetLayerByIndex(layer_index)
         for feature in layer:
-            yield layer.GetName(), feature.GetGeometryRef().GetGeometryName()
+            if feature.GetGeometryRef() is not None:
+                yield layer.GetName(), feature.GetGeometryRef().GetGeometryName()
+            else:
+                yield layer.GetName(), "UNKNOWN"
 
 
 VALID_GEOMETRIES = [

@@ -33,6 +33,10 @@ ERROR_MESSAGES = {
         "errortype": "R6",
         "errormessage_template": "Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. Error found in table: {table_name}, column: {column_name}",
     },
+    "feature_id": {
+        "errortype": "R7",
+        "errormessage_template": "Tables should have a feature id column with unique index. Error found in table: {table_name}",
+    },
 }
 
 
