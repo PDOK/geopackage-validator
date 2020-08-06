@@ -25,6 +25,10 @@ ERROR_MESSAGES = {
         "errortype": "R4",
         "errormessage_template": "There should be no views in the database. Found view: {view}",
     },
+    "geometryvalid": {
+        "errortype": "R5",
+        "errormessage_template": "Geometry should be valid. Found invalid geometry in table: {table}, column {column}, reason: {reason}",
+    },
 }
 
 

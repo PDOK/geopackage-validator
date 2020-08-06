@@ -11,6 +11,10 @@ from geopackage_validator.validations.geometry_type_check import (
     geometry_type_check,
     geometry_type_check_query,
 )
+from geopackage_validator.validations.geometry_valid_check import (
+    geometry_valid_check_query,
+    geometry_valid_check,
+)
 from geopackage_validator.validations.layerfeature_check import (
     layerfeature_check_query,
     layerfeature_check,
@@ -36,6 +40,12 @@ def validate_all(filename, errors):
 
         views = db_views_check_query(dataset)
         errors.extend(db_views_check(views))
+
+        try:
+            views = geometry_valid_check_query(dataset)
+            errors.extend(geometry_valid_check(views))
+        except:
+            print(sys.exc_info())
 
     except:
         errors.append(create_errormessage("system", error=sys.exc_info()[0]))
