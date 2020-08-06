@@ -29,6 +29,10 @@ ERROR_MESSAGES = {
         "errortype": "R5",
         "errormessage_template": "Geometry should be valid. Found invalid geometry in table: {table}, column {column}, reason: {reason}",
     },
+    "columnname": {
+        "errortype": "R6",
+        "errormessage_template": "Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. Error found in table: {table_name}, column: {column_name}",
+    },
 }
 
 

@@ -3,6 +3,10 @@ import sys
 from osgeo import ogr
 
 from geopackage_validator.errors.error_messages import create_errormessage
+from geopackage_validator.validations.columnname_check import (
+    columnname_check_query,
+    columnname_check,
+)
 from geopackage_validator.validations.db_views_check import (
     db_views_check,
     db_views_check_query,
@@ -41,11 +45,11 @@ def validate_all(filename, errors):
         views = db_views_check_query(dataset)
         errors.extend(db_views_check(views))
 
-        try:
-            views = geometry_valid_check_query(dataset)
-            errors.extend(geometry_valid_check(views))
-        except:
-            print(sys.exc_info())
+        geometries = geometry_valid_check_query(dataset)
+        errors.extend(geometry_valid_check(geometries))
+
+        columns = columnname_check_query(dataset)
+        errors.extend(columnname_check(columns))
 
     except:
         errors.append(create_errormessage("system", error=sys.exc_info()[0]))
