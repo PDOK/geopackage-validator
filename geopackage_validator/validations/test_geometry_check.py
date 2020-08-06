@@ -1,4 +1,4 @@
-from geopackage_validator.validations.geometry_check import geometry_check
+from geopackage_validator.validations.geometry_type_check import geometry_type_check
 
 
 def test_valid_geometries():
@@ -11,11 +11,11 @@ def test_valid_geometries():
         ("layer2", "MULTIPOLYGON"),
     ]
 
-    assert len(geometry_check(geometries)) == 0
+    assert len(geometry_type_check(geometries)) == 0
 
 
 def test_invalid_geometry():
-    errors = geometry_check([("layer2", "WRONG_GEOMETRY")])
+    errors = geometry_type_check([("layer2", "WRONG_GEOMETRY")])
     assert len(errors) == 1
     assert errors[0] == {
         "errormessage": "Layer features should have a valid geometry (one of POINT,LINESTRING,POLYGON,MULTIPOINT,MULTILINESTRING,MULTIPOLYGON). Error layer: layer2, found geometry: WRONG_GEOMETRY",
@@ -24,4 +24,4 @@ def test_invalid_geometry():
 
 
 def test_mixed_geometries():
-    assert len(geometry_check([("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")])) == 1
+    assert len(geometry_type_check([("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")])) == 1

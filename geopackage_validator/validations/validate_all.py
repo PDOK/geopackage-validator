@@ -7,9 +7,9 @@ from geopackage_validator.validations.db_views_check import (
     db_views_check,
     db_views_check_query,
 )
-from geopackage_validator.validations.geometry_check import (
-    geometry_check,
-    geometry_check_query,
+from geopackage_validator.validations.geometry_type_check import (
+    geometry_type_check,
+    geometry_type_check_query,
 )
 from geopackage_validator.validations.layerfeature_check import (
     layerfeature_check_query,
@@ -31,8 +31,8 @@ def validate_all(filename, errors):
         layerfeature_count = layerfeature_check_query(dataset)
         errors.extend(layerfeature_check(layerfeature_count))
 
-        geometries = geometry_check_query(dataset)
-        errors.extend(geometry_check(geometries))
+        geometries = geometry_type_check_query(dataset)
+        errors.extend(geometry_type_check(geometries))
 
         views = db_views_check_query(dataset)
         errors.extend(db_views_check(views))

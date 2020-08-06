@@ -17,7 +17,7 @@ ERROR_MESSAGES = {
         "errortype": "R2",
         "errormessage_template": "Layers must have at least one feature. Error layer: {layer}",
     },
-    "geometry": {
+    "geometry_type": {
         "errortype": "R3",
         "errormessage_template": "Layer features should have a valid geometry (one of {valid_geometries}). Error layer: {layer}, found geometry: {found_geometry}",
     },

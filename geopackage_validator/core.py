@@ -30,4 +30,7 @@ def main(gpkg_path):
 
     validate_all(gpkg_path, errors)
 
-    print(json.dumps(errors, indent=4, sort_keys=True))
+    print(json.dumps({
+        "valid": len(errors) == 0,
+        "errors": errors
+    }, indent=4, sort_keys=True))
