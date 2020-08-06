@@ -1,13 +1,13 @@
 import logging
 
-from geopackage_validator.errors.validation_errors import create_errormessage
+from geopackage_validator.errors.error_messages import create_errormessage
 from geopackage_validator.gdal.prerequisites import (
     check_gdal_installed,
     check_gdal_version,
 )
+from geopackage_validator.output import log_output
 from geopackage_validator.validations.validate_all import validate_all
 
-import json
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,4 @@ def main(gpkg_path):
 
     validate_all(gpkg_path, errors)
 
-    print(json.dumps({
-        "valid": len(errors) == 0,
-        "errors": errors
-    }, indent=4, sort_keys=True))
+    log_output(errors)

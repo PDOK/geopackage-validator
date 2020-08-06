@@ -6,15 +6,15 @@ import logging
 import click
 import click_log
 
+from geopackage_validator.errors.error_messages import create_errormessage
+from geopackage_validator.minio.minio_context import minio_resource
+from geopackage_validator.output import log_output
+
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
 
 from geopackage_validator.core import main
-from geopackage_validator.error import AppError
-import sys, os
-
-from minio import Minio
-import tempfile
+import sys
 
 
 @click.group()
@@ -41,9 +41,8 @@ def cli():
 def geopackage_validator_command_local(gpkg_path):
     try:
         main(gpkg_path)
-    except AppError:
-        logger.exception("geopackage_validator failed:")
-        sys.exit(1)
+    except:
+        log_output([create_errormessage("system", error=sys.exc_info()[1])])
 
 
 @cli.command(name="s3", help="Geopackage validator validating file from s3 storage")
@@ -71,36 +70,12 @@ def geopackage_validator_command_s3(
     s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
 ):
     try:
-        minio_client = Minio(
-            s3_endpoint_no_protocol, access_key=s3_access_key, secret_key=s3_secret_key, secure=False
-        )
-
-        if not minio_client.bucket_exists(s3_bucket):
-            logger.error("S3 bucket does not exist")
-            return
-
-        try:
-            minio_client.stat_object(bucket_name=s3_bucket, object_name=s3_key)
-        except:
-            logger.error("S3 file does not exist in bucket")
-            return
-
-        # Make temporary filename
-        localfile = tempfile.NamedTemporaryFile(delete=False)
-        localfilename = localfile.name + ".gpkg"
-        localfile.close()
-        try:
-            # Download file
-            minio_client.fget_object(
-                bucket_name=s3_bucket, object_name=s3_key, file_path=localfilename
-            )
-
+        with minio_resource(
+            s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
+        ) as localfilename:
             main(localfilename)
-        finally:
-            os.unlink(localfilename)
-    except AppError:
-        logger.exception("geopackage_validator failed:")
-        sys.exit(1)
+    except:
+        log_output([create_errormessage("system", error=sys.exc_info()[1])])
 
 
 if __name__ == "__main__":

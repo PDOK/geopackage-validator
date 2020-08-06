@@ -24,4 +24,7 @@ def test_invalid_geometry():
 
 
 def test_mixed_geometries():
-    assert len(geometry_type_check([("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")])) == 1
+    assert (
+        len(geometry_type_check([("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")]))
+        == 1
+    )

@@ -1,4 +1,4 @@
-from geopackage_validator.errors.validation_errors import create_errormessage
+from geopackage_validator.errors.error_messages import create_errormessage
 
 
 def geometry_type_check_query(dataset):

@@ -2,7 +2,7 @@ import sys
 
 from osgeo import ogr
 
-from geopackage_validator.errors.validation_errors import create_errormessage
+from geopackage_validator.errors.error_messages import create_errormessage
 from geopackage_validator.validations.db_views_check import (
     db_views_check,
     db_views_check_query,
