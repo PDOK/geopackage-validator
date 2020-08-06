@@ -12,7 +12,7 @@ from geopackage_validator.validations.validate_all import validate_all
 logger = logging.getLogger(__name__)
 
 
-def main(gpkg_path):
+def validate(gpkg_path):
     """Starts the geopackage validation."""
     check_gdal_installed()
     check_gdal_version()

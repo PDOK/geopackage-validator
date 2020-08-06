@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Tests for core.py"""
+"""Tests for validate.py"""
 
 # import pytest
 
-from geopackage_validator.core import main
+from geopackage_validator.validate import validate
 
 
 # TODO
@@ -12,4 +12,4 @@ def test_noop():
 
 
 def test_main():
-    main("")
+    validate("")

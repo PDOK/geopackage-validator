@@ -8,6 +8,12 @@ from contextlib import contextmanager
 def minio_resource(
     s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
 ):
+    assert s3_endpoint_no_protocol is not None, "S3 endpoint has to be given"
+    assert s3_access_key is not None, "S3 access key has to be given"
+    assert s3_secret_key is not None, "S3 secret key has to be given"
+    assert s3_bucket is not None, "S3 bucket has to be given"
+    assert s3_key is not None, "S3 key has to be given"
+
     # Code to acquire resource, e.g.:
     localfile = tempfile.NamedTemporaryFile(delete=False)
     localfilename = localfile.name + ".gpkg"
