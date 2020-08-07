@@ -20,7 +20,9 @@ def rtree_valid_check_query(dataset):
     )
     for index in indexes:
         validations = dataset.ExecuteSQL(
-            'select rtreecheck("{index_name}");'.format(index_name=index[0])
+            'select rtreecheck("{index_name}");'.format(
+                index_name="rtree_" + index[0] + "_geometry"
+            )
         )
         for validation in validations:
             if validation[0] != "ok":
