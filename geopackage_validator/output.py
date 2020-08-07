@@ -16,7 +16,7 @@ def log_output(
                 "validated_geopackage": filename,
                 "success": len(errors) == 0,
                 "validations": validations,
-                "validations_overview": errors,
+                "errors": errors,
             },
             indent=4,
         )
