@@ -4,12 +4,12 @@ VALIDATIONS = {
     "system": {
         "errortype": "UNKNOWN",
         "errormessage_template": "Error occured: {error}",
-        "validation": "No unexpected validations_overview must occur.",
+        "validation": "No unexpected errors must occur.",
     },
     "gdal": {
         "errortype": "UNKNOWN_GDAL",
         "errormessage_template": "Error occured: {error}",
-        "validation": "No unexpected GDAL validations_overview must occur.",
+        "validation": "No unexpected GDAL errors must occur.",
     },
     "layername": {
         "errortype": "R1",
@@ -50,6 +50,16 @@ VALIDATIONS = {
         "errortype": "R8",
         "errormessage_template": "Difference: {difference}",
         "validation": "Geopackage must conform to given JSON definitions",
+    },
+    "rtree_present": {
+        "errortype": "R9",
+        "errormessage_template": "Table without index: {table_name}",
+        "validation": "All geometry tables must have an rtree index",
+    },
+    "rtree_check": {
+        "errortype": "R10",
+        "errormessage_template": "Invalid rtree index found for table: {table_name}",
+        "validation": "All geometry table rtree indexes must be valid",
     },
 }
 

@@ -2,6 +2,8 @@ import sys
 
 from osgeo import ogr
 
+from geopackage_validator.validations.rtree_check import rtree_check, rtree_check_query
+from geopackage_validator.validations.rtree_present import rtree_present_query, rtree_present
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
 )
@@ -63,6 +65,12 @@ def validate_all(filename, table_definitions_path, errors):
 
         columns = feature_id_check_query(dataset)
         errors.extend(feature_id_check(columns))
+
+        indexes = rtree_present_query(dataset)
+        errors.extend(rtree_present(indexes))
+
+        indexes = rtree_check_query(dataset)
+        errors.extend(rtree_check(indexes))
 
         if table_definitions_path is not None:
             table_definitions_current = generate_table_definitions(dataset)
