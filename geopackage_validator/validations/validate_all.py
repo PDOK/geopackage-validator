@@ -7,8 +7,8 @@ from geopackage_validator.validations.rtree_valid_check import (
     rtree_valid_check_query,
 )
 from geopackage_validator.validations.rtree_present_check import (
-    rtree_present_query,
-    rtree_present,
+    rtree_present_check_query,
+    rtree_present_check,
 )
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
@@ -72,8 +72,8 @@ def validate_all(filename, table_definitions_path, errors):
         columns = feature_id_check_query(dataset)
         errors.extend(feature_id_check(columns))
 
-        indexes = rtree_present_query(dataset)
-        errors.extend(rtree_present(indexes))
+        indexes = rtree_present_check_query(dataset)
+        errors.extend(rtree_present_check(indexes))
 
         indexes = rtree_valid_check_query(dataset)
         errors.extend(rtree_valid_check(indexes))
