@@ -8,7 +8,5 @@ def test_valid_featureid():
 def test_invalid_featureid():
     errors = feature_id_check([("table", 0)])
     assert len(errors) == 1
-    assert errors[0] == {
-        "errormessage": "Tables should have a feature id column with unique index. Error found in table: table",
-        "errortype": "R7",
-    }
+    assert errors[0]["errormessage"] == "Error found in table: table"
+    assert errors[0]["errortype"] == "R7"

@@ -6,10 +6,13 @@ import logging
 import click
 import click_log
 
-from geopackage_validator.errors.error_messages import create_errormessage
-from geopackage_validator.generate import generate_definitions
+from geopackage_validator.generate import generate_definitions_for_path
 from geopackage_validator.minio.minio_context import minio_resource
 from geopackage_validator.output import log_output
+from geopackage_validator.validations_overview.validations_overview import (
+    create_errormessage,
+    get_validations_list,
+)
 
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
@@ -29,10 +32,26 @@ def cli():
     help="Geopackage validator validating a local file or from s3 storage",
 )
 @click.option(
+    "-g",
     "--gpkg-path",
     required=False,
     default=None,
     help="Path pointing to the geopackage.gpkg file",
+    type=click.types.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
+    ),
+)
+@click.option(
+    "-t",
+    "--table-definitions-path",
+    required=False,
+    default=None,
+    help="Path pointing to the table-definitions JSON file (generate this file by calling the generate-definitions command)",
     type=click.types.Path(
         exists=True,
         file_okay=True,
@@ -58,24 +77,34 @@ def cli():
     "--s3-key", help="Key where the geopackage is in the bucket",
 )
 @click_log.simple_verbosity_option(logger)
-def geopackage_validator_command_local(
-    gpkg_path, s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
+def geopackage_validator_command(
+    gpkg_path,
+    table_definitions_path,
+    s3_endpoint_no_protocol,
+    s3_access_key,
+    s3_secret_key,
+    s3_bucket,
+    s3_key,
 ):
+    if gpkg_path is None and s3_endpoint_no_protocol is None:
+        logger.error("Give --gpkg location or s3 location")
+        return
+
     try:
         if gpkg_path is not None:
-            validate(gpkg_path)
+            validate(gpkg_path, gpkg_path, table_definitions_path)
         else:
             with minio_resource(
                 s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
             ) as localfilename:
-                validate(localfilename)
+                validate(localfilename, s3_key, table_definitions_path)
     except:
         log_output([create_errormessage("system", error=sys.exc_info()[1])])
 
 
 @cli.command(
     name="generate-definitions",
-    help="Geopackage validator generate Geopackage definition JSON from given local or s3 package",
+    help="Generate Geopackage table definition JSON from given local or s3 package. Use the generated definition JSON in the validation step by providing the table definitions with the --table-definitions-path parameter.",
 )
 @click.option(
     "--gpkg-path",
@@ -110,17 +139,35 @@ def geopackage_validator_command_local(
 def geopackage_validator_command_generate_table_definitions(
     gpkg_path, s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
 ):
+    if gpkg_path is None and s3_endpoint_no_protocol is None:
+        logger.error("Give --gpkg location or s3 location")
+        return
+
     try:
+        definitionlist = []
         if gpkg_path is not None:
-            generate_definitions(gpkg_path)
+            definitionlist = generate_definitions_for_path(gpkg_path)
         else:
             with minio_resource(
                 s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
             ) as localfilename:
-                definitionlist = generate_definitions(localfilename)
-                print(json.dumps(definitionlist, indent=4, sort_keys=True))
+                definitionlist = generate_definitions_for_path(localfilename)
+        print(json.dumps(definitionlist, indent=4, sort_keys=True))
     except:
         logger.exception("Error while generating table definitions")
+
+
+@cli.command(
+    name="show-validations",
+    help="Show all the possible validations that are executed in the validate command.",
+)
+@click_log.simple_verbosity_option(logger)
+def geopackage_validator_command_show_validations():
+    try:
+        validations_list = get_validations_list()
+        print(json.dumps(validations_list, indent=4, sort_keys=True))
+    except:
+        logger.exception("Error while listing validations")
 
 
 if __name__ == "__main__":

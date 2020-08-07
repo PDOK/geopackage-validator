@@ -10,10 +10,8 @@ def test_lowercaselayername_success():
 def test_lowercaselayername_start_number():
     errors = layername_check(layername_list=["1layer"])
     assert len(errors) == 1
-    assert errors[0] == {
-        "errormessage": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. Error layer: 1layer",
-        "errortype": "R1",
-    }
+    assert errors[0]["errormessage"] == "Error layer: 1layer"
+    assert errors[0]["errortype"] == "R1"
 
 
 def test_lowercaselayername_with_capitals():

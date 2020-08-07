@@ -2,7 +2,10 @@ import sys
 
 from osgeo import ogr
 
-from geopackage_validator.errors.error_messages import create_errormessage
+from geopackage_validator.validations_overview.validations_overview import (
+    create_errormessage,
+)
+from geopackage_validator.generate import generate_table_definitions
 from geopackage_validator.validations.columnname_check import (
     columnname_check_query,
     columnname_check,
@@ -31,9 +34,12 @@ from geopackage_validator.validations.layername_check import (
     layername_check,
     layername_check_query,
 )
+from geopackage_validator.validations.table_definitions_check import (
+    table_definitions_check,
+)
 
 
-def validate_all(filename, errors):
+def validate_all(filename, table_definitions_path, errors):
     driver = ogr.GetDriverByName("GPKG")
     dataset = driver.Open(filename, 0)
     try:
@@ -58,6 +64,13 @@ def validate_all(filename, errors):
         columns = feature_id_check_query(dataset)
         errors.extend(feature_id_check(columns))
 
+        if table_definitions_path is not None:
+            table_definitions_current = generate_table_definitions(dataset)
+            errors.extend(
+                table_definitions_check(
+                    table_definitions_path, table_definitions_current
+                )
+            )
+
     except:
-        print(sys.exc_info())
         errors.append(create_errormessage("system", error=sys.exc_info()[0]))

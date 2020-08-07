@@ -1,0 +1,12 @@
+{
+    "test_dbviews": {
+        "table_name": "test_dbviews",
+        "columns": [
+            {
+                "column_name": "geometry",
+                "geometry_type_name": "POLYGON",
+                "projection": 4326
+            }
+        ]
+    }
+}

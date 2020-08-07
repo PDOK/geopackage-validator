@@ -1,6 +1,11 @@
 import logging
+import time
+from datetime import datetime
 
-from geopackage_validator.errors.error_messages import create_errormessage
+from geopackage_validator.validations_overview.validations_overview import (
+    create_errormessage,
+    get_validations_list,
+)
 from geopackage_validator.gdal.prerequisites import (
     check_gdal_installed,
     check_gdal_version,
@@ -8,11 +13,12 @@ from geopackage_validator.gdal.prerequisites import (
 from geopackage_validator.output import log_output
 from geopackage_validator.validations.validate_all import validate_all
 
-
 logger = logging.getLogger(__name__)
 
 
-def validate(gpkg_path):
+def validate(gpkg_path, filename, table_definitions_path):
+    start_time = datetime.now()
+    duration_start = time.monotonic()
     """Starts the geopackage validation."""
     check_gdal_installed()
     check_gdal_version()
@@ -28,6 +34,14 @@ def validate(gpkg_path):
 
     init_gdal(gdal_error_handler)
 
-    validate_all(gpkg_path, errors)
+    validate_all(gpkg_path, table_definitions_path, errors)
 
-    log_output(errors)
+    duration_seconds = time.monotonic() - duration_start
+
+    log_output(
+        errors,
+        validations=get_validations_list(),
+        filename=filename,
+        start_time=start_time,
+        duration_seconds=duration_seconds,
+    )

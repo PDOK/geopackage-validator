@@ -23,6 +23,7 @@ name = "pypi"
 "click-log" = "==0.3.*"
 "gdal" = "==3.0.4"
 "minio" = "*"
+"deepdiff" = "*"
 
 [requires]
 python_version = "3.8"

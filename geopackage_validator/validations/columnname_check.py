@@ -1,6 +1,8 @@
 import re
 
-from geopackage_validator.errors.error_messages import create_errormessage
+from geopackage_validator.validations_overview.validations_overview import (
+    create_errormessage,
+)
 
 
 def columnname_check_query(dataset):

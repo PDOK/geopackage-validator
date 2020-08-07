@@ -12,4 +12,4 @@ def test_noop():
 
 
 def test_main():
-    validate("")
+    validate("", "", "")

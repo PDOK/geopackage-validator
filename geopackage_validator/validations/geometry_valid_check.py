@@ -1,27 +1,26 @@
-from geopackage_validator.errors.error_messages import create_errormessage
+from geopackage_validator.validations_overview.validations_overview import (
+    create_errormessage,
+)
 
 
 def geometry_valid_check_query(dataset):
     columns = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"
     )
-    columnlist = []
     for column in columns:
-        columnlist.append(column)
-    dataset.ReleaseResultSet(columns)
-
-    validations = dataset.ExecuteSQL(
-        'select ST_IsValidReason(GeomFromGPB("{column_name}")) as reason, '
-        "'{table_name}' as table_name, "
-        "'{column_name}' as column_name "
-        'from "{table_name}" where ST_IsValid(GeomFromGPB("{column_name}")) = 0;'.format(
-            column_name=column[1], table_name=column[0]
+        validations = dataset.ExecuteSQL(
+            'select ST_IsValidReason(GeomFromGPB("{column_name}")) as reason, '
+            "'{table_name}' as table_name, "
+            "'{column_name}' as column_name "
+            'from "{table_name}" where ST_IsValid(GeomFromGPB("{column_name}")) = 0;'.format(
+                table_name=column[0], column_name=column[1]
+            )
         )
-    )
-    for validation in validations:
-        yield validation
+        for validation in validations:
+            yield validation
+        dataset.ReleaseResultSet(validations)
 
-    dataset.ReleaseResultSet(validations)
+    dataset.ReleaseResultSet(columns)
 
 
 def geometry_valid_check(geometry_check_list=None):
