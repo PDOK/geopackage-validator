@@ -3,7 +3,7 @@ from geopackage_validator.validations_overview.validations_overview import (
 )
 
 
-def rtree_check_query(dataset):
+def rtree_valid_check_query(dataset):
     # Check if gpkg_extensions table is present
     gpkg_extensions_present = dataset.ExecuteSQL(
         "select * from sqlite_master where type = 'table' and name = 'gpkg_extensions';"
@@ -30,12 +30,14 @@ def rtree_check_query(dataset):
     dataset.ReleaseResultSet(indexes)
 
 
-def rtree_check(rtree_index_list=None):
+def rtree_valid_check(rtree_index_list=None):
     assert rtree_index_list is not None
 
     errors = []
 
     for table in rtree_index_list:
-        errors.append(create_errormessage(err_index="rtree_check", table_name=table))
+        errors.append(
+            create_errormessage(err_index="rtree_valid_check", table_name=table)
+        )
 
     return errors

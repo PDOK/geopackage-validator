@@ -56,7 +56,7 @@ VALIDATIONS = {
         "errormessage_template": "Table without index: {table_name}",
         "validation": "All geometry tables must have an rtree index",
     },
-    "rtree_check": {
+    "rtree_valid_check": {
         "errortype": "R10",
         "errormessage_template": "Invalid rtree index found for table: {table_name}",
         "validation": "All geometry table rtree indexes must be valid",
