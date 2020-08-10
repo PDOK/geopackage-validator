@@ -1,7 +1,8 @@
 import sys
+from typing import Callable
 
 
-def init_gdal(gdal_error_handler):
+def init_gdal(gdal_error_handler: Callable[[str, str, str], None]):
     """Initializes GDAL and registers Error handler function"""
     try:
         from osgeo import ogr, osr, gdal

@@ -1,6 +1,6 @@
 {
-    "test_dbviews": {
-        "table_name": "test_dbviews",
+    "test_allcorrect": {
+        "table_name": "test_allcorrect",
         "columns": [
             {
                 "column_name": "geometry",

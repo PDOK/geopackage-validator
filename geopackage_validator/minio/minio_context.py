@@ -6,8 +6,13 @@ from contextlib import contextmanager
 
 @contextmanager
 def minio_resource(
-    s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
-):
+    s3_endpoint_no_protocol: str,
+    s3_access_key: str,
+    s3_secret_key: str,
+    s3_bucket: str,
+    s3_key: str,
+    minio=Minio,
+) -> str:
     assert s3_endpoint_no_protocol is not None, "S3 endpoint has to be given"
     assert s3_access_key is not None, "S3 access key has to be given"
     assert s3_secret_key is not None, "S3 secret key has to be given"
@@ -20,7 +25,7 @@ def minio_resource(
     localfile.close()
 
     try:
-        minio_client = Minio(
+        minio_client = minio(
             s3_endpoint_no_protocol,
             access_key=s3_access_key,
             secret_key=s3_secret_key,

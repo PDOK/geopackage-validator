@@ -1,10 +1,12 @@
+from typing import Iterable, Tuple
+
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
     error_format,
 )
 
 
-def feature_id_check_query(dataset):
+def feature_id_check_query(dataset) -> Iterable[Tuple[str, int]]:
     tables = dataset.ExecuteSQL("SELECT table_name FROM gpkg_geometry_columns;")
     tablelist = []
     for table in tables:
@@ -23,7 +25,7 @@ def feature_id_check_query(dataset):
         dataset.ReleaseResultSet(validations)
 
 
-def feature_id_check(feature_id_list=None):
+def feature_id_check(feature_id_list: Iterable[Tuple[str, int]]):
     assert feature_id_list is not None
     errors = []
 

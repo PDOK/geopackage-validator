@@ -1,10 +1,12 @@
+from typing import Iterable
+
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
     error_format,
 )
 
 
-def rtree_valid_check_query(dataset):
+def rtree_valid_check_query(dataset) -> Iterable[str]:
     # Check if gpkg_extensions table is present
     gpkg_extensions_present = dataset.ExecuteSQL(
         "select * from sqlite_master where type = 'table' and name = 'gpkg_extensions';"
@@ -33,7 +35,7 @@ def rtree_valid_check_query(dataset):
     dataset.ReleaseResultSet(indexes)
 
 
-def rtree_valid_check(rtree_index_list=None):
+def rtree_valid_check(rtree_index_list: Iterable[str]):
     assert rtree_index_list is not None
 
     errors = []

@@ -1,4 +1,5 @@
 # Centralized overview of error messages so they can be maintained without having to look all over the code.
+from typing import List, Dict
 
 VALIDATIONS = {
     "system": {
@@ -64,7 +65,7 @@ VALIDATIONS = {
 }
 
 
-def get_validations_list():
+def get_validations_list() -> Dict[str, str]:
     validations_list = {}
     for index in VALIDATIONS:
         message = VALIDATIONS[index]
@@ -75,19 +76,21 @@ def get_validations_list():
     return validations_list
 
 
-def get_errortype(err_index):
+def get_errortype(err_index) -> Dict[str, str]:
     template = VALIDATIONS[err_index]
     return {"errortype": template["errortype"], "validation": template["validation"]}
 
 
-def create_errormessage(err_index, **kwargs):
+def create_errormessage(err_index, **kwargs) -> str:
     template = VALIDATIONS[err_index]
 
     error_message = template["errormessage_template"].format(**kwargs)
     return error_message
 
 
-def error_format(err_index, errors):
+def error_format(
+    err_index: str, errors: List[str]
+) -> List[Dict[str, Dict[str, List[str]]]]:
     if len(errors) == 0:
         return []
     error = get_errortype(err_index)

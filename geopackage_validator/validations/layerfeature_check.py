@@ -1,16 +1,18 @@
+from typing import Iterable, Tuple
+
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
     error_format,
 )
 
 
-def layerfeature_check_query(dataset):
+def layerfeature_check_query(dataset) -> Iterable[Tuple[str, int]]:
     for i in range(dataset.GetLayerCount()):
         layer = dataset.GetLayerByIndex(i)
         yield layer.GetName(), layer.GetFeatureCount()
 
 
-def layerfeature_check(layerfeaturecount_list=None):
+def layerfeature_check(layerfeaturecount_list: Iterable[Tuple[str, int]]):
     assert layerfeaturecount_list is not None
 
     errors = []

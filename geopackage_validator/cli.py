@@ -10,8 +10,8 @@ from geopackage_validator.generate import generate_definitions_for_path
 from geopackage_validator.minio.minio_context import minio_resource
 from geopackage_validator.output import log_output
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
     get_validations_list,
+    error_format,
 )
 
 logger = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ def geopackage_validator_command(
             ) as localfilename:
                 validate(localfilename, s3_key, table_definitions_path)
     except:
-        log_output([create_errormessage("system", error=sys.exc_info()[1])])
+        log_output(error_format("system", errors=[str(sys.exc_info()[1])]))
 
 
 @cli.command(
@@ -144,7 +144,6 @@ def geopackage_validator_command_generate_table_definitions(
         return
 
     try:
-        definitionlist = []
         if gpkg_path is not None:
             definitionlist = generate_definitions_for_path(gpkg_path)
         else:

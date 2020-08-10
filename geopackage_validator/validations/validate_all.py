@@ -1,4 +1,5 @@
 import sys
+from typing import Dict, List
 
 from geopackage_validator.gdal.dataset import open_dataset
 from geopackage_validator.generate import generate_table_definitions
@@ -44,7 +45,11 @@ from geopackage_validator.validations.table_definitions_check import (
 from geopackage_validator.validations_overview.validations_overview import error_format
 
 
-def validate_all(filename, table_definitions_path, errors):
+def validate_all(
+    filename: str,
+    table_definitions_path: str,
+    errors: List[Dict[str, Dict[str, List[str]]]],
+):
     dataset = open_dataset(filename)
     try:
         layernames = layername_check_query(dataset)
@@ -83,4 +88,4 @@ def validate_all(filename, table_definitions_path, errors):
             )
 
     except:
-        return error_format("system", [sys.exc_info()[0]])
+        return error_format("system", [str(sys.exc_info()[0])])

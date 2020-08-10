@@ -1,6 +1,8 @@
 import logging
+from typing import Dict, List, TypedDict
 
 from osgeo import ogr
+from osgeo.ogr import DataSource
 
 from geopackage_validator.gdal.prerequisites import (
     check_gdal_installed,
@@ -10,7 +12,15 @@ from geopackage_validator.gdal.prerequisites import (
 logger = logging.getLogger(__name__)
 
 
-def generate_table_definitions(dataset):
+class Column(TypedDict):
+    column_name: str
+    geometry_type_name: str
+    projection: str
+
+
+def generate_table_definitions(
+    dataset: DataSource,
+) -> Dict[str, Dict[str, List[Column]]]:
     tables = dataset.ExecuteSQL(
         "SELECT distinct table_name FROM gpkg_geometry_columns;"
     )
@@ -25,11 +35,11 @@ def generate_table_definitions(dataset):
         columnlist = []
         for column in columns:
             columnlist.append(
-                {
-                    "column_name": column[0],
-                    "geometry_type_name": column[1],
-                    "projection": column[2],
-                }
+                Column(
+                    column_name=column[0],
+                    geometry_type_name=column[1],
+                    projection=column[2],
+                )
             )
 
         tablelist[table[0]] = {"table_name": table[0], "columns": columnlist}
@@ -39,7 +49,7 @@ def generate_table_definitions(dataset):
     return tablelist
 
 
-def generate_definitions_for_path(gpkg_path):
+def generate_definitions_for_path(gpkg_path: str) -> Dict[str, Dict[str, List[Column]]]:
     """Starts the geopackage validation."""
     check_gdal_installed()
     check_gdal_version()

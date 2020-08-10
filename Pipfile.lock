@@ -428,11 +428,11 @@
         },
         "prompt-toolkit": {
             "hashes": [
-                "sha256:563d1a4140b63ff9dd587bda9557cffb2fe73650205ab6f4383092fb882e7dc8",
-                "sha256:df7e9e63aea609b1da3a65641ceaf5bc7d05e0a04de5bd45d05dbeffbabf9e04"
+                "sha256:683397077a64cd1f750b71c05afcfc6612a7300cb6932666531e5a54f38ea564",
+                "sha256:7630ab85a23302839a0f26b31cc24f518e6155dea1ed395ea61b42c45941b6a6"
             ],
             "markers": "python_full_version >= '3.6.1'",
-            "version": "==3.0.5"
+            "version": "==3.0.6"
         },
         "ptyprocess": {
             "hashes": [
@@ -679,11 +679,11 @@
         },
         "zest.releaser": {
             "hashes": [
-                "sha256:3cb9e08d246d21d79430592c398e2a9086de8f561fdb778a3d55e3a88289c4a3",
-                "sha256:e519622c8d0b3103443d4e8a039e19fdaf1983a8400ad9cb052b66748a82630d"
+                "sha256:3a59dd3df7737619f9745cd07560b47fa7ff6e995c01b74b6f98730708109b4b",
+                "sha256:dbf0506f887a0dc2645c3bac757950ad1883859145673cff719e6423fa944bc4"
             ],
             "index": "pypi",
-            "version": "==6.21.0"
+            "version": "==6.21.1"
         }
     }
 }
