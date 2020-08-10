@@ -14,14 +14,14 @@ def rtree_valid_check_query(dataset):
         return
 
     indexes = dataset.ExecuteSQL(
-        "select gc.table_name from gpkg_contents gc "
+        "select gc.table_name, gc.column_name from gpkg_geometry_columns gc "
         "where exists(select * from gpkg_extensions gce where gce.table_name = gc.table_name "
         "and extension_name = 'gpkg_rtree_index');"
     )
     for index in indexes:
         validations = dataset.ExecuteSQL(
             'select rtreecheck("{index_name}");'.format(
-                index_name="rtree_" + index[0] + "_geometry"
+                index_name="rtree_" + index[0] + "_" + index[1]
             )
         )
         for validation in validations:
