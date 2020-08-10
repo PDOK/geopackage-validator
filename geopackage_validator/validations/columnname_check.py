@@ -1,4 +1,5 @@
 import re
+from typing import Dict, Iterable
 
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
@@ -6,7 +7,7 @@ from geopackage_validator.validations_overview.validations_overview import (
 )
 
 
-def columnname_check_query(dataset):
+def columnname_check_query(dataset) -> Iterable[Dict]:
     columns = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"
     )
@@ -17,7 +18,7 @@ def columnname_check_query(dataset):
     dataset.ReleaseResultSet(columns)
 
 
-def columnname_check(columnname_list=None):
+def columnname_check(columnname_list: Iterable[Dict]):
     assert columnname_list is not None
 
     errors = []

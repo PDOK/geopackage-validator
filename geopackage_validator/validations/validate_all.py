@@ -1,7 +1,6 @@
 import sys
 
-from osgeo import ogr
-
+from geopackage_validator.gdal.dataset import open_dataset
 from geopackage_validator.generate import generate_table_definitions
 from geopackage_validator.validations.columnname_check import (
     columnname_check_query,
@@ -46,8 +45,7 @@ from geopackage_validator.validations_overview.validations_overview import error
 
 
 def validate_all(filename, table_definitions_path, errors):
-    driver = ogr.GetDriverByName("GPKG")
-    dataset = driver.Open(filename, 0)
+    dataset = open_dataset(filename)
     try:
         layernames = layername_check_query(dataset)
         errors.extend(layername_check(layernames))
