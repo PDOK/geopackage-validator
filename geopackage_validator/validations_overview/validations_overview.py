@@ -75,12 +75,20 @@ def get_validations_list():
     return validations_list
 
 
+def get_errortype(err_index):
+    template = VALIDATIONS[err_index]
+    return {"errortype": template["errortype"], "validation": template["validation"]}
+
+
 def create_errormessage(err_index, **kwargs):
     template = VALIDATIONS[err_index]
 
-    error_message = {
-        "errortype": template["errortype"],
-        "validation": template["validation"],
-        "errormessage": template["errormessage_template"].format(**kwargs),
-    }
+    error_message = template["errormessage_template"].format(**kwargs)
     return error_message
+
+
+def error_format(err_index, errors):
+    if len(errors) == 0:
+        return []
+    error = get_errortype(err_index)
+    return [{error["errortype"]: {"errorinfo": error, "errors": errors}}]

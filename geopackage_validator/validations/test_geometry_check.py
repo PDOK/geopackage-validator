@@ -18,10 +18,9 @@ def test_invalid_geometry():
     errors = geometry_type_check([("layer2", "WRONG_GEOMETRY")])
     assert len(errors) == 1
     assert (
-        errors[0]["errormessage"]
+        errors[0]["R3"]["errors"][0]
         == "Error layer: layer2, found geometry: WRONG_GEOMETRY"
     )
-    assert errors[0]["errortype"] == "R3"
 
 
 def test_mixed_geometries():

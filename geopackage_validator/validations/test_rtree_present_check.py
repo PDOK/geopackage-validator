@@ -11,9 +11,9 @@ def test_rtree_present_no_tables():
     )
     assert len(errors) == 1
     assert (
-        errors[0]["errormessage"] == "Table without index: no table has an rtree index"
+        errors[0]["R9"]["errors"][0]
+        == "Table without index: no table has an rtree index"
     )
-    assert errors[0]["errortype"] == "R9"
 
 
 def test_rtree_absent_one_table():

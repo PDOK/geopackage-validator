@@ -1,5 +1,6 @@
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
+    error_format,
 )
 
 
@@ -42,4 +43,4 @@ def rtree_valid_check(rtree_index_list=None):
             create_errormessage(err_index="rtree_valid_check", table_name=table)
         )
 
-    return errors
+    return error_format("rtree_valid_check", errors)

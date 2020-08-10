@@ -1,5 +1,6 @@
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
+    error_format,
 )
 
 
@@ -22,4 +23,4 @@ def db_views_check(db_views_check_list=None):
     for db_views in db_views_check_list:
         errors.append(create_errormessage(err_index="db_views", view=db_views))
 
-    return errors
+    return error_format("db_views", errors)

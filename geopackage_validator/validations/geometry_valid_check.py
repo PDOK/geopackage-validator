@@ -1,5 +1,6 @@
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
+    error_format,
 )
 
 
@@ -38,4 +39,4 @@ def geometry_valid_check(geometry_check_list=None):
             )
         )
 
-    return errors
+    return error_format("geometryvalid", errors)

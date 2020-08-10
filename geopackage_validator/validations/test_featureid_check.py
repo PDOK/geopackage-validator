@@ -8,5 +8,4 @@ def test_valid_featureid():
 def test_invalid_featureid():
     errors = feature_id_check([("table", 0)])
     assert len(errors) == 1
-    assert errors[0]["errormessage"] == "Error found in table: table"
-    assert errors[0]["errortype"] == "R7"
+    assert errors[0]["R7"]["errors"][0] == "Error found in table: table"

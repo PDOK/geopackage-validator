@@ -8,5 +8,4 @@ def test_zerofeatures():
 def test_onefeature():
     errors = layerfeature_check([("layer1", 0), ("layer2", 1)])
     assert len(errors) == 1
-    assert errors[0]["errormessage"] == "Error layer: layer1"
-    assert errors[0]["errortype"] == "R2"
+    assert errors[0]["R2"]["errors"][0] == "Error layer: layer1"

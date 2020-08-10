@@ -1,5 +1,6 @@
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
+    error_format,
 )
 
 
@@ -20,4 +21,4 @@ def layerfeature_check(layerfeaturecount_list=None):
                 create_errormessage(err_index="layerfeature", layer=layername)
             )
 
-    return errors
+    return error_format("layerfeature", errors)

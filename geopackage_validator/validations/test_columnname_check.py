@@ -20,8 +20,9 @@ def test_lowercasecolumnname_success():
 def test_lowercasecolumnname_start_number():
     errors = columnname_check(columnname_list=[("table", "1column")])
     assert len(errors) == 1
-    assert errors[0]["errormessage"] == "Error found in table: table, column: 1column"
-    assert errors[0]["errortype"] == "R6"
+    assert (
+        errors[0]["R6"]["errors"][0] == "Error found in table: table, column: 1column"
+    )
 
 
 def test_lowercasecolumnname_with_capitals():

@@ -4,6 +4,7 @@ from deepdiff import DeepDiff
 
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
+    error_format,
 )
 
 
@@ -24,4 +25,4 @@ def table_definitions_check(definitions_reference_path=None, definitions_current
             create_errormessage(err_index="table_definition", difference=difference,)
         )
 
-    return errors
+    return error_format("table_definition", errors)

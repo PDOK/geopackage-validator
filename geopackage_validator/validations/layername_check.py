@@ -2,6 +2,7 @@ import re
 
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
+    error_format,
 )
 
 
@@ -21,4 +22,4 @@ def layername_check(layername_list=None):
         if match_valid is None:
             errors.append(create_errormessage(err_index="layername", layer=layername))
 
-    return errors
+    return error_format("layername", errors)

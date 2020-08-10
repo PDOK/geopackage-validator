@@ -1,5 +1,6 @@
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
+    error_format,
 )
 
 
@@ -32,4 +33,4 @@ def feature_id_check(feature_id_list=None):
                 create_errormessage(err_index="feature_id", table_name=table[0])
             )
 
-    return errors
+    return error_format("feature_id", errors)

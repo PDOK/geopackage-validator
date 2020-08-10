@@ -2,17 +2,6 @@ import sys
 
 from osgeo import ogr
 
-from geopackage_validator.validations.rtree_valid_check import (
-    rtree_valid_check,
-    rtree_valid_check_query,
-)
-from geopackage_validator.validations.rtree_present_check import (
-    rtree_present_check_query,
-    rtree_present_check,
-)
-from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-)
 from geopackage_validator.generate import generate_table_definitions
 from geopackage_validator.validations.columnname_check import (
     columnname_check_query,
@@ -42,9 +31,18 @@ from geopackage_validator.validations.layername_check import (
     layername_check,
     layername_check_query,
 )
+from geopackage_validator.validations.rtree_present_check import (
+    rtree_present_check_query,
+    rtree_present_check,
+)
+from geopackage_validator.validations.rtree_valid_check import (
+    rtree_valid_check,
+    rtree_valid_check_query,
+)
 from geopackage_validator.validations.table_definitions_check import (
     table_definitions_check,
 )
+from geopackage_validator.validations_overview.validations_overview import error_format
 
 
 def validate_all(filename, table_definitions_path, errors):
@@ -87,4 +85,4 @@ def validate_all(filename, table_definitions_path, errors):
             )
 
     except:
-        errors.append(create_errormessage("system", error=sys.exc_info()[0]))
+        return error_format("system", [sys.exc_info()[0]])
