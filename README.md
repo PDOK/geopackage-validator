@@ -1,11 +1,28 @@
 # geopackage-validator
-Introduction
+
+The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
+The current checks are (see also the 'show-validations' command:
+
+    "R1": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.",
+    "R2": "Layers must have at least one feature.",
+    "R3": "Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON).",
+    "R4": "The geopackage should have no views defined.",
+    "R5": "Geometry should be valid.",
+    "R6": "Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.",
+    "R7": "Tables should have a feature id column with unique index.",
+    "R8": "Geopackage must conform to given JSON definitions",
+    "R9": "All geometry tables must have an rtree index"
+    "R10": "All geometry table rtree indexes must be valid",
+
+## Usage through Docker
 
 
 
 ## Installation
 
-We can be installed with:
+Running with Docker is the recommended way of running this package. That way installation of all the dependencies is not necessary, as the Docker image is self contained. 
+
+The geopackage-validator can be installed with:
 
 ```bash
 pip install geopackage-validator
@@ -13,31 +30,83 @@ pip install geopackage-validator
 
 ### GDAL
 
-This package uses bindings for GDAL and has a runtime dependency on an installed GDAL (when not running through Docker)
+This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) and has a runtime dependency on an installed [GDAL](https://gdal.org/) (when not running through Docker, which is the recommended way of running this package.)
 
 ## Usage
 
+### Validate
+
+```bash
+Usage: geopackage-validator validate [OPTIONS]
+
+  Geopackage validator validating a local file or from s3 storage
+
+Options:
+  -g, --gpkg-path FILE            Path pointing to the geopackage.gpkg file
+  -t, --table-definitions-path FILE
+                                  Path pointing to the table-definitions JSON
+                                  file (generate this file by calling the
+                                  generate-definitions command)
+
+  --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
+  --s3-access-key TEXT            Access key for the s3 service
+  --s3-secret-key TEXT            Secret key for the s3 service
+  --s3-bucket TEXT                Bucket where the geopackage is on the s3
+                                  service
+
+  --s3-key TEXT                   Key where the geopackage is in the bucket
+  -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
+                                  DEBUG
+
+  --help                          Show this message and exit.
 ```
-NAME:
-   geopackage-validator local - geopackage validator validating a local file
 
-USAGE:
-   geopackage-validator local [command options] [arguments...]
+### Show validations
+```
+Usage: geopackage-validator show-validations [OPTIONS]
 
-OPTIONS:
-   --config-path value  Path pointing to a json file with configuration (./config.json) [$CONFIG_PATH]
-   --gpkg-path value    Path pointing to the geopackage (./geopackage.gpkg) [$GPKG_PATH]
+  Show all the possible validations that are executed in the validate
+  command.
+
+Options:
+  -v, --verbosity LVL  Either CRITICAL, ERROR, WARNING, INFO or DEBUG
+  --help               Show this message and exit.
 ```
 
-# Running
+### Generate definitions
+```
+Usage: geopackage-validator generate-definitions [OPTIONS]
 
-Place your geopackage in the example directory.
+  Generate Geopackage table definition JSON from given local or s3 package.
+  Use the generated definition JSON in the validation step by providing the
+  table definitions with the --table-definitions-path parameter.
 
-You can run this tool from a directory containing geopackages. The tool will then attempt to validate all geopackages present in the directory.
+Options:
+  --gpkg-path FILE                Path pointing to the geopackage.gpkg file
+  --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
+  --s3-access-key TEXT            Access key for the s3 service
+  --s3-secret-key TEXT            Secret key for the s3 service
+  --s3-bucket TEXT                Bucket where the geopackage is on the s3
+                                  service
 
-e.g.
-* docker  build -t test .
-* docker run --rm test
+  --s3-key TEXT                   Key where the geopackage is in the bucket
+  -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
+                                  DEBUG
+
+  --help                          Show this message and exit.
+
+```
+
+# Running with Docker
+
+Place your geopackage somewhere on disk or in an S3 storage repository.
+
+Build the Docker container
+
+```
+docker build -t geopackage-validator .
+docker run -v ${PWD}:/gpkg --rm geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
+```
 
 
 ## Development installation of this project itself
@@ -75,10 +144,6 @@ There will be a script you can run like this:
 ```bash
 pipenv run geopackage-validator
 ```
-
-It runs the `main()` function in `geopackage-validator/scripts.py`,
-adjust that if necessary. The script is configured in `setup.py` (see
-`entry_points`).
 
 In order to get nicely formatted python files without having to spend manual
 work on it, run the following command periodically:
