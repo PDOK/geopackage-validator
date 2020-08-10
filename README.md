@@ -42,19 +42,29 @@ Usage: geopackage-validator validate [OPTIONS]
   Geopackage validator validating a local file or from s3 storage
 
 Options:
-  -g, --gpkg-path FILE            Path pointing to the geopackage.gpkg file
+  --gpkg-path FILE                Path pointing to the geopackage.gpkg file
+                                  [env var: GPKG_PATH]
+
   -t, --table-definitions-path FILE
                                   Path pointing to the table-definitions JSON
                                   file (generate this file by calling the
                                   generate-definitions command)
 
   --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
-  --s3-access-key TEXT            Access key for the s3 service
-  --s3-secret-key TEXT            Secret key for the s3 service
+                                  [env var: S3_ENDPOINT_NO_PROTOCOL]
+
+  --s3-access-key TEXT            Access key for the s3 service  [env var:
+                                  S3_ACCESS_KEY]
+
+  --s3-secret-key TEXT            Secret key for the s3 service  [env var:
+                                  S3_SECRET_KEY]
+
   --s3-bucket TEXT                Bucket where the geopackage is on the s3
-                                  service
+                                  service  [env var: ssssss]
 
   --s3-key TEXT                   Key where the geopackage is in the bucket
+                                  [env var: S3_KEY]
+
   -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
                                   DEBUG
 
@@ -83,28 +93,41 @@ Usage: geopackage-validator generate-definitions [OPTIONS]
 
 Options:
   --gpkg-path FILE                Path pointing to the geopackage.gpkg file
+                                  [env var: GPKG_PATH]
+
   --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
-  --s3-access-key TEXT            Access key for the s3 service
-  --s3-secret-key TEXT            Secret key for the s3 service
+                                  [env var: S3_ENDPOINT_NO_PROTOCOL]
+
+  --s3-access-key TEXT            Access key for the s3 service  [env var:
+                                  S3_ACCESS_KEY]
+
+  --s3-secret-key TEXT            Secret key for the s3 service  [env var:
+                                  S3_SECRET_KEY]
+
   --s3-bucket TEXT                Bucket where the geopackage is on the s3
-                                  service
+                                  service  [env var: S3_BUCKET]
 
   --s3-key TEXT                   Key where the geopackage is in the bucket
+                                  [env var: S3_KEY]
+
   -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
                                   DEBUG
 
   --help                          Show this message and exit.
-
 ```
 
 # Running with Docker
 
 Place your geopackage somewhere on disk or in an S3 storage repository.
 
-Build the Docker container
+Build the Docker container (only once needed, or after an update)
 
 ```
 docker build -t geopackage-validator .
+```
+
+Run the Docker image, mounting the current directory to /gpkg (adjust where needed)
+```
 docker run -v ${PWD}:/gpkg --rm geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
 

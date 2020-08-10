@@ -32,8 +32,9 @@ def cli():
     help="Geopackage validator validating a local file or from s3 storage",
 )
 @click.option(
-    "-g",
     "--gpkg-path",
+    envvar="GPKG_PATH",
+    show_envvar=True,
     required=False,
     default=None,
     help="Path pointing to the geopackage.gpkg file",
@@ -49,6 +50,7 @@ def cli():
 @click.option(
     "-t",
     "--table-definitions-path",
+    show_envvar=True,
     required=False,
     default=None,
     help="Path pointing to the table-definitions JSON file (generate this file by calling the generate-definitions command)",
@@ -62,19 +64,32 @@ def cli():
     ),
 )
 @click.option(
-    "--s3-endpoint-no-protocol", help="Endpoint for the s3 service without protocol",
+    "--s3-endpoint-no-protocol",
+    envvar="S3_ENDPOINT_NO_PROTOCOL",
+    show_envvar=True,
+    help="Endpoint for the s3 service without protocol",
 )
 @click.option(
-    "--s3-access-key", help="Access key for the s3 service",
+    "--s3-access-key",
+    envvar="S3_ACCESS_KEY",
+    show_envvar=True,
+    help="Access key for the s3 service",
 )
 @click.option(
-    "--s3-secret-key", help="Secret key for the s3 service",
+    "--s3-secret-key",
+    envvar="S3_SECRET_KEY",
+    show_envvar=True,
+    help="Secret key for the s3 service",
 )
 @click.option(
-    "--s3-bucket", help="Bucket where the geopackage is on the s3 service",
+    "--s3-bucket",
+    envvar="ssssss",
+    show_envvar=True,
+    help="Bucket where the geopackage is on the s3 service",
 )
 @click.option(
-    "--s3-key", help="Key where the geopackage is in the bucket",
+    "--s3-key", envvar="S3_KEY",
+    show_envvar=True,help="Key where the geopackage is in the bucket",
 )
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command(
@@ -108,8 +123,10 @@ def geopackage_validator_command(
 )
 @click.option(
     "--gpkg-path",
+    envvar="GPKG_PATH",
     required=False,
     default=None,
+    show_envvar=True,
     help="Path pointing to the geopackage.gpkg file",
     type=click.types.Path(
         exists=True,
@@ -121,19 +138,34 @@ def geopackage_validator_command(
     ),
 )
 @click.option(
-    "--s3-endpoint-no-protocol", help="Endpoint for the s3 service without protocol",
+    "--s3-endpoint-no-protocol",
+    envvar="S3_ENDPOINT_NO_PROTOCOL",
+    show_envvar=True,
+    help="Endpoint for the s3 service without protocol",
 )
 @click.option(
-    "--s3-access-key", help="Access key for the s3 service",
+    "--s3-access-key",
+    envvar="S3_ACCESS_KEY",
+    show_envvar=True,
+    help="Access key for the s3 service",
 )
 @click.option(
-    "--s3-secret-key", help="Secret key for the s3 service",
+    "--s3-secret-key",
+    envvar="S3_SECRET_KEY",
+    show_envvar=True,
+    help="Secret key for the s3 service",
 )
 @click.option(
-    "--s3-bucket", help="Bucket where the geopackage is on the s3 service",
+    "--s3-bucket",
+    envvar="S3_BUCKET",
+    show_envvar=True,
+    help="Bucket where the geopackage is on the s3 service",
 )
 @click.option(
-    "--s3-key", help="Key where the geopackage is in the bucket",
+    "--s3-key",
+    envvar="S3_KEY",
+    show_envvar=True,
+    help="Key where the geopackage is in the bucket",
 )
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_generate_table_definitions(
