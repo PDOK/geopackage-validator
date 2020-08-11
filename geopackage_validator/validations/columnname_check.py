@@ -8,14 +8,18 @@ from geopackage_validator.validations_overview.validations_overview import (
 
 
 def columnname_check_query(dataset) -> Iterable[Tuple[str, str]]:
-    columns = dataset.ExecuteSQL(
-        "SELECT table_name, column_name FROM gpkg_geometry_columns;"
-    )
+    tables = dataset.ExecuteSQL("SELECT table_name FROM gpkg_contents;")
 
-    for column in columns:
-        yield column
+    for table in tables:
+        columns = dataset.ExecuteSQL(
+            "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table[0])
+        )
 
-    dataset.ReleaseResultSet(columns)
+        for column in columns:
+            yield table[0], column[1]
+
+        dataset.ReleaseResultSet(columns)
+    dataset.ReleaseResultSet(tables)
 
 
 def columnname_check(columnname_list: Iterable[Tuple[str, str]]):

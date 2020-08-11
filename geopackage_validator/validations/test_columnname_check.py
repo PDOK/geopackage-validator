@@ -47,12 +47,18 @@ def test_lowercasecolumnname_with_capitals():
 def test_with_gpkg():
     dataset = open_dataset("tests/data/test_columnname.gpkg")
     checks = list(columnname_check_query(dataset))
-    assert len(checks) == 1
+    assert len(checks) == 2
     assert checks[0][0] == "test_columnname"
+    assert checks[0][1] == "fid"
+    assert checks[1][0] == "test_columnname"
+    assert checks[1][1] == "GEOmetry"
 
 
 def test_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     checks = list(columnname_check_query(dataset))
-    assert len(checks) == 1
+    assert len(checks) == 2
     assert checks[0][0] == "test_allcorrect"
+    assert checks[0][1] == "fid"
+    assert checks[1][0] == "test_allcorrect"
+    assert checks[1][1] == "geometry"
