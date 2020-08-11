@@ -177,9 +177,9 @@ On a PC with 32GB memory and Intel Core i7-8850H CPU @ 2.6 ghz, the following pe
 | Geopackage size | Time needed for validation | MB / minute     |
 | --------------- | -------------------------- | --------------- |
 | 315 MB          | 0.5 minutes                | 630 MB / minute |
-| 6.3 GB          | 9.5 minutes                | 663 MB / minute |
-| 9.9 GB          | 17 minutes                 | 588 MB / minute |
-| 15.7 GB         | 23 minutes                 | 682 MB / minute |
+| 6.3 GB          | 12.5 minutes               | 504 MB / minute |
+| 9.9 GB          | 17.5 minutes               | 565 MB / minute |
+| 15.7 GB         | 24 minutes                 | 654 MB / minute |
 
 This is to give an indication of the performance and by no means a guarantee.
 
