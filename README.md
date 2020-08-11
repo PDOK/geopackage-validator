@@ -64,6 +64,17 @@ Options:
                                   file (generate this file by calling the
                                   generate-definitions command)
 
+  --validations-path FILE         Path pointing to the set of validations to
+                                  run. If validations-path and validations are
+                                  not given, validate runs all validations
+                                  [env var: VALIDATIONS_FILE]
+
+  --validations TEXT              Comma-separated list of validations to run
+                                  (e.g. --validations R1,R2,R3). If
+                                  validations-path and validations are not
+                                  given, validate runs all validations  [env
+                                  var: VALIDATIONS]
+
   --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
                                   [env var: S3_ENDPOINT_NO_PROTOCOL]
 
@@ -74,7 +85,7 @@ Options:
                                   S3_SECRET_KEY]
 
   --s3-bucket TEXT                Bucket where the geopackage is on the s3
-                                  service  [env var: ssssss]
+                                  service  [env var: S3_BUCKET]
 
   --s3-key TEXT                   Key where the geopackage is in the bucket
                                   [env var: S3_KEY]
@@ -84,6 +95,21 @@ Options:
 
   --help                          Show this message and exit.
 ```
+
+Examples:
+
+```bash
+pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg
+```
+
+Run with specific validations only:
+```bash
+pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-file tests/validationsets/example-validation-set.json
+```
+```bash
+pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations R1,R2,R3
+```
+
 
 ### Show validations
 

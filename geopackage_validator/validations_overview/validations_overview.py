@@ -57,7 +57,7 @@ VALIDATIONS = {
         "errormessage_template": "Table without index: {table_name}",
         "validation": "All geometry tables must have an rtree index",
     },
-    "rtree_valid_check": {
+    "rtree_valid": {
         "errortype": "R10",
         "errormessage_template": "Invalid rtree index found for table: {table_name}",
         "validation": "All geometry table rtree indexes must be valid",
@@ -65,12 +65,16 @@ VALIDATIONS = {
 }
 
 
-def get_validations_list() -> Dict[str, str]:
+def get_validations_list(used_validations=None) -> Dict[str, str]:
+    if used_validations is None:
+        used_validations = []
     validations_list = {}
     for index in VALIDATIONS:
         message = VALIDATIONS[index]
         errortype = message["errortype"]
-        if errortype.startswith("R"):
+        if errortype.startswith("R") and (
+            errortype in used_validations or len(used_validations) == 0
+        ):
             validations_list[errortype] = message["validation"]
 
     return validations_list

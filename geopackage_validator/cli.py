@@ -64,6 +64,30 @@ def cli():
     ),
 )
 @click.option(
+    "--validations-path",
+    show_envvar=True,
+    required=False,
+    default=None,
+    envvar="VALIDATIONS_FILE",
+    help="Path pointing to the set of validations to run. If validations-path and validations are not given, validate runs all validations",
+    type=click.types.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
+    ),
+)
+@click.option(
+    "--validations",
+    show_envvar=True,
+    required=False,
+    default="ALL",
+    envvar="VALIDATIONS",
+    help="Comma-separated list of validations to run (e.g. --validations R1,R2,R3). If validations-path and validations are not given, validate runs all validations",
+)
+@click.option(
     "--s3-endpoint-no-protocol",
     envvar="S3_ENDPOINT_NO_PROTOCOL",
     show_envvar=True,
@@ -83,7 +107,7 @@ def cli():
 )
 @click.option(
     "--s3-bucket",
-    envvar="ssssss",
+    envvar="S3_BUCKET",
     show_envvar=True,
     help="Bucket where the geopackage is on the s3 service",
 )
@@ -97,6 +121,8 @@ def cli():
 def geopackage_validator_command(
     gpkg_path,
     table_definitions_path,
+    validations_path,
+    validations,
     s3_endpoint_no_protocol,
     s3_access_key,
     s3_secret_key,
@@ -109,12 +135,24 @@ def geopackage_validator_command(
 
     try:
         if gpkg_path is not None:
-            validate(gpkg_path, gpkg_path, table_definitions_path)
+            validate(
+                gpkg_path,
+                gpkg_path,
+                table_definitions_path,
+                validations_path,
+                validations,
+            )
         else:
             with minio_resource(
                 s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
             ) as localfilename:
-                validate(localfilename, s3_key, table_definitions_path)
+                validate(
+                    localfilename,
+                    s3_key,
+                    table_definitions_path,
+                    validations_path,
+                    validations,
+                )
     except:
         log_output(error_format("system", errors=[str(sys.exc_info()[1])]))
 
@@ -192,7 +230,7 @@ def geopackage_validator_command_generate_table_definitions(
 
 @cli.command(
     name="show-validations",
-    help="Show all the possible validations that are executed in the validate command.",
+    help="Show all the possible validations that can be executed in the validate command.",
 )
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_show_validations():

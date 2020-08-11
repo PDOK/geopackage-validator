@@ -41,8 +41,6 @@ def rtree_valid_check(rtree_index_list: Iterable[str]):
     errors = []
 
     for table in rtree_index_list:
-        errors.append(
-            create_errormessage(err_index="rtree_valid_check", table_name=table)
-        )
+        errors.append(create_errormessage(err_index="rtree_valid", table_name=table))
 
-    return error_format("rtree_valid_check", errors)
+    return error_format("rtree_valid", errors)
