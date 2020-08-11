@@ -3,20 +3,18 @@
 The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
 The current checks are (see also the 'show-validations' command:
 
-    "R1": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.",
-    "R2": "Layers must have at least one feature.",
-    "R3": "Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON).",
-    "R4": "The geopackage should have no views defined.",
-    "R5": "Geometry should be valid.",
-    "R6": "Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.",
-    "R7": "Tables should have a feature id column with unique index.",
-    "R8": "Geopackage must conform to given JSON definitions",
-    "R9": "All geometry tables must have an rtree index"
-    "R10": "All geometry table rtree indexes must be valid",
-
-## Usage through Docker
-
-
+| Validation code | Description                                                  |
+| :-------------: | ------------------------------------------------------------ |
+|       R1        | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
+|       R2        | Layers must have at least one feature.                       |
+|       R3        | Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
+|       R4        | The geopackage should have no views defined.                 |
+|       R5        | Geometry should be valid.                                    |
+|       R6        | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
+|       R7        | Tables should have a feature id column with unique index.    |
+|       R8        | Geopackage must conform to given JSON definitions            |
+|       R9        | All geometry tables must have an rtree index                 |
+|       R10       | All geometry table rtree indexes must be valid               |
 
 ## Installation
 
@@ -33,6 +31,22 @@ pip install geopackage-validator
 This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) and has a runtime dependency on an installed [GDAL](https://gdal.org/) (when not running through Docker, which is the recommended way of running this package.)
 
 ## Usage
+
+### Usage through Docker
+
+Place your geopackage somewhere on disk or in an S3 storage repository.
+
+Build the Docker container (only once needed, or after an update)
+
+```
+docker build -t geopackage-validator .
+```
+
+Run the Docker image, mounting the current directory to /gpkg (adjust where needed)
+
+```bash
+docker run -v ${PWD}:/gpkg --rm geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
+```
 
 ### Validate
 
@@ -72,7 +86,10 @@ Options:
 ```
 
 ### Show validations
-```
+
+Show all the possible validations that are executed in the validate command.
+
+```bash
 Usage: geopackage-validator show-validations [OPTIONS]
 
   Show all the possible validations that are executed in the validate
@@ -83,8 +100,11 @@ Options:
   --help               Show this message and exit.
 ```
 
-### Generate definitions
-```
+### Generate table definitions
+
+Generate Geopackage table definition JSON from given local or s3 package. This command generates a definition that describes the Geopackage layout, in JSON format. This JSON, when saved in a file, can be used in the validation step to validate a Geopackage against these table definitions.
+
+```bash
 Usage: geopackage-validator generate-definitions [OPTIONS]
 
   Generate Geopackage table definition JSON from given local or s3 package.
@@ -116,23 +136,20 @@ Options:
   --help                          Show this message and exit.
 ```
 
-# Running with Docker
+## Performance
 
-Place your geopackage somewhere on disk or in an S3 storage repository.
+On a PC with 32GB memory and Intel Core i7-8850H CPU @ 2.6 ghz, the following performance has been measured:
 
-Build the Docker container (only once needed, or after an update)
+| Geopackage size | Time needed for validation | MB / minute     |
+| --------------- | -------------------------- | --------------- |
+| 315 MB          | 0.5 minutes                | 630 MB / minute |
+| 6.3 GB          | 9.5 minutes                | 663 MB / minute |
+| 9.9 GB          | 17 minutes                 | 588 MB / minute |
+| 15.7 GB         | 23 minutes                 | 682 MB / minute |
 
-```
-docker build -t geopackage-validator .
-```
+This is to give an indication of the performance and by no means a guarantee.
 
-Run the Docker image, mounting the current directory to /gpkg (adjust where needed)
-```
-docker run -v ${PWD}:/gpkg --rm geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
-```
-
-
-## Development installation of this project itself
+## Development installation
 
 We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
 around pip and virtualenv. Install that first with `pip install pipenv`.
@@ -197,7 +214,7 @@ Pipenv installs zest.releaser which allows you to release the package to a git(h
 ```bash
 pipenv run fullrelease
 ```
-# Install pyenv
+## Install pyenv
 We can install pyenv by running the following commands: 
 
 ```bash
