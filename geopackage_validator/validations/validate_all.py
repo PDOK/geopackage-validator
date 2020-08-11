@@ -25,7 +25,8 @@ from geopackage_validator.validations.geometry_valid_check import (
 )
 from geopackage_validator.validations.layerfeature_check import (
     layerfeature_check_query,
-    layerfeature_check,
+    layerfeature_check_ogr_index,
+    layerfeature_check_featurecount,
 )
 from geopackage_validator.validations.layername_check import (
     layername_check,
@@ -63,7 +64,11 @@ def validate_all(
 
         if get_errortype("layerfeature")["errortype"] in validations:
             layerfeature_count = layerfeature_check_query(dataset)
-            errors.extend(layerfeature_check(layerfeature_count))
+            errors.extend(layerfeature_check_featurecount(layerfeature_count))
+
+        if get_errortype("layerfeature_ogr")["errortype"] in validations:
+            layerfeature_count = layerfeature_check_query(dataset)
+            errors.extend(layerfeature_check_ogr_index(layerfeature_count))
 
         if get_errortype("geometry_type")["errortype"] in validations:
             geometries = geometry_type_check_query(dataset)

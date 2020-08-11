@@ -15,10 +15,12 @@ The current checks are (see also the 'show-validations' command:
 |       R8        | Geopackage must conform to given JSON definitions            |
 |       R9        | All geometry tables must have an rtree index                 |
 |       R10       | All geometry table rtree indexes must be valid               |
+|       R11       | OGR indexed feature counts must be up to date                |
 
 ## Installation
 
-Running with Docker is the recommended way of running this package. That way installation of all the dependencies is not necessary, as the Docker image is self contained.
+Running with Docker is the recommended way of running this package. That way installation of all the dependencies is not
+necessary, as the Docker image is self contained.
 
 The geopackage-validator can be installed with:
 
@@ -28,7 +30,8 @@ pip install geopackage-validator
 
 ### GDAL
 
-This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) and has a runtime dependency on an installed [GDAL](https://gdal.org/) (when not running through Docker, which is the recommended way of running this package.)
+This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) and has a runtime dependency on an installed
+[GDAL](https://gdal.org/) (when not running through Docker, which is the recommended way of running this package.)
 
 ## Usage
 
@@ -102,14 +105,19 @@ Examples:
 pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg
 ```
 
-Run with specific validations only:
+Run with specific validations only
+
+Specified in file:
+
 ```bash
 pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-file tests/validationsets/example-validation-set.json
 ```
+
+Or specified on command line:
+
 ```bash
 pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations R1,R2,R3
 ```
-
 
 ### Show validations
 
@@ -219,11 +227,16 @@ work on it, run the following command periodically:
 pipenv run black geopackage_validator
 ```
 
-Run the tests regularly. This also checks with pyflakes, black and it reports
-coverage. Pure luxury:
+Run the tests regularly. This also checks with pyflakes and black:
 
 ```bash
 pipenv run pytest
+```
+
+Code coverage:
+
+```bash
+pipenv run pytest --cov=geopackage_validator  --cov-report html
 ```
 
 If you need a new dependency (like `requests`), add it in `setup.py` in

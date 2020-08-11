@@ -62,6 +62,11 @@ VALIDATIONS = {
         "errormessage_template": "Invalid rtree index found for table: {table_name}",
         "validation": "All geometry table rtree indexes must be valid",
     },
+    "layerfeature_ogr": {
+        "errortype": "R11",
+        "errormessage_template": "OGR index for feature count is not up to date for table: {layer}. Indexed feature count: {feature_count_ogr}, real feature count: {feature_count_real}",
+        "validation": "OGR indexed feature counts must be up to date",
+    },
 }
 
 
