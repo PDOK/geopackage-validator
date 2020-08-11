@@ -18,7 +18,7 @@ The current checks are (see also the 'show-validations' command:
 
 ## Installation
 
-Running with Docker is the recommended way of running this package. That way installation of all the dependencies is not necessary, as the Docker image is self contained. 
+Running with Docker is the recommended way of running this package. That way installation of all the dependencies is not necessary, as the Docker image is self contained.
 
 The geopackage-validator can be installed with:
 
@@ -38,7 +38,7 @@ Place your geopackage somewhere on disk or in an S3 storage repository.
 
 Build the Docker container (only once needed, or after an update)
 
-```
+```bash
 docker build -t geopackage-validator .
 ```
 
@@ -162,22 +162,23 @@ sudo apt-get install gdal-bin libgdal-dev -y
 ```
 
 Make sure you have GDAL version 3.0.4:
+
 ```bash
 $ gdalinfo --version
 GDAL 3.0.4, released 2020/01/28
 ```
 
 Then install the dependencies of this project:
+
 ```bash
 export CPLUS_INCLUDE_PATH=/usr/include/gdal
 export C_INCLUDE_PATH=/usr/include/gdal
 PIPENV_VENV_IN_PROJECT=1 pipenv install --python 3.8 --dev
 ```
 
-
-In case you do not have python 3.8 on your machine, install python using 
+In case you do not have python 3.8 on your machine, install python using
 [pyenv](https://github.com/pyenv/pyenv) and try the previous command again.
-See install pyenv below for instructions. 
+See install pyenv below for instructions.
 
 There will be a script you can run like this:
 
@@ -207,20 +208,22 @@ dependency:
 pipenv install --dev
 ```
 
-## Releasing 
-Pipenv installs zest.releaser which allows you to release the package to a git(hub) repo. It has a 
+## Releasing
+
+Pipenv installs zest.releaser which allows you to release the package to a git(hub) repo. It has a
 `fullrelease` command that asks you a few questions, which you all respond to with `<enter>`:
 
 ```bash
 pipenv run fullrelease
 ```
+
 ## Install pyenv
-We can install pyenv by running the following commands: 
+
+We can install pyenv by running the following commands:
 
 ```bash
 sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev
 curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 ```
 
-Also make sure to put pyenv in your `.bashrc` or `.zshrc` as instructed by the previous commands. 
-
+Also make sure to put pyenv in your `.bashrc` or `.zshrc` as instructed by the previous commands.
