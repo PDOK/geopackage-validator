@@ -88,8 +88,10 @@ def cli():
     help="Bucket where the geopackage is on the s3 service",
 )
 @click.option(
-    "--s3-key", envvar="S3_KEY",
-    show_envvar=True,help="Key where the geopackage is in the bucket",
+    "--s3-key",
+    envvar="S3_KEY",
+    show_envvar=True,
+    help="Key where the geopackage is in the bucket",
 )
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command(

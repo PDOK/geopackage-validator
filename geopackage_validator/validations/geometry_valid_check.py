@@ -12,10 +12,10 @@ def geometry_valid_check_query(dataset) -> Iterable[Tuple[str, str, str]]:
     )
     for column in columns:
         validations = dataset.ExecuteSQL(
-            'select ST_IsValidReason(GeomFromGPB("{column_name}")) as reason, '
+            'select ST_IsValidReason("{column_name}") as reason, '
             "'{table_name}' as table_name, "
             "'{column_name}' as column_name "
-            'from "{table_name}" where ST_IsValid(GeomFromGPB("{column_name}")) = 0;'.format(
+            'from "{table_name}" where ST_IsValid("{column_name}") = 0;'.format(
                 table_name=column[0], column_name=column[1]
             )
         )
