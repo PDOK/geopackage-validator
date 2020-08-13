@@ -35,7 +35,23 @@ This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) an
 
 ## Usage
 
-### Usage through Docker
+### Usage through Docker (pull from Docker Hub)
+
+Place your geopackage somewhere on disk or in an S3 storage repository.
+
+Pull the latest version of the Docker container (only once needed, or after an update)
+
+```bash
+docker pull pdok/geopackage-validator:latest
+```
+
+Run the Docker image, mounting the current directory to /gpkg (adjust where needed)
+
+```bash
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
+```
+
+### Usage through Docker (local build)
 
 Place your geopackage somewhere on disk or in an S3 storage repository.
 
