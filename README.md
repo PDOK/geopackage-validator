@@ -1,7 +1,7 @@
 # geopackage-validator
 
 The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
-The current checks are (see also the 'show-validations' command:
+The current checks are (see also the 'show-validations' command):
 
 | Validation code | Description                                                  |
 | :-------------: | ------------------------------------------------------------ |
@@ -126,7 +126,7 @@ Run with specific validations only
 Specified in file:
 
 ```bash
-pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-file tests/validationsets/example-validation-set.json
+pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-path tests/validationsets/example-validation-set.json
 ```
 
 Or specified on command line:
