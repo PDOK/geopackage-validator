@@ -35,7 +35,7 @@ def test_determine_validations_to_use_none():
 def test_determine_validations_to_use_file():
     validations = determine_validations_to_use(
         validations=None,
-        validations_path="tests/validationsets/example-validation-set.json",
+        validations_path="tests/data/validationsets/example-validation-set.json",
     )
     assert validations == ["R1", "R2", "R3"]
 
@@ -43,6 +43,6 @@ def test_determine_validations_to_use_file():
 def test_determine_validations_to_use_file_and_param():
     validations = determine_validations_to_use(
         validations="R7,R9",
-        validations_path="tests/validationsets/example-validation-set.json",
+        validations_path="tests/data/validationsets/example-validation-set.json",
     )
     assert validations == ["R1", "R2", "R3", "R7", "R9"]
