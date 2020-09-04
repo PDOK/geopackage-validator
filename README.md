@@ -39,13 +39,13 @@ This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) an
 
 Place your geopackage somewhere on disk or in an S3 storage repository.
 
-Pull the latest version of the Docker container (only once needed, or after an update)
+Pull the latest version of the Docker image (only once needed, or after an update)
 
 ```bash
 docker pull pdok/geopackage-validator:latest
 ```
 
-Run the Docker image, mounting the current directory to /gpkg (adjust where needed)
+Run the Docker container, mounting the current directory to /gpkg (adjust where needed)
 
 ```bash
 docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
@@ -55,13 +55,13 @@ docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path /
 
 Place your geopackage somewhere on disk or in an S3 storage repository.
 
-Build the Docker container (only once needed, or after an update)
+Build the Docker image (only once needed, or after an update)
 
 ```bash
 docker build -t geopackage-validator .
 ```
 
-Run the Docker image, mounting the current directory to /gpkg (adjust where needed)
+Run the Docker container, mounting the current directory to /gpkg (adjust where needed)
 
 ```bash
 docker run -v ${PWD}:/gpkg --rm geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
