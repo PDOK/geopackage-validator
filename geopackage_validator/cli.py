@@ -129,6 +129,7 @@ def geopackage_validator_command(
     s3_bucket,
     s3_key,
 ):
+
     if gpkg_path is None and s3_endpoint_no_protocol is None:
         logger.error("Give --gpkg location or s3 location")
         return
@@ -154,7 +155,7 @@ def geopackage_validator_command(
                     validations,
                 )
     except:
-        log_output(error_format("system", errors=[str(sys.exc_info()[1])]))
+        log_output(error_format("system", trace=[str(sys.exc_info()[1])]))
 
 
 @cli.command(

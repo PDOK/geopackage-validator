@@ -15,6 +15,11 @@ from geopackage_validator.validations.feature_id_check import (
     feature_id_check,
     feature_id_check_query,
 )
+from geopackage_validator.validations.geo_column_check import (
+    geom_columnname_check_query,
+    geom_columnname_check,
+    geom_equal_columnname_check,
+)
 from geopackage_validator.validations.geometry_type_check import (
     geometry_type_check,
     geometry_type_check_query,
@@ -58,6 +63,8 @@ def validate_all(
     dataset = open_dataset(filename)
 
     try:
+
+        # Error checks
         if get_errortype("layername")["errortype"] in validations:
             layernames = layername_check_query(dataset)
             errors.extend(layername_check(layernames))
@@ -106,6 +113,15 @@ def validate_all(
                         table_definitions_path, table_definitions_current
                     )
                 )
+
+        # Warning checks
+        if get_errortype("geom_columnname")["errortype"] in validations:
+            columns = geom_columnname_check_query(dataset)
+            errors.extend(geom_columnname_check(columns))
+
+        if get_errortype("geom_equal_columnnames")["errortype"] in validations:
+            columns = geom_columnname_check_query(dataset)
+            errors.extend(geom_equal_columnname_check(columns))
 
     except:
         return error_format("system", [str(sys.exc_info()[0])])

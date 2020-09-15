@@ -72,7 +72,7 @@ def test_table_definitions_check_incorrect_projection():
     assert diff[0]["R8"] == {
         "errorinfo": {
             "errortype": "R8",
-            "validation": "Geopackage must conform to given JSON definitions",
+            "validation": "Geopackage must conform to given JSON definitions.",
         },
         "errors": [
             "Difference: Value of root['test_allcorrect']['columns'][2]['projection'] changed from 4326 to 4323."

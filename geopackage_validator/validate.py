@@ -32,14 +32,6 @@ def determine_validations_to_use(
     if validations is not None and validations != "ALL":
         used_validations.extend(validations.replace(" ", "").split(","))
 
-    if len(used_validations) == 0:
-        used_validations = list(
-            filter(
-                lambda x: x.startswith("R"),
-                [v["errortype"] for k, v in VALIDATIONS.items()],
-            )
-        )
-
     return used_validations
 
 
