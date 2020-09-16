@@ -15,7 +15,7 @@ from geopackage_validator.validations.feature_id_check import (
     feature_id_check,
     feature_id_check_query,
 )
-from geopackage_validator.validations.geo_column_check import (
+from geopackage_validator.validations.geom_column_check import (
     geom_columnname_check_query,
     geom_columnname_check,
     geom_equal_columnname_check,

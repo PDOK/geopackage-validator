@@ -23,14 +23,36 @@ def determine_validations_to_use(
     validations_path: Optional[str], validations: Optional[str]
 ):
     used_validations = []
+
     if validations_path is not None:
-        with open(validations_path) as json_file:
-            used_validations.extend(json.load(json_file)["validations"])
-            if len(used_validations) == 0:
-                raise Exception("Validation path file does not contain any validations")
+        used_validations = get_validations_from_file(validations_path)
 
     if validations is not None and validations != "ALL":
         used_validations.extend(validations.replace(" ", "").split(","))
+
+    if len(used_validations) == 0:
+        used_validations = get_all_validations()
+
+    return used_validations
+
+
+def get_all_validations():
+    used_validations = list(
+        filter(
+            lambda x: x.startswith("R"),
+            [v["errortype"] for k, v in VALIDATIONS.items()],
+        )
+    )
+    return used_validations
+
+
+def get_validations_from_file(validations_path):
+    used_validations = []
+
+    with open(validations_path) as json_file:
+        used_validations.extend(json.load(json_file)["validations"])
+        if len(used_validations) == 0:
+            raise Exception("Validation path file does not contain any validations")
 
     return used_validations
 

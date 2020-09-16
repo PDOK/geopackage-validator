@@ -1,6 +1,9 @@
-import re
 from typing import Iterable, Tuple
-from geopackage_validator.validations_overview.validations_overview import *
+
+from geopackage_validator.validations_overview.validations_overview import (
+    create_errormessage,
+    error_format,
+)
 
 
 def geom_columnname_check_query(dataset) -> Iterable[Tuple[str, str]]:
@@ -33,7 +36,7 @@ def geom_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
                 )
             )
 
-    return error_format("columnname", errors)
+    return error_format("geom_columnname", errors)
 
 
 def geom_equal_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
@@ -56,4 +59,4 @@ def geom_equal_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
             )
         )
 
-    return error_format("columnname", errors)
+    return error_format("geom_equal_columnnames", errors)
