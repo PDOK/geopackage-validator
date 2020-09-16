@@ -13,11 +13,11 @@ def test_validate_single_validation():
     validate_all(
         "tests/data/test_layername.gpkg",
         table_definitions_path="",
-        validations=["R1"],
+        validations=["RQ1"],
         errors=errors,
     )
     assert len(errors) == 1
-    assert errors[0]["R1"]["errors"] == ["Error layer: test_LAYERNAME"]
+    assert errors[0]["RQ1"]["trace"] == ["Error layer: test_LAYERNAME"]
 
 
 def test_validate_single_validation_no_error():
@@ -25,7 +25,7 @@ def test_validate_single_validation_no_error():
     validate_all(
         "tests/data/test_layername.gpkg",
         table_definitions_path="",
-        validations=["R2"],
+        validations=["RQ2"],
         errors=errors,
     )
     assert len(errors) == 0
@@ -42,4 +42,4 @@ def test_validate_all_validations_no_error():
         errors=errors,
     )
     assert len(errors) == 1
-    assert errors[0]["R1"]["errors"] == ["Error layer: test_LAYERNAME"]
+    assert errors[0]["RQ1"]["trace"] == ["Error layer: test_LAYERNAME"]
