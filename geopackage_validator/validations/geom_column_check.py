@@ -8,7 +8,7 @@ from geopackage_validator.validations_overview.validations_overview import (
 
 def geom_columnname_check_query(dataset) -> Iterable[Tuple[str, str]]:
     column_info_list = dataset.ExecuteSQL(
-        "SELECT table_name, column_name FROM gpkg_geometry_columns WHERE geometry_type_name = 'GEOMETRY';"
+        "SELECT table_name, column_name FROM gpkg_geometry_columns;"
     )
 
     for column_info in column_info_list:
@@ -21,7 +21,6 @@ def geom_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
     assert column_info_list is not None
 
     errors = []
-
     for column_info in column_info_list:
 
         table_name = column_info[0]
@@ -51,7 +50,8 @@ def geom_equal_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
         column_name_list.append(column_name)
 
     column_names = set(column_name_list)
-    if len(column_names) <= 1:
+
+    if len(column_names) > 1:
         errors.append(
             create_errormessage(
                 err_index="geom_equal_columnnames",

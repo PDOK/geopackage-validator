@@ -74,7 +74,7 @@ VALIDATIONS = {
     },
     "geom_equal_columnnames": {
         "errortype": "RC2",
-        "errormessage_template": "Found column names are: {table_names}",
+        "errormessage_template": "Found column names are: {column_names}",
         "validation": "It is recommended to give all GEOMETRY type columns the same name.",
     },
 }

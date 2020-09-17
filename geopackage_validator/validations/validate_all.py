@@ -123,5 +123,6 @@ def validate_all(
             columns = geom_columnname_check_query(dataset)
             errors.extend(geom_equal_columnname_check(columns))
 
-    except:
+    except Exception as e:
+        #todo: if there is an error it should be reported -> fix this in new ticket
         return error_format("system", [str(sys.exc_info()[0])])
