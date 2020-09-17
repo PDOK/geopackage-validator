@@ -22,10 +22,22 @@ def log_output(
                 "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S.%f"),
                 "duration_seconds": round(duration_seconds),
                 "validated_geopackage": filename,
-                "success": len(errors) == 0,
+                "success": is_success(errors),
                 "validations": validations,
                 "errors": errors,
             },
             indent=4,
         )
     )
+
+
+def is_success(result_list):
+
+    # todo: refactor this -> proposal simpler output format -> change field errortype to result_code -> add
+    #  field error_type which contains requirement or recommendation -> use that field to discriminate between RQ and RC
+    for result in result_list:
+        for key in result:
+            if key.startswith("RQ"):
+                return False
+
+    return True
