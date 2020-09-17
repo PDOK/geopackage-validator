@@ -70,12 +70,12 @@ VALIDATIONS = {
     "geom_columnname": {
         "errortype": "RC1",
         "errormessage_template": "Found in table: {table_name}, column: {column_name}",
-        "validation": "It is recommended to consequently name all GEOMETRY type columns as 'geom'.",
+        "validation": "It is recommended to name all GEOMETRY type columns 'geom'.",
     },
     "geom_equal_columnnames": {
         "errortype": "RC2",
         "errormessage_template": "Found column names are: {table_names}",
-        "validation": "It is recommended to name all GEOMETRY type columns consequently the same.",
+        "validation": "It is recommended to give all GEOMETRY type columns the same name.",
     },
 }
 
