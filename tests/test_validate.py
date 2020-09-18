@@ -29,6 +29,8 @@ def test_determine_validations_to_use_none():
         "R9",
         "R10",
         "R11",
+        "R12",
+        "R13",
     ]
 
 

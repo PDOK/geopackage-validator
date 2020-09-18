@@ -40,6 +40,12 @@ from geopackage_validator.validations.rtree_valid_check import (
     rtree_valid_check,
     rtree_valid_check_query,
 )
+from geopackage_validator.validations.srs_check import (
+    srs_check_query,
+    srs_check,
+    srs_equal_check_query,
+    srs_equal_check,
+)
 from geopackage_validator.validations.table_definitions_check import (
     table_definitions_check,
 )
@@ -106,6 +112,14 @@ def validate_all(
                         table_definitions_path, table_definitions_current
                     )
                 )
+
+        if get_errortype("srs")["errortype"] in validations:
+            srs = srs_check_query(dataset)
+            errors.extend(srs_check(srs))
+
+        if get_errortype("srs_equal")["errortype"] in validations:
+            srs = srs_equal_check_query(dataset)
+            errors.extend(srs_equal_check(srs))
 
     except:
         return error_format("system", [str(sys.exc_info()[0])])

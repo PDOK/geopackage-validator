@@ -67,6 +67,16 @@ VALIDATIONS = {
         "errormessage_template": "OGR index for feature count is not up to date for table: {layer}. Indexed feature count: {feature_count_ogr}, real feature count: {feature_count_real}",
         "validation": "OGR indexed feature counts must be up to date",
     },
+    "srs": {
+        "errortype": "R12",
+        "errormessage_template": "Found in 'gpkg_spatial_ref_sys' {srs_organisation} {srs_id}. {srs_name} is not allowed.",
+        "validation": "Only the following ESPG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409.",
+    },
+    "srs_equal": {
+        "errortype": "R13",
+        "errormessage_template": "Found srs are: {srs}",
+        "validation": "It is required to give all GEOMETRY features the same default spatial reference system.",
+    },
 }
 
 
