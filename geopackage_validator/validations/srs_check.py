@@ -8,7 +8,10 @@ from geopackage_validator.validations_overview.validations_overview import (
 
 def srs_check_query(dataset) -> Iterable[Tuple[str, str]]:
     srs_list = dataset.ExecuteSQL(
-        "SELECT organization, organization_coordsys_id, srs_name AS id FROM gpkg_spatial_ref_sys WHERE id > 0;"
+        """
+        SELECT organization, organization_coordsys_id AS id, srs_name 
+        FROM gpkg_geometry_columns 
+        JOIN gpkg_spatial_ref_sys gsrs on gsrs.srs_id = gpkg_geometry_columns.srs_id;"""
     )
 
     for srs in srs_list:
