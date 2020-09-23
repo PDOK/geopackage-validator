@@ -27,7 +27,6 @@ def generate_table_definitions(
 
     projection = None
     tablelist = {}
-    # todo: `srs_id` does not represent the actual value of the espg code -> this value should be looked up in `gpkg_spatial_ref_sys`
     for table in geometry_tables:
         columns = dataset.ExecuteSQL(
             "SELECT column_name, geometry_type_name, srs_id FROM gpkg_geometry_columns where table_name = '{table_name}';".format(

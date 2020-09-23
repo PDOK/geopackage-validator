@@ -6,6 +6,32 @@ from geopackage_validator.validations_overview.validations_overview import (
 )
 
 
+ALLOWED_LIST = [
+    28992,
+    3034,
+    3035,
+    3038,
+    3039,
+    3040,
+    3041,
+    3042,
+    3043,
+    3044,
+    3045,
+    3046,
+    3047,
+    3048,
+    3049,
+    3050,
+    3051,
+    4258,
+    4936,
+    4937,
+    5730,
+    7409,
+]
+
+
 def srs_check_query(dataset) -> Iterable[Tuple[str, str]]:
     srs_list = dataset.ExecuteSQL(
         """
@@ -33,36 +59,8 @@ def srs_check(srs_list: Iterable[Tuple[str, str]]):
     assert srs_list is not None
 
     errors = []
-    allowed_list = [
-        28992,
-        3034,
-        3035,
-        3038,
-        3039,
-        3040,
-        3041,
-        3042,
-        3043,
-        3044,
-        3045,
-        3046,
-        3047,
-        3048,
-        3049,
-        3050,
-        3051,
-        4258,
-        4936,
-        4937,
-        5730,
-        7409,
-    ]
 
-    for srs in srs_list:
-
-        srs_organisation = srs[0]
-        srs_id = srs[1]
-        srs_name = srs[2]
+    for srs_organisation, srs_id, srs_name in srs_list:
 
         if srs_organisation != "EPSG":
             errors.append(
@@ -74,7 +72,7 @@ def srs_check(srs_list: Iterable[Tuple[str, str]]):
                 )
             )
 
-        if srs_id not in allowed_list:
+        if srs_id not in ALLOWED_LIST:
             errors.append(
                 create_errormessage(
                     err_index="srs",
