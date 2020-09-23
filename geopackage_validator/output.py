@@ -22,10 +22,20 @@ def log_output(
                 "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S.%f"),
                 "duration_seconds": round(duration_seconds),
                 "validated_geopackage": filename,
-                "success": len(errors) == 0,
+                "success": is_success(errors),
                 "validations": validations,
                 "errors": errors,
             },
             indent=4,
         )
     )
+
+
+def is_success(result_list):
+
+    for result in result_list:
+        for key in result:
+            if key.startswith("RQ"):
+                return False
+
+    return True

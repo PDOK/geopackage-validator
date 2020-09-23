@@ -13,7 +13,7 @@ def test_rtree_invalidvalid_one_tables():
     errors = rtree_valid_check(rtree_index_list=["tablename"])
     assert len(errors) == 1
     assert (
-        errors[0]["R10"]["errors"][0]
+        errors[0]["RQ10"]["trace"][0]
         == "Invalid rtree index found for table: tablename"
     )
 

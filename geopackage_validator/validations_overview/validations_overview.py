@@ -13,59 +13,69 @@ VALIDATIONS = {
         "validation": "No unexpected GDAL errors must occur.",
     },
     "layername": {
-        "errortype": "R1",
+        "errortype": "RQ1",
         "errormessage_template": "Error layer: {layer}",
         "validation": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.",
     },
     "layerfeature": {
-        "errortype": "R2",
+        "errortype": "RQ2",
         "errormessage_template": "Error layer: {layer}",
         "validation": "Layers must have at least one feature.",
     },
     "geometry_type": {
-        "errortype": "R3",
+        "errortype": "RQ3",
         "errormessage_template": "Error layer: {layer}, found geometry: {found_geometry}",
         "validation": "Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON).",
     },
     "db_views": {
-        "errortype": "R4",
+        "errortype": "RQ4",
         "errormessage_template": "Found view: {view}",
         "validation": "The geopackage should have no views defined.",
     },
     "geometryvalid": {
-        "errortype": "R5",
+        "errortype": "RQ5",
         "errormessage_template": "Found invalid geometry in table: {table}, column {column}, reason: {reason}",
         "validation": "Geometry should be valid.",
     },
     "columnname": {
-        "errortype": "R6",
+        "errortype": "RQ6",
         "errormessage_template": "Error found in table: {table_name}, column: {column_name}",
         "validation": "Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.",
     },
     "feature_id": {
-        "errortype": "R7",
+        "errortype": "RQ7",
         "errormessage_template": "Error found in table: {table_name}",
         "validation": "Tables should have a feature id column with unique index.",
     },
     "table_definition": {
-        "errortype": "R8",
+        "errortype": "RQ8",
         "errormessage_template": "Difference: {difference}",
-        "validation": "Geopackage must conform to given JSON definitions",
+        "validation": "Geopackage must conform to given JSON definitions.",
     },
     "rtree_present": {
-        "errortype": "R9",
+        "errortype": "RQ9",
         "errormessage_template": "Table without index: {table_name}",
         "validation": "All geometry tables must have an rtree index",
     },
     "rtree_valid": {
-        "errortype": "R10",
+        "errortype": "RQ10",
         "errormessage_template": "Invalid rtree index found for table: {table_name}",
         "validation": "All geometry table rtree indexes must be valid",
     },
     "layerfeature_ogr": {
-        "errortype": "R11",
+        "errortype": "RQ11",
         "errormessage_template": "OGR index for feature count is not up to date for table: {layer}. Indexed feature count: {feature_count_ogr}, real feature count: {feature_count_real}",
         "validation": "OGR indexed feature counts must be up to date",
+    },
+    "geom_columnname": {
+        "errortype": "RC1",
+        "errormessage_template": "Found in table: {table_name}, column: {column_name}",
+        "validation": "It is recommended to name all GEOMETRY type columns 'geom'.",
+    },
+    "geom_equal_columnnames": {
+        "errortype": "RC2",
+        "errormessage_template": "Found column names are: {column_names}",
+        "validation": "It is recommended to give all GEOMETRY type columns the same name.",
     },
 }
 
@@ -98,9 +108,9 @@ def create_errormessage(err_index, **kwargs) -> str:
 
 
 def error_format(
-    err_index: str, errors: List[str]
+    err_index: str, trace: List[str]
 ) -> List[Dict[str, Dict[str, List[str]]]]:
-    if len(errors) == 0:
+    if len(trace) == 0:
         return []
     error = get_errortype(err_index)
-    return [{error["errortype"]: {"errorinfo": error, "errors": errors}}]
+    return [{error["errortype"]: {"errorinfo": error, "trace": trace}}]

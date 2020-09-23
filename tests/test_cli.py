@@ -8,7 +8,7 @@ def test_show_validations():
     result = runner.invoke(cli, ["show-validations"])
     assert result.exit_code == 0
     assert (
-        'R1": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores."'
+        'RQ1": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores."'
         in result.output
     )
 
@@ -17,7 +17,7 @@ def test_generate_definitions_no_gpkg():
     runner = CliRunner()
     result = runner.invoke(cli, ["generate-definitions"])
     assert result.exit_code == 0
-    assert "Give --gpkg location or s3 location" in result.output
+    assert "Give --gpkg-path or s3 location" in result.output
 
 
 def test_generate_definitions_error_s3():
@@ -43,7 +43,7 @@ def test_validate_no_gpkg():
     runner = CliRunner()
     result = runner.invoke(cli, ["validate"])
     assert result.exit_code == 0
-    assert "Give --gpkg location or s3 location" in result.output
+    assert "Give --gpkg-path or s3 location" in result.output
 
 
 def test_validate_error_s3():
@@ -60,5 +60,4 @@ def test_validate_with_gpkg():
     )
     assert result.exit_code == 0
     assert '"geopackage_validator_version": ' in result.output
-    assert '"errors": []' in result.output
     assert '"success": true' in result.output
