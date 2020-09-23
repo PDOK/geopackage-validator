@@ -76,6 +76,7 @@ VALIDATIONS = {
         "errortype": "RQ13",
         "errormessage_template": "Found srs are: {srs}",
         "validation": "It is required to give all GEOMETRY features the same default spatial reference system.",
+    },
     "geom_columnname": {
         "errortype": "RC1",
         "errormessage_template": "Found in table: {table_name}, column: {column_name}",
