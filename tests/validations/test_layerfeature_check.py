@@ -13,7 +13,7 @@ def test_zerofeatures():
 def test_onefeature():
     errors = layerfeature_check_featurecount([("layer1", 0, 0), ("layer2", 1, 1)])
     assert len(errors) == 1
-    assert errors[0]["R2"]["errors"][0] == "Error layer: layer1"
+    assert errors[0]["RQ2"]["trace"][0] == "Error layer: layer1"
 
 
 def test_featurecount_index_not_uptodate():
@@ -25,7 +25,7 @@ def test_featurecount_index_not_uptodate_ogr_error():
     errors = layerfeature_check_ogr_index([("layer1", 1, 1), ("layer2", 1, 0)])
     assert len(errors) == 1
     assert (
-        errors[0]["R11"]["errors"][0]
+        errors[0]["RQ11"]["trace"][0]
         == "OGR index for feature count is not up to date for table: layer2. Indexed feature count: 0, real feature count: 1"
     )
 

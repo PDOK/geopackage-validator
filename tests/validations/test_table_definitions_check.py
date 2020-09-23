@@ -35,15 +35,7 @@ def test_table_definitions_check_incorrect_geometry():
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
-    assert diff[0]["R8"] == {
-        "errorinfo": {
-            "errortype": "R8",
-            "validation": "Geopackage must conform to given JSON definitions",
-        },
-        "errors": [
-            "Difference: Value of root['test_allcorrect']['columns'][2]['geometry_type_name'] changed from \"POLYGON\" to \"POINT\"."
-        ],
-    }
+    assert "RQ8" in diff[0]
 
 
 def test_table_definitions_check_incorrect_projection():
@@ -92,15 +84,7 @@ def test_table_definitions_check_incorrect_column_name():
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
-    assert diff[0]["R8"] == {
-        "errorinfo": {
-            "errortype": "R8",
-            "validation": "Geopackage must conform to given JSON definitions",
-        },
-        "errors": [
-            "Difference: Value of root['test_allcorrect']['columns'][1]['column_name'] changed from \"geometry\" to \"geom\"."
-        ],
-    }
+    assert "RQ8" in diff[0]
 
 
 def test_table_definitions_check_table_changed():
@@ -116,13 +100,4 @@ def test_table_definitions_check_table_changed():
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
-    assert diff[0]["R8"] == {
-        "errorinfo": {
-            "errortype": "R8",
-            "validation": "Geopackage must conform to given JSON definitions",
-        },
-        "errors": [
-            "Difference: Item root['test_different_table'] added to dictionary.",
-            "Difference: Item root['test_allcorrect'] removed from dictionary.",
-        ],
-    }
+    assert "RQ8" in diff[0]

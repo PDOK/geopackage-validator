@@ -16,6 +16,7 @@ node_modules/
 doc/build/
 ansible/*.retry
 .venv
+build/
 
 # Unit test / coverage reports
 .coverage

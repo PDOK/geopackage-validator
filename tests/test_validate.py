@@ -3,16 +3,16 @@ from geopackage_validator.validate import determine_validations_to_use
 
 def test_determine_validations_to_use_param():
     validations = determine_validations_to_use(
-        validations="R2,R3", validations_path=None
+        validations="RQ2,RQ3", validations_path=None
     )
-    assert validations == ["R2", "R3"]
+    assert validations == ["RQ2", "RQ3"]
 
 
 def test_determine_validations_to_use_param_spaces():
     validations = determine_validations_to_use(
-        validations="R10, R3", validations_path=None
+        validations="RQ10, RQ3", validations_path=None
     )
-    assert validations == ["R10", "R3"]
+    assert validations == ["RQ10", "RQ3"]
 
 
 def test_determine_validations_to_use_none():
@@ -31,6 +31,8 @@ def test_determine_validations_to_use_none():
         "R11",
         "R12",
         "R13",
+        "RC1",
+        "RC2",
     ]
 
 
@@ -39,12 +41,12 @@ def test_determine_validations_to_use_file():
         validations=None,
         validations_path="tests/data/validationsets/example-validation-set.json",
     )
-    assert validations == ["R1", "R2", "R3"]
+    assert validations == ["RQ1", "RQ2", "RQ3"]
 
 
 def test_determine_validations_to_use_file_and_param():
     validations = determine_validations_to_use(
-        validations="R7,R9",
+        validations="RQ7,RQ9",
         validations_path="tests/data/validationsets/example-validation-set.json",
     )
-    assert validations == ["R1", "R2", "R3", "R7", "R9"]
+    assert validations == ["RQ1", "RQ2", "RQ3", "RQ7", "RQ9"]
