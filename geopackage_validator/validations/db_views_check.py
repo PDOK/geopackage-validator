@@ -8,7 +8,7 @@ from geopackage_validator.validations_overview.validations_overview import (
 
 def db_views_check_query(dataset) -> Iterable[str]:
     views = dataset.ExecuteSQL(
-        'SELECT name FROM "main".sqlite_master where type = "view";'
+        "SELECT name FROM `main`.sqlite_master where type = 'view';"
     )
 
     for view in views:

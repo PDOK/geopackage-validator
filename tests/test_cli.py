@@ -36,7 +36,7 @@ def test_generate_definitions_with_gpkg():
     )
     assert result.exit_code == 0
     assert '"test_allcorrect": {' in result.output
-    assert '"projection": 4326' in result.output
+    assert '"projection": 28992' in result.output
 
 
 def test_validate_no_gpkg():

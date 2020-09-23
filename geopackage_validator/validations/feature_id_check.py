@@ -15,7 +15,7 @@ def feature_id_check_query(dataset) -> Iterable[Tuple[str, int]]:
 
     for table in tablelist:
         validations = dataset.ExecuteSQL(
-            "SELECT \"{table_name}\" as table_name, count(*) as pk_present FROM pragma_table_info('{table_name}') where pk > 0".format(
+            "SELECT '{table_name}' as table_name, count(*) as pk_present FROM pragma_table_info('{table_name}') where pk > 0".format(
                 table_name=table
             )
         )
