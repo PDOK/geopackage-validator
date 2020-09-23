@@ -60,6 +60,4 @@ def test_validate_with_gpkg():
     )
     assert result.exit_code == 0
     assert '"geopackage_validator_version": ' in result.output
-    # assert '"errors": []' in result.output
-    # todo: this test should test if there are no failed requirements ->
     assert '"success": true' in result.output

@@ -105,6 +105,4 @@ def test_table_definitions_check_table_changed():
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
-    assert (
-        "RQ8" in diff[0]
-    )  # todo: Overwegen of we dit zo willen testen -> data structuur van de foutmelidng veranderen -> William heeft hier een voorstel voor
+    assert "RQ8" in diff[0]

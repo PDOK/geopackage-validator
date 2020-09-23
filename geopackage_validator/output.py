@@ -33,8 +33,6 @@ def log_output(
 
 def is_success(result_list):
 
-    # todo: refactor this -> proposal simpler output format -> change field errortype to result_code -> add
-    #  field error_type which contains requirement or recommendation -> use that field to discriminate between RQ and RC
     for result in result_list:
         for key in result:
             if key.startswith("RQ"):
