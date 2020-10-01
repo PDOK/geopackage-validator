@@ -1,6 +1,8 @@
 {
     "projection": 28992,
     "test_allcorrect": {
+        "table_name": "test_allcorrect",
+        "geometry_column": "geometry",
         "columns": [
             {
                 "column_name": "fid",
@@ -12,9 +14,8 @@
             },
             {
                 "column_name": "geometry",
-                "geometry_type_name": "POLYGON"
+                "data_type": "POLYGON"
             }
-        ],
-        "table_name": "test_allcorrect"
+        ]
     }
 }

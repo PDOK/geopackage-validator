@@ -26,7 +26,8 @@ def generate_table_definitions(
     )
 
     projection = None
-    tablelist = {}
+    column_name = None
+    table_list = {}
     for table in geometry_tables:
         columns = dataset.ExecuteSQL(
             "SELECT column_name, geometry_type_name, srs_id FROM gpkg_geometry_columns where table_name = '{table_name}';".format(
@@ -37,27 +38,32 @@ def generate_table_definitions(
         if columns[0][2] and not projection:
             projection = columns[0][2]
 
+        if columns[0][0] and not column_name:
+            column_name = columns[0][0]
+
         info = dataset.ExecuteSQL(
             "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table[0])
         )
 
-        columnlist = [Column(column_name=item[1], data_type=item[2]) for item in info]
-        columnlist.extend(
-            [
-                Column(column_name=column[0], geometry_type_name=column[1])
-                for column in columns
-            ]
+        column_list = [Column(column_name=item[1], data_type=item[2]) for item in info]
+        column_list.extend(
+            [Column(column_name=column[0], data_type=column[1]) for column in columns]
         )
 
-        tablelist[table[0]] = {"table_name": table[0], "columns": columnlist}
+        table_list[table[0]] = {
+            "table_name": table[0],
+            "geometry_column": column_name,
+            "columns": column_list,
+        }
         dataset.ReleaseResultSet(columns)
         dataset.ReleaseResultSet(info)
 
     dataset.ReleaseResultSet(geometry_tables)
 
-    tablelist["projection"] = projection
+    result = {"projection": projection}
+    result.update(table_list)
 
-    return tablelist
+    return result
 
 
 def generate_definitions_for_path(gpkg_path: str) -> Dict[str, Dict[str, List[Column]]]:

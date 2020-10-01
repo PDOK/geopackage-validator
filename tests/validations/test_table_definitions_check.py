@@ -42,12 +42,13 @@ def test_table_definitions_check_incorrect_projection():
     current_definitions = {
         "projection": 4326,
         "test_allcorrect": {
+            "table_name": "test_allcorrect",
+            "geometry_column": "geometry",
             "columns": [
                 {"column_name": "fid", "data_type": "INTEGER"},
                 {"column_name": "geometry", "data_type": "POLYGON"},
-                {"column_name": "geometry", "geometry_type_name": "POLYGON"},
+                {"column_name": "geometry", "data_type": "POLYGON"},
             ],
-            "table_name": "test_allcorrect",
         },
     }
 

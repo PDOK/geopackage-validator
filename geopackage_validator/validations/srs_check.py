@@ -1,35 +1,10 @@
 from typing import Iterable, Tuple
 
+from geopackage_validator.constants import ALLOWED_LIST
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
     error_format,
 )
-
-
-ALLOWED_LIST = [
-    28992,
-    3034,
-    3035,
-    3038,
-    3039,
-    3040,
-    3041,
-    3042,
-    3043,
-    3044,
-    3045,
-    3046,
-    3047,
-    3048,
-    3049,
-    3050,
-    3051,
-    4258,
-    4936,
-    4937,
-    5730,
-    7409,
-]
 
 
 def srs_check_query(dataset) -> Iterable[Tuple[str, str]]:
