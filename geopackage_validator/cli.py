@@ -224,7 +224,7 @@ def geopackage_validator_command_generate_table_definitions(
                 s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
             ) as localfilename:
                 definitionlist = generate_definitions_for_path(localfilename)
-        print(json.dumps(definitionlist, indent=4, sort_keys=True))
+        print(json.dumps(definitionlist, indent=4))
     except:
         logger.exception("Error while generating table definitions")
 
