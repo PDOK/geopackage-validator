@@ -18,18 +18,9 @@ The current checks are (see also the 'show-validations' command):
 |       R11       | OGR indexed feature counts must be up to date                |
 
 ## Installation
-
-Running with Docker is the recommended way of running this package. That way installation of all the dependencies is not
-necessary, as the Docker image is self contained.
-
-The geopackage-validator can be installed with:
-
-```bash
-pip install geopackage-validator
-```
+The geopackage validator is still in its alpha state. Until the package is released on pypi installing with pipenv is the recommended way of running this package, or alternatively by running with Docker. 
 
 ### GDAL
-
 This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) and has a runtime dependency on an installed
 [GDAL](https://gdal.org/) (when not running through Docker, which is the recommended way of running this package.)
 
