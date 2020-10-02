@@ -47,7 +47,6 @@ def test_table_definitions_check_incorrect_projection():
             "columns": [
                 {"column_name": "fid", "data_type": "INTEGER"},
                 {"column_name": "geometry", "data_type": "POLYGON"},
-                {"column_name": "geometry", "data_type": "POLYGON"},
             ],
         },
     }

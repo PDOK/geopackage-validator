@@ -46,9 +46,6 @@ def generate_table_definitions(
         )
 
         column_list = [Column(column_name=item[1], data_type=item[2]) for item in info]
-        column_list.extend(
-            [Column(column_name=column[0], data_type=column[1]) for column in columns]
-        )
 
         table_list[table[0]] = {
             "table_name": table[0],

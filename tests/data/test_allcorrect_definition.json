@@ -11,10 +11,6 @@
             {
                 "column_name": "geometry",
                 "data_type": "POLYGON"
-            },
-            {
-                "column_name": "geometry",
-                "data_type": "POLYGON"
             }
         ]
     }
