@@ -1,6 +1,6 @@
 from typing import Iterable, Tuple
 
-from geopackage_validator.constants import ALLOWED_LIST
+from geopackage_validator.constants import ALLOWED_PROJECTIONS_LIST
 from geopackage_validator.validations_overview.validations_overview import (
     create_errormessage,
     error_format,
@@ -47,7 +47,7 @@ def srs_check(srs_list: Iterable[Tuple[str, str]]):
                 )
             )
 
-        if srs_id not in ALLOWED_LIST:
+        if srs_id not in ALLOWED_PROJECTIONS_LIST:
             errors.append(
                 create_errormessage(
                     err_index="srs",
