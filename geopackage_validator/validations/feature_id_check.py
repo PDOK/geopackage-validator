@@ -1,8 +1,8 @@
 from typing import Iterable, Tuple
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -27,12 +27,12 @@ def feature_id_check_query(dataset) -> Iterable[Tuple[str, int]]:
 
 def feature_id_check(feature_id_list: Iterable[Tuple[str, int]]):
     assert feature_id_list is not None
-    errors = []
+    results = []
 
     for table in feature_id_list:
         if table[1] != 1:
-            errors.append(
-                create_errormessage(err_index="feature_id", table_name=table[0])
+            results.append(
+                create_validation_message(err_index="feature_id", table_name=table[0])
             )
 
-    return error_format("feature_id", errors)
+    return result_format("feature_id", results)

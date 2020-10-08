@@ -19,10 +19,11 @@ def test_valid_geometries():
 
 
 def test_invalid_geometry():
-    errors = geometry_type_check([("layer2", "WRONG_GEOMETRY")])
-    assert len(errors) == 1
+    results = geometry_type_check([("layer2", "WRONG_GEOMETRY")])
+    assert len(results) == 1
+    assert results[0]["validation_code"] == "RQ3"
     assert (
-        errors[0]["RQ3"]["trace"][0]
+        results[0]["locations"][0]
         == "Error layer: layer2, found geometry: WRONG_GEOMETRY"
     )
 

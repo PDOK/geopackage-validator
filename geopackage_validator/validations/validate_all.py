@@ -55,8 +55,8 @@ from geopackage_validator.validations.table_definitions_check import (
     table_definitions_check,
 )
 from geopackage_validator.validations_overview.validations_overview import (
-    error_format,
-    get_errortype,
+    result_format,
+    get_validation_type,
 )
 
 
@@ -64,79 +64,82 @@ def validate_all(
     filename: str,
     table_definitions_path: str,
     validations: List[str],
-    errors: List[Dict[str, Dict[str, List[str]]]],
+    results: List[Dict[str, List[str]]],
 ):
     dataset = open_dataset(filename)
 
     try:
 
-        # Error checks
-        if get_errortype("layername")["errortype"] in validations:
+        # Validation checks
+        if get_validation_type("layername")["validation_code"] in validations:
             layernames = layername_check_query(dataset)
-            errors.extend(layername_check(layernames))
+            results.extend(layername_check(layernames))
 
-        if get_errortype("layerfeature")["errortype"] in validations:
+        if get_validation_type("layerfeature")["validation_code"] in validations:
             layerfeature_count = layerfeature_check_query(dataset)
-            errors.extend(layerfeature_check_featurecount(layerfeature_count))
+            results.extend(layerfeature_check_featurecount(layerfeature_count))
 
-        if get_errortype("layerfeature_ogr")["errortype"] in validations:
+        if get_validation_type("layerfeature_ogr")["validation_code"] in validations:
             layerfeature_count = layerfeature_check_query(dataset)
-            errors.extend(layerfeature_check_ogr_index(layerfeature_count))
+            results.extend(layerfeature_check_ogr_index(layerfeature_count))
 
-        if get_errortype("geometry_type")["errortype"] in validations:
+        if get_validation_type("geometry_type")["validation_code"] in validations:
             geometries = geometry_type_check_query(dataset)
-            errors.extend(geometry_type_check(geometries))
+            results.extend(geometry_type_check(geometries))
 
-        if get_errortype("db_views")["errortype"] in validations:
+        if get_validation_type("db_views")["validation_code"] in validations:
             views = db_views_check_query(dataset)
-            errors.extend(db_views_check(views))
+            results.extend(db_views_check(views))
 
-        if get_errortype("geometryvalid")["errortype"] in validations:
+        if get_validation_type("geometryvalid")["validation_code"] in validations:
             geometries = geometry_valid_check_query(dataset)
-            errors.extend(geometry_valid_check(geometries))
+            results.extend(geometry_valid_check(geometries))
 
-        if get_errortype("columnname")["errortype"] in validations:
+        if get_validation_type("columnname")["validation_code"] in validations:
             columns = columnname_check_query(dataset)
-            errors.extend(columnname_check(columns))
+            results.extend(columnname_check(columns))
 
-        if get_errortype("feature_id")["errortype"] in validations:
+        if get_validation_type("feature_id")["validation_code"] in validations:
             columns = feature_id_check_query(dataset)
-            errors.extend(feature_id_check(columns))
+            results.extend(feature_id_check(columns))
 
-        if get_errortype("rtree_present")["errortype"] in validations:
+        if get_validation_type("rtree_present")["validation_code"] in validations:
             indexes = rtree_present_check_query(dataset)
-            errors.extend(rtree_present_check(indexes))
+            results.extend(rtree_present_check(indexes))
 
-        if get_errortype("rtree_valid")["errortype"] in validations:
+        if get_validation_type("rtree_valid")["validation_code"] in validations:
             indexes = rtree_valid_check_query(dataset)
-            errors.extend(rtree_valid_check(indexes))
+            results.extend(rtree_valid_check(indexes))
 
-        if get_errortype("rtree_valid")["errortype"] in validations:
+        if get_validation_type("rtree_valid")["validation_code"] in validations:
             if table_definitions_path is not None:
                 table_definitions_current = generate_table_definitions(dataset)
-                errors.extend(
+                results.extend(
                     table_definitions_check(
                         table_definitions_path, table_definitions_current
                     )
                 )
 
-        if get_errortype("srs")["errortype"] in validations:
+        if get_validation_type("srs")["validation_code"] in validations:
             srs = srs_check_query(dataset)
-            errors.extend(srs_check(srs))
+            results.extend(srs_check(srs))
 
-        if get_errortype("srs_equal")["errortype"] in validations:
+        if get_validation_type("srs_equal")["validation_code"] in validations:
             srs = srs_equal_check_query(dataset)
-            errors.extend(srs_equal_check(srs))
+            results.extend(srs_equal_check(srs))
 
         # Warning checks
-        if get_errortype("geom_columnname")["errortype"] in validations:
+        if get_validation_type("geom_columnname")["validation_code"] in validations:
             columns = geom_columnname_check_query(dataset)
-            errors.extend(geom_columnname_check(columns))
+            results.extend(geom_columnname_check(columns))
 
-        if get_errortype("geom_equal_columnnames")["errortype"] in validations:
+        if (
+            get_validation_type("geom_equal_columnnames")["validation_code"]
+            in validations
+        ):
             columns = geom_columnname_check_query(dataset)
-            errors.extend(geom_equal_columnname_check(columns))
+            results.extend(geom_equal_columnname_check(columns))
 
     except:
         # todo: if there is an error it should be reported -> fix this in new ticket
-        return error_format("system", [str(sys.exc_info()[0])])
+        return result_format("system", [str(sys.exc_info()[0])])

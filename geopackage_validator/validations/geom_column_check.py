@@ -1,8 +1,8 @@
 from typing import Iterable, Tuple
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -20,28 +20,28 @@ def geom_columnname_check_query(dataset) -> Iterable[Tuple[str, str]]:
 def geom_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
     assert column_info_list is not None
 
-    errors = []
+    results = []
     for column_info in column_info_list:
 
         table_name = column_info[0]
         column_name = column_info[1]
 
         if column_name != "geom":
-            errors.append(
-                create_errormessage(
+            results.append(
+                create_validation_message(
                     err_index="geom_columnname",
                     column_name=column_name,
                     table_name=table_name,
                 )
             )
 
-    return error_format("geom_columnname", errors)
+    return result_format("geom_columnname", results)
 
 
 def geom_equal_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
     assert column_info_list is not None
 
-    errors = []
+    results = []
     column_name_list = []
 
     for column_info in column_info_list:
@@ -52,11 +52,11 @@ def geom_equal_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
     column_names = set(column_name_list)
 
     if len(column_names) > 1:
-        errors.append(
-            create_errormessage(
+        results.append(
+            create_validation_message(
                 err_index="geom_equal_columnnames",
                 column_names=", ".join(column_names),
             )
         )
 
-    return error_format("geom_equal_columnnames", errors)
+    return result_format("geom_equal_columnnames", results)

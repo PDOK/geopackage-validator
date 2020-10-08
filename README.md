@@ -1,3 +1,19 @@
+##### Table of Contents
+* [geopackage-validator](#geopackage-validator)
+  * [Installation](#installation)
+    * [GDAL](#gdal)
+  * [Usage](#usage)
+    * [Usage through Docker (pull from Docker Hub)](#usage-through-docker-pull-from-docker-hub)
+    * [Usage through Docker (local build)](#usage-through-docker-local-build)
+  * [Commands](#commands)
+    * [Validate](#validate)
+    * [Show validations](#show-validations)
+    * [Generate table definitions](#generate-table-definitions)
+  * [Performance](#performance)
+  * [Development installation](#development-installation)
+  * [Releasing](#releasing)
+  * [Install pyenv](#install-pyenv)
+
 # geopackage-validator
 
 The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
@@ -5,17 +21,21 @@ The current checks are (see also the 'show-validations' command):
 
 | Validation code | Description                                                  |
 | :-------------: | ------------------------------------------------------------ |
-|       R1        | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
-|       R2        | Layers must have at least one feature.                       |
-|       R3        | Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
-|       R4        | The geopackage should have no views defined.                 |
-|       R5        | Geometry should be valid.                                    |
-|       R6        | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
-|       R7        | Tables should have a feature id column with unique index.    |
-|       R8        | Geopackage must conform to given JSON definitions            |
-|       R9        | All geometry tables must have an rtree index                 |
-|       R10       | All geometry table rtree indexes must be valid               |
-|       R11       | OGR indexed feature counts must be up to date                |
+|       RQ1       | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
+|       RQ2       | Layers must have at least one feature.                       |
+|       RQ3       | Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
+|       RQ4       | The geopackage should have no views defined.                 |
+|       RQ5       | Geometry should be valid.                                    |
+|       RQ6       | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
+|       RQ7       | Tables should have a feature id column with unique index.    |
+|       RQ8       | Geopackage must conform to given JSON definitions.           |
+|       RQ9       | All geometry tables must have an rtree index.                |
+|       RQ10      | All geometry table rtree indexes must be valid.              |
+|       RQ11      | OGR indexed feature counts must be up to date.               |
+|       RQ12      | Only the following ESPG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409. |
+|       RQ13      | It is required to give all GEOMETRY features the same default spatial reference system. |
+|       RC1       | It is recommended to name all GEOMETRY type columns 'geom'.  |
+|       RC2       | It is recommended to give all GEOMETRY type columns the same name. |
 
 ## Installation
 The geopackage validator is still in its alpha state. Until the package is released on pypi installing with pipenv is the recommended way of running this package, or alternatively by running with Docker. 
@@ -57,6 +77,8 @@ Run the Docker container, mounting the current directory to /gpkg (adjust where 
 ```bash
 docker run -v ${PWD}:/gpkg --rm geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
+
+## Commands
 
 ### Validate
 

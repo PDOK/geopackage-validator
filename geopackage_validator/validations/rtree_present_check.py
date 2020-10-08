@@ -1,8 +1,8 @@
 from typing import Iterable
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -31,9 +31,11 @@ def rtree_present_check_query(dataset) -> Iterable[str]:
 def rtree_present_check(rtree_present_check_list: Iterable[str]):
     assert rtree_present_check_list is not None
 
-    errors = []
+    results = []
 
     for table in rtree_present_check_list:
-        errors.append(create_errormessage(err_index="rtree_present", table_name=table))
+        results.append(
+            create_validation_message(err_index="rtree_present", table_name=table)
+        )
 
-    return error_format("rtree_present", errors)
+    return result_format("rtree_present", results)

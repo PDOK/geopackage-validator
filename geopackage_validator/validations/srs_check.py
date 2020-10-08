@@ -2,8 +2,8 @@ from typing import Iterable, Tuple
 
 from geopackage_validator.constants import ALLOWED_PROJECTIONS_LIST
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -33,13 +33,13 @@ def srs_equal_check_query(dataset) -> Iterable[Tuple[str, str]]:
 def srs_check(srs_list: Iterable[Tuple[str, str]]):
     assert srs_list is not None
 
-    errors = []
+    results = []
 
     for srs_organisation, srs_id, srs_name in srs_list:
 
         if srs_organisation != "EPSG":
-            errors.append(
-                create_errormessage(
+            results.append(
+                create_validation_message(
                     err_index="srs",
                     srs_organisation=srs_organisation,
                     srs_id=srs_id,
@@ -48,8 +48,8 @@ def srs_check(srs_list: Iterable[Tuple[str, str]]):
             )
 
         if srs_id not in ALLOWED_PROJECTIONS_LIST:
-            errors.append(
-                create_errormessage(
+            results.append(
+                create_validation_message(
                     err_index="srs",
                     srs_organisation=srs_organisation,
                     srs_id=srs_id,
@@ -57,13 +57,13 @@ def srs_check(srs_list: Iterable[Tuple[str, str]]):
                 )
             )
 
-    return error_format("srs", errors)
+    return result_format("srs", results)
 
 
 def srs_equal_check(srs_list: Iterable[Tuple[str, str]]):
     assert srs_list is not None
 
-    errors = []
+    results = []
     srs_id_list = []
 
     for srs in srs_list:
@@ -73,8 +73,10 @@ def srs_equal_check(srs_list: Iterable[Tuple[str, str]]):
     srs_id_list = set(srs_id_list)
 
     if len(srs_id_list) > 1:
-        errors.append(
-            create_errormessage(err_index="srs_equal", srs=", ".join(srs_id_list),)
+        results.append(
+            create_validation_message(
+                err_index="srs_equal", srs=", ".join(srs_id_list),
+            )
         )
 
-    return error_format("srs_equal", errors)
+    return result_format("srs_equal", results)

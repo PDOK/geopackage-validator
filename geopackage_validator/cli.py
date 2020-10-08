@@ -11,7 +11,7 @@ from geopackage_validator.minio.minio_context import minio_resource
 from geopackage_validator.output import log_output
 from geopackage_validator.validations_overview.validations_overview import (
     get_validations_list,
-    error_format,
+    result_format,
 )
 
 logger = logging.getLogger(__name__)
@@ -155,7 +155,7 @@ def geopackage_validator_command(
                     validations,
                 )
     except:
-        log_output(error_format("system", trace=[str(sys.exc_info()[1])]))
+        log_output(result_format("system", trace=[str(sys.exc_info()[1])]))
 
 
 @cli.command(

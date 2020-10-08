@@ -5,8 +5,8 @@ from deepdiff import DeepDiff
 
 from geopackage_validator.generate import Column
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -20,13 +20,15 @@ def table_definitions_check(
     with open(definitions_reference_path) as json_file:
         definitions_reference = json.load(json_file)
 
-    errors = []
+    results = []
 
     ddiff = DeepDiff(definitions_reference, definitions_current).pretty()
 
     for difference in ddiff.splitlines():
-        errors.append(
-            create_errormessage(err_index="table_definition", difference=difference,)
+        results.append(
+            create_validation_message(
+                err_index="table_definition", difference=difference,
+            )
         )
 
-    return error_format("table_definition", errors)
+    return result_format("table_definition", results)

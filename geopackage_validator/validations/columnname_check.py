@@ -2,8 +2,8 @@ import re
 from typing import Iterable, Tuple
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -25,17 +25,17 @@ def columnname_check_query(dataset) -> Iterable[Tuple[str, str]]:
 def columnname_check(columnname_list: Iterable[Tuple[str, str]]):
     assert columnname_list is not None
 
-    errors = []
+    results = []
 
     for columnname in columnname_list:
         match_valid = re.fullmatch(r"^[a-z][a-z0-9_]*$", columnname[1])
         if match_valid is None:
-            errors.append(
-                create_errormessage(
+            results.append(
+                create_validation_message(
                     err_index="columnname",
                     column_name=columnname[1],
                     table_name=columnname[0],
                 )
             )
 
-    return error_format("columnname", errors)
+    return result_format("columnname", results)

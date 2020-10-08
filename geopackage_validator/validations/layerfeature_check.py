@@ -1,8 +1,8 @@
 from typing import Iterable, Tuple
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -25,15 +25,15 @@ def layerfeature_check_featurecount(
 ):
     assert layerfeaturecount_list is not None
 
-    errors = []
+    results = []
 
     for layername, feature_count_real, feature_count_ogr in layerfeaturecount_list:
         if feature_count_real == 0:
-            errors.append(
-                create_errormessage(err_index="layerfeature", layer=layername)
+            results.append(
+                create_validation_message(err_index="layerfeature", layer=layername)
             )
 
-    return error_format("layerfeature", errors)
+    return result_format("layerfeature", results)
 
 
 def layerfeature_check_ogr_index(
@@ -41,12 +41,12 @@ def layerfeature_check_ogr_index(
 ):
     assert layerfeaturecount_list is not None
 
-    errors = []
+    results = []
 
     for layername, feature_count_real, feature_count_ogr in layerfeaturecount_list:
         if feature_count_real != feature_count_ogr:
-            errors.append(
-                create_errormessage(
+            results.append(
+                create_validation_message(
                     err_index="layerfeature_ogr",
                     layer=layername,
                     feature_count_real=feature_count_real,
@@ -54,4 +54,4 @@ def layerfeature_check_ogr_index(
                 )
             )
 
-    return error_format("layerfeature_ogr", errors)
+    return result_format("layerfeature_ogr", results)
