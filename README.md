@@ -38,7 +38,11 @@ The current checks are (see also the 'show-validations' command):
 |       RC2       | It is recommended to give all GEOMETRY type columns the same name. |
 
 ## Installation
-The geopackage validator is still in its alpha state. Until the package is released on pypi installing with pipenv is the recommended way of running this package, or alternatively by running with Docker. 
+We are installed with:
+
+```bash
+pip3 install geopackage-validator
+```
 
 ### GDAL
 This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) and has a runtime dependency on an installed
