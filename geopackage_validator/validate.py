@@ -36,12 +36,12 @@ def determine_validations_to_use(
 
 
 def get_all_validations():
-    used_validations = list(
-        filter(
-            lambda x: x.startswith("R"),
-            [v["validation_code"] for k, v in VALIDATIONS.items()],
-        )
-    )
+    used_validations = [
+        v["validation_code"]
+        for k, v in VALIDATIONS.items()
+        if v["validation_code"].startswith("R")
+    ]
+
     return used_validations
 
 
