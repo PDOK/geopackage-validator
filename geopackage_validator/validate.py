@@ -11,8 +11,7 @@ from geopackage_validator.gdal.prerequisites import (
 from geopackage_validator.output import log_output
 from geopackage_validator.validations.validate_all import validate_all
 from geopackage_validator.validations_overview.validations_overview import (
-    get_validations_list,
-    error_format,
+    result_format,
     VALIDATIONS,
 )
 
@@ -37,12 +36,12 @@ def determine_validations_to_use(
 
 
 def get_all_validations():
-    used_validations = list(
-        filter(
-            lambda x: x.startswith("R"),
-            [v["errortype"] for k, v in VALIDATIONS.items()],
-        )
-    )
+    used_validations = [
+        v["validation_code"]
+        for k, v in VALIDATIONS.items()
+        if v["validation_code"].startswith("R")
+    ]
+
     return used_validations
 
 
@@ -73,24 +72,24 @@ def validate(
     # Explicit import here
     from geopackage_validator.gdal.init import init_gdal
 
-    errors = []
+    results = []
 
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
-        errors.append(error_format("gdal", [error.replace("\n", " ")]))
+        results.append(result_format("gdal", [error.replace("\n", " ")]))
 
     init_gdal(gdal_error_handler)
 
-    used_validations = determine_validations_to_use(validations_path, validations)
+    validations_executed = determine_validations_to_use(validations_path, validations)
 
-    validate_all(gpkg_path, table_definitions_path, used_validations, errors)
+    validate_all(gpkg_path, table_definitions_path, validations_executed, results)
 
     duration_seconds = time.monotonic() - duration_start
 
     log_output(
-        errors,
-        validations=get_validations_list(used_validations),
+        results=results,
         filename=filename,
+        validations_executed=validations_executed,
         start_time=start_time,
         duration_seconds=duration_seconds,
     )

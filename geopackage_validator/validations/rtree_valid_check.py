@@ -1,8 +1,8 @@
 from typing import Iterable
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -38,9 +38,11 @@ def rtree_valid_check_query(dataset) -> Iterable[str]:
 def rtree_valid_check(rtree_index_list: Iterable[str]):
     assert rtree_index_list is not None
 
-    errors = []
+    results = []
 
     for table in rtree_index_list:
-        errors.append(create_errormessage(err_index="rtree_valid", table_name=table))
+        results.append(
+            create_validation_message(err_index="rtree_valid", table_name=table)
+        )
 
-    return error_format("rtree_valid", errors)
+    return result_format("rtree_valid", results)

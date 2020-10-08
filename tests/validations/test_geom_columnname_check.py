@@ -33,7 +33,8 @@ def test_geom_name_failure():
     )
 
     assert len(result) == 1
-    assert len(result[0]["RC1"]["trace"]) == 2
+    assert result[0]["validation_code"] == "RC1"
+    assert len(result[0]["locations"]) == 2
 
 
 def test_equal_name_success():

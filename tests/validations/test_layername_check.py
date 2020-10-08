@@ -12,9 +12,10 @@ def test_lowercaselayername_success():
 
 
 def test_lowercaselayername_start_number():
-    errors = layername_check(layername_list=["1layer"])
-    assert len(errors) == 1
-    assert errors[0]["RQ1"]["trace"][0] == "Error layer: 1layer"
+    results = layername_check(layername_list=["1layer"])
+    assert len(results) == 1
+    assert results[0]["validation_code"] == "RQ1"
+    assert results[0]["locations"][0] == "Error layer: 1layer"
 
 
 def test_lowercaselayername_with_capitals():

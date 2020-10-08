@@ -10,10 +10,11 @@ def test_valid_geometries():
 
 
 def test_invalid_geometry():
-    errors = geometry_valid_check([("Geometry invalid", "table", "column")])
-    assert len(errors) == 1
+    results = geometry_valid_check([("Geometry invalid", "table", "column")])
+    assert len(results) == 1
+    assert results[0]["validation_code"] == "RQ5"
     assert (
-        errors[0]["RQ5"]["trace"][0]
+        results[0]["locations"][0]
         == "Found invalid geometry in table: table, column column, reason: Geometry invalid"
     )
 

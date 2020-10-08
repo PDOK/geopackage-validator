@@ -2,8 +2,8 @@ import re
 from typing import Iterable
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -16,11 +16,13 @@ def layername_check_query(dataset) -> Iterable[str]:
 def layername_check(layername_list: Iterable[str]):
     assert layername_list is not None
 
-    errors = []
+    results = []
 
     for layername in layername_list:
         match_valid = re.fullmatch(r"^[a-z][a-z0-9_]*$", layername)
         if match_valid is None:
-            errors.append(create_errormessage(err_index="layername", layer=layername))
+            results.append(
+                create_validation_message(err_index="layername", layer=layername)
+            )
 
-    return error_format("layername", errors)
+    return result_format("layername", results)

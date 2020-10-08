@@ -35,7 +35,7 @@ def test_table_definitions_check_incorrect_geometry():
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
-    assert "RQ8" in diff[0]
+    assert "RQ8" in diff[0]["validation_code"]
 
 
 def test_table_definitions_check_incorrect_projection():
@@ -56,12 +56,11 @@ def test_table_definitions_check_incorrect_projection():
     )
 
     assert len(diff) == 1
-    assert diff[0]["RQ8"] == {
-        "errorinfo": {
-            "errortype": "RQ8",
-            "validation": "Geopackage must conform to given JSON definitions.",
-        },
-        "trace": [
+    assert diff[0] == {
+        "validation_code": "RQ8",
+        "validation_description": "Geopackage must conform to given JSON definitions.",
+        "level": "error",
+        "locations": [
             "Difference: Value of root['projection'] changed from 28992 to 4326."
         ],
     }
@@ -84,7 +83,7 @@ def test_table_definitions_check_incorrect_column_name():
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
-    assert "RQ8" in diff[0]
+    assert "RQ8" in diff[0]["validation_code"]
 
 
 def test_table_definitions_check_table_changed():
@@ -100,4 +99,4 @@ def test_table_definitions_check_table_changed():
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
-    assert "RQ8" in diff[0]
+    assert "RQ8" in diff[0]["validation_code"]

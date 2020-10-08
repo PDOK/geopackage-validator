@@ -10,13 +10,13 @@ def test_rtree_present_all_tables():
 
 
 def test_rtree_present_no_tables():
-    errors = rtree_present_check(
+    results = rtree_present_check(
         rtree_present_check_list=["no table has an rtree index"]
     )
-    assert len(errors) == 1
+    assert len(results) == 1
+    assert results[0]["validation_code"] == "RQ9"
     assert (
-        errors[0]["RQ9"]["trace"][0]
-        == "Table without index: no table has an rtree index"
+        results[0]["locations"][0] == "Table without index: no table has an rtree index"
     )
 
 

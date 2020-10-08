@@ -1,8 +1,8 @@
 from typing import Iterable
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -20,9 +20,9 @@ def db_views_check_query(dataset) -> Iterable[str]:
 def db_views_check(db_views_check_list: Iterable[str]):
     assert db_views_check_list is not None
 
-    errors = []
+    results = []
 
     for db_views in db_views_check_list:
-        errors.append(create_errormessage(err_index="db_views", view=db_views))
+        results.append(create_validation_message(err_index="db_views", view=db_views))
 
-    return error_format("db_views", errors)
+    return result_format("db_views", results)

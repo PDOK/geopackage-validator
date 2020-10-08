@@ -10,9 +10,10 @@ def test_zeroviews():
 
 
 def test_oneview():
-    errors = db_views_check(["view1"])
-    assert len(errors) == 1
-    assert errors[0]["RQ4"]["trace"][0] == "Found view: view1"
+    results = db_views_check(["view1"])
+    assert len(results) == 1
+    assert results[0]["validation_code"] == "RQ4"
+    assert results[0]["locations"][0] == "Found view: view1"
 
 
 def test_with_gpkg():

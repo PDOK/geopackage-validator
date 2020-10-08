@@ -1,8 +1,8 @@
 from typing import Iterable, Tuple
 
 from geopackage_validator.validations_overview.validations_overview import (
-    create_errormessage,
-    error_format,
+    create_validation_message,
+    result_format,
 )
 
 
@@ -29,12 +29,12 @@ VALID_GEOMETRIES = [
 def geometry_type_check(geometry_check_list: Iterable[Tuple[str, str]]):
     assert geometry_check_list is not None
 
-    errors = []
+    results = []
 
     for geometry in geometry_check_list:
         if geometry[1] not in VALID_GEOMETRIES:
-            errors.append(
-                create_errormessage(
+            results.append(
+                create_validation_message(
                     err_index="geometry_type",
                     layer=geometry[0],
                     found_geometry=geometry[1],
@@ -42,4 +42,4 @@ def geometry_type_check(geometry_check_list: Iterable[Tuple[str, str]]):
                 )
             )
 
-    return error_format("geometry_type", errors)
+    return result_format("geometry_type", results)
