@@ -2,7 +2,7 @@ Changelog of geopackage-validator
 ===================================================
 
 
-0.2 (unreleased)
+0.2 (2020-10-09)
 ----------------
 
 - Output refactor.
