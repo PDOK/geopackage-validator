@@ -25,6 +25,7 @@ setup(
     version=version,
     description="Validate Geopackage files",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
     classifiers=["Programming Language :: Python :: 3"],
     keywords=["geopackage-validator"],
