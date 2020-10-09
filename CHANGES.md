@@ -2,10 +2,16 @@ Changelog of geopackage-validator
 ===================================================
 
 
-0.3 (unreleased)
+0.4 (unreleased)
 ----------------
 
 - Nothing changed yet.
+
+
+0.3 (2020-10-09)
+----------------
+
+- Fix for PyPI.
 
 
 0.2 (2020-10-09)
@@ -15,7 +21,7 @@ Changelog of geopackage-validator
 
 - Differentiate between requirements and recommendations in the validations.
 
-- First PyPI release
+- First PyPI release.
 
 
 0.1 (2020-08-13)

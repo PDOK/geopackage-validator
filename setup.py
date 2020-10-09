@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from configparser import ConfigParser
 
-version = "0.3.dev0"
+version = "0.4.dev0"
 
 long_description = "\n\n".join([open("README.md").read(), open("CHANGES.md").read()])
 
@@ -25,6 +25,7 @@ setup(
     version=version,
     description="Validate Geopackage files",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
     classifiers=["Programming Language :: Python :: 3"],
     keywords=["geopackage-validator"],
