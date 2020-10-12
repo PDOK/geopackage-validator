@@ -41,7 +41,7 @@ VALIDATIONS = {
     "geometryvalid": {
         "validation_code": "RQ5",
         "level": "error",
-        "validation_message_template": "Found invalid geometry in table: {table}, column {column}, reason: {reason}",
+        "validation_message_template": "Found invalid geometry in table: {table}, id {rowid}, column {column}, reason: {reason}",
         "validation": "Geometry should be valid.",
     },
     "columnname": {
