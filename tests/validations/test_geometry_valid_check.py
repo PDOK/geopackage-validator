@@ -10,7 +10,7 @@ def test_valid_geometries():
 
 
 def test_invalid_geometry():
-    results = geometry_valid_check([("Geometry invalid", "table", "column", "123")])
+    results = geometry_valid_check([("Geometry invalid", "table", "column", 123)])
     assert len(results) == 1
     assert results[0]["validation_code"] == "RQ5"
     assert (
@@ -26,7 +26,7 @@ def test_with_gpkg():
     assert checks[0][0] == "Self-intersection[1.00524682835986 -0.175021628271762]"
     assert checks[0][1] == "test_geometry_valid"
     assert checks[0][2] == "geometry"
-    assert checks[0][3] == "1"
+    assert checks[0][3] == 1
 
 
 def test_with_gpkg_allcorrect():

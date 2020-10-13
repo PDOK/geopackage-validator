@@ -6,7 +6,7 @@ from geopackage_validator.validations_overview.validations_overview import (
 )
 
 
-def geometry_valid_check_query(dataset) -> Iterable[Tuple[str, str, str, str]]:
+def geometry_valid_check_query(dataset) -> Iterable[Tuple[str, str, str, int]]:
     columns = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"
     )
@@ -15,7 +15,7 @@ def geometry_valid_check_query(dataset) -> Iterable[Tuple[str, str, str, str]]:
             'select ST_IsValidReason("{column_name}") as reason, '
             "'{table_name}' as table_name, "
             "'{column_name}' as column_name, "
-            "cast(rowid as text) as row_id "
+            "cast(rowid as INTEGER) as row_id "
             'from "{table_name}" where ST_IsValid("{column_name}") = 0;'.format(
                 table_name=column[0], column_name=column[1]
             )
@@ -27,7 +27,7 @@ def geometry_valid_check_query(dataset) -> Iterable[Tuple[str, str, str, str]]:
     dataset.ReleaseResultSet(columns)
 
 
-def geometry_valid_check(geometry_check_list: Iterable[Tuple[str, str, str, str]]):
+def geometry_valid_check(geometry_check_list: Iterable[Tuple[str, str, str, int]]):
     assert geometry_check_list is not None
 
     results = []
