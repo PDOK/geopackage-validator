@@ -70,7 +70,7 @@ def validate_all(
 
     try:
 
-        # Validation checks
+        # Validation required checks
         if get_validation_type("layername")["validation_code"] in validations:
             layernames = layername_check_query(dataset)
             results.extend(layername_check(layernames))
@@ -128,7 +128,7 @@ def validate_all(
             srs = srs_equal_check_query(dataset)
             results.extend(srs_equal_check(srs))
 
-        # Warning checks
+        # Validation recommendation checks
         if get_validation_type("geom_columnname")["validation_code"] in validations:
             columns = geom_columnname_check_query(dataset)
             results.extend(geom_columnname_check(columns))

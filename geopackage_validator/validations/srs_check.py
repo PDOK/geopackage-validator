@@ -66,8 +66,7 @@ def srs_equal_check(srs_list: Iterable[Tuple[str, str]]):
     results = []
     srs_id_list = []
 
-    for srs in srs_list:
-        srs_id = srs[0]
+    for srs_id in srs_list:
         srs_id_list.append(srs_id)
 
     srs_id_list = set(srs_id_list)
