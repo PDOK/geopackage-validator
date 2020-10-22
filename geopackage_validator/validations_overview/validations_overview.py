@@ -30,7 +30,7 @@ VALIDATIONS = {
         "validation_code": "RQ3",
         "level": "error",
         "validation_message_template": "Error layer: {layer}, found geometry: {found_geometry}",
-        "validation": "Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON).",
+        "validation": "Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). (random sample of up to 100)",
     },
     "db_views": {
         "validation_code": "RQ4",
@@ -91,6 +91,18 @@ VALIDATIONS = {
         "level": "error",
         "validation_message_template": "Found srs are: {srs}",
         "validation": "It is required to give all GEOMETRY features the same default spatial reference system.",
+    },
+    "gpkg_geometry_valid": {
+        "validation_code": "RQ14",
+        "level": "error",
+        "validation_message_template": "Found geometry_type_name: {found_geometry} (from the gpkg_geometry_columns table).",
+        "validation": "The geometry_type_name from the gpkg_geometry_columns table must be one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON.",
+    },
+    "gpkg_geometry_match_table": {
+        "validation_code": "RQ15",
+        "level": "error",
+        "validation_message_template": "Found geometry: {found_geometry}, in layer: {layer}, where gpkg_geometry is: {gpkg_geometry}.",
+        "validation": "All table geometries must match the geometry_type_name from the gpkg_geometry_columns table. (random sample of up to 100)",
     },
     "geom_columnname": {
         "validation_code": "RC1",

@@ -21,12 +21,17 @@ from geopackage_validator.validations.geom_column_check import (
     geom_equal_columnname_check,
 )
 from geopackage_validator.validations.geometry_type_check import (
-    geometry_type_check,
     geometry_type_check_query,
+    geometry_type_check,
 )
 from geopackage_validator.validations.geometry_valid_check import (
     geometry_valid_check_query,
     geometry_valid_check,
+)
+from geopackage_validator.validations.gpkg_geometry_valid import (
+    gpkg_geometry_valid_check_query,
+    gpkg_geometry_match_table_check,
+    gpkg_geometry_valid_check,
 )
 from geopackage_validator.validations.layerfeature_check import (
     layerfeature_check_query,
@@ -60,6 +65,13 @@ from geopackage_validator.validations_overview.validations_overview import (
 )
 
 
+def results_gpkg_geometry_valid(results):
+    for result in results:
+        if result["validation_code"] == "RQ14":
+            return False
+    return True
+
+
 def validate_all(
     filename: str,
     table_definitions_path: str,
@@ -70,7 +82,7 @@ def validate_all(
 
     try:
 
-        # Validation checks
+        # Validation required checks
         if get_validation_type("layername")["validation_code"] in validations:
             layernames = layername_check_query(dataset)
             results.extend(layername_check(layernames))
@@ -128,7 +140,22 @@ def validate_all(
             srs = srs_equal_check_query(dataset)
             results.extend(srs_equal_check(srs))
 
-        # Warning checks
+        if get_validation_type("gpkg_geometry_valid")["validation_code"] in validations:
+            geometry_type_names = gpkg_geometry_valid_check_query(dataset)
+            results.extend(gpkg_geometry_valid_check(geometry_type_names))
+
+        if get_validation_type("gpkg_geometry_match_table")[
+            "validation_code"
+        ] in validations and results_gpkg_geometry_valid(results):
+            table_geometry_type_names = geometry_type_check_query(dataset)
+            geometry_type_names = gpkg_geometry_valid_check_query(dataset)
+            results.extend(
+                gpkg_geometry_match_table_check(
+                    table_geometry_type_names, geometry_type_names
+                )
+            )
+
+        # Validation recommendation checks
         if get_validation_type("geom_columnname")["validation_code"] in validations:
             columns = geom_columnname_check_query(dataset)
             results.extend(geom_columnname_check(columns))
