@@ -13,8 +13,8 @@ def test_zerofeatures():
 def test_onefeature():
     results = layerfeature_check_featurecount([("layer1", 0, 0), ("layer2", 1, 1)])
     assert len(results) == 1
-    assert results[0]["validation_code"] == "RQ2"
-    assert results[0]["locations"][0] == "Error layer: layer1"
+    assert results[0]["validation_code"] == "RC3"
+    assert results[0]["locations"][0] == "Layer: layer1"
 
 
 def test_featurecount_index_not_uptodate():

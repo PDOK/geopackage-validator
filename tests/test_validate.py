@@ -19,7 +19,6 @@ def test_determine_validations_to_use_none():
     validations = determine_validations_to_use(validations=None, validations_path=None)
     assert validations == [
         "RQ1",
-        "RQ2",
         "RQ3",
         "RQ4",
         "RQ5",
@@ -35,6 +34,7 @@ def test_determine_validations_to_use_none():
         "RQ15",
         "RC1",
         "RC2",
+        "RC3",
     ]
 
 

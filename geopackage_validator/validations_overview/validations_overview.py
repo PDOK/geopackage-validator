@@ -20,12 +20,6 @@ VALIDATIONS = {
         "validation_message_template": "Error layer: {layer}",
         "validation": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.",
     },
-    "layerfeature": {
-        "validation_code": "RQ2",
-        "level": "error",
-        "validation_message_template": "Error layer: {layer}",
-        "validation": "Layers must have at least one feature.",
-    },
     "geometry_type": {
         "validation_code": "RQ3",
         "level": "error",
@@ -115,6 +109,12 @@ VALIDATIONS = {
         "level": "recommendation",
         "validation_message_template": "Found column names are: {column_names}",
         "validation": "It is recommended to give all GEOMETRY type columns the same name.",
+    },
+    "layerfeature": {
+        "validation_code": "RC3",
+        "level": "recommendation",
+        "validation_message_template": "Layer: {layer}",
+        "validation": "It is recommended that layers have at least one feature.",
     },
 }
 
