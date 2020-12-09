@@ -57,7 +57,7 @@ This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) an
 To validate RQ8 you have to generate definitions first.
 
 ```bash
-geopackage-validator generate-definitions --gpkg-path /paht/to/file.gpkg
+geopackage-validator generate-definitions --gpkg-path /path/to/file.gpkg
 ````
 
 ### Usage through Docker (pull from Docker Hub)
