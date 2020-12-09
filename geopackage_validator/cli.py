@@ -2,14 +2,18 @@
 """Main CLI entry for the Geopackage validator tool."""
 # Setup logging before package imports.
 import logging
+import sys
+import traceback
 
 import click
 import click_log
 
 from geopackage_validator.generate import generate_definitions_for_path
 from geopackage_validator.minio.minio_context import minio_resource
+from geopackage_validator.output import log_output
 from geopackage_validator.validations_overview.validations_overview import (
     get_validations_list,
+    result_format,
 )
 
 logger = logging.getLogger(__name__)
@@ -126,26 +130,44 @@ def geopackage_validator_command(
     s3_bucket,
     s3_key,
 ):
+    try:
+        if gpkg_path is None and s3_endpoint_no_protocol is None:
+            logger.error("Give --gpkg-path or s3 location")
+            return
 
-    if gpkg_path is None and s3_endpoint_no_protocol is None:
-        logger.error("Give --gpkg-path or s3 location")
-        return
-
-    if gpkg_path is not None:
-        validate(
-            gpkg_path, gpkg_path, table_definitions_path, validations_path, validations,
-        )
-    else:
-        with minio_resource(
-            s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
-        ) as localfilename:
+        if gpkg_path is not None:
             validate(
-                localfilename,
-                s3_key,
+                gpkg_path,
+                gpkg_path,
                 table_definitions_path,
                 validations_path,
                 validations,
             )
+        else:
+            with minio_resource(
+                s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
+            ) as localfilename:
+                validate(
+                    localfilename,
+                    s3_key,
+                    table_definitions_path,
+                    validations_path,
+                    validations,
+                )
+    except Exception as e:
+        logger.exception("Unknown error: %s", e)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        log_output(
+            result_format(
+                "system",
+                trace=[
+                    t.strip("\n")
+                    for t in traceback.format_exception(
+                        exc_type, exc_value, exc_traceback
+                    )
+                ],
+            )
+        )
 
 
 @cli.command(

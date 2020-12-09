@@ -49,8 +49,8 @@ def test_validate_no_gpkg():
 def test_validate_error_s3():
     runner = CliRunner()
     result = runner.invoke(cli, ["validate", "--s3-endpoint-no-protocol", "s3host"])
-    assert result.exit_code == 1
-    assert ("S3 access key has to be given",) == result.exception.args
+    assert result.exit_code == 0
+    assert "S3 access key has to be given" in result.output
 
 
 def test_validate_with_gpkg():
