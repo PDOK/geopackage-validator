@@ -8,17 +8,12 @@ import click_log
 
 from geopackage_validator.generate import generate_definitions_for_path
 from geopackage_validator.minio.minio_context import minio_resource
-from geopackage_validator.output import log_output
-from geopackage_validator.validations_overview.validations_overview import (
-    get_validations_list,
-    result_format,
-)
+from geopackage_validator.validations_overview.validations_overview import get_validations_list
 
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
 
 from geopackage_validator.validate import validate
-import sys
 import json
 
 
@@ -134,29 +129,25 @@ def geopackage_validator_command(
         logger.error("Give --gpkg-path or s3 location")
         return
 
-    try:
-        if gpkg_path is not None:
+    if gpkg_path is not None:
+        validate(
+            gpkg_path,
+            gpkg_path,
+            table_definitions_path,
+            validations_path,
+            validations,
+        )
+    else:
+        with minio_resource(
+            s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
+        ) as localfilename:
             validate(
-                gpkg_path,
-                gpkg_path,
+                localfilename,
+                s3_key,
                 table_definitions_path,
                 validations_path,
                 validations,
             )
-        else:
-            with minio_resource(
-                s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
-            ) as localfilename:
-                validate(
-                    localfilename,
-                    s3_key,
-                    table_definitions_path,
-                    validations_path,
-                    validations,
-                )
-    except:
-        log_output(result_format("system", trace=[str(sys.exc_info()[1])]))
-
 
 @cli.command(
     name="generate-definitions",

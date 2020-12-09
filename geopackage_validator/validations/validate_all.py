@@ -79,94 +79,87 @@ def validate_all(
     results: List[Dict[str, List[str]]],
 ):
     dataset = open_dataset(filename)
+    # Validation required checks
+    if get_validation_type("layername")["validation_code"] in validations:
+        layernames = layername_check_query(dataset)
+        results.extend(layername_check(layernames))
 
-    try:
+    if get_validation_type("layerfeature")["validation_code"] in validations:
+        layerfeature_count = layerfeature_check_query(dataset)
+        results.extend(layerfeature_check_featurecount(layerfeature_count))
 
-        # Validation required checks
-        if get_validation_type("layername")["validation_code"] in validations:
-            layernames = layername_check_query(dataset)
-            results.extend(layername_check(layernames))
+    if get_validation_type("layerfeature_ogr")["validation_code"] in validations:
+        layerfeature_count = layerfeature_check_query(dataset)
+        results.extend(layerfeature_check_ogr_index(layerfeature_count))
 
-        if get_validation_type("layerfeature")["validation_code"] in validations:
-            layerfeature_count = layerfeature_check_query(dataset)
-            results.extend(layerfeature_check_featurecount(layerfeature_count))
+    if get_validation_type("geometry_type")["validation_code"] in validations:
+        geometries = geometry_type_check_query(dataset)
+        results.extend(geometry_type_check(geometries))
 
-        if get_validation_type("layerfeature_ogr")["validation_code"] in validations:
-            layerfeature_count = layerfeature_check_query(dataset)
-            results.extend(layerfeature_check_ogr_index(layerfeature_count))
+    if get_validation_type("db_views")["validation_code"] in validations:
+        views = db_views_check_query(dataset)
+        results.extend(db_views_check(views))
 
-        if get_validation_type("geometry_type")["validation_code"] in validations:
-            geometries = geometry_type_check_query(dataset)
-            results.extend(geometry_type_check(geometries))
+    if get_validation_type("geometryvalid")["validation_code"] in validations:
+        geometries = geometry_valid_check_query(dataset)
+        results.extend(geometry_valid_check(geometries))
 
-        if get_validation_type("db_views")["validation_code"] in validations:
-            views = db_views_check_query(dataset)
-            results.extend(db_views_check(views))
+    if get_validation_type("columnname")["validation_code"] in validations:
+        columns = columnname_check_query(dataset)
+        results.extend(columnname_check(columns))
 
-        if get_validation_type("geometryvalid")["validation_code"] in validations:
-            geometries = geometry_valid_check_query(dataset)
-            results.extend(geometry_valid_check(geometries))
+    if get_validation_type("feature_id")["validation_code"] in validations:
+        columns = feature_id_check_query(dataset)
+        results.extend(feature_id_check(columns))
 
-        if get_validation_type("columnname")["validation_code"] in validations:
-            columns = columnname_check_query(dataset)
-            results.extend(columnname_check(columns))
+    if get_validation_type("rtree_present")["validation_code"] in validations:
+        indexes = rtree_present_check_query(dataset)
+        results.extend(rtree_present_check(indexes))
 
-        if get_validation_type("feature_id")["validation_code"] in validations:
-            columns = feature_id_check_query(dataset)
-            results.extend(feature_id_check(columns))
+    if get_validation_type("rtree_valid")["validation_code"] in validations:
+        indexes = rtree_valid_check_query(dataset)
+        results.extend(rtree_valid_check(indexes))
 
-        if get_validation_type("rtree_present")["validation_code"] in validations:
-            indexes = rtree_present_check_query(dataset)
-            results.extend(rtree_present_check(indexes))
-
-        if get_validation_type("rtree_valid")["validation_code"] in validations:
-            indexes = rtree_valid_check_query(dataset)
-            results.extend(rtree_valid_check(indexes))
-
-        if get_validation_type("rtree_valid")["validation_code"] in validations:
-            if table_definitions_path is not None:
-                table_definitions_current = generate_table_definitions(dataset)
-                results.extend(
-                    table_definitions_check(
-                        table_definitions_path, table_definitions_current
-                    )
-                )
-
-        if get_validation_type("srs")["validation_code"] in validations:
-            srs = srs_check_query(dataset)
-            results.extend(srs_check(srs))
-
-        if get_validation_type("srs_equal")["validation_code"] in validations:
-            srs = srs_equal_check_query(dataset)
-            results.extend(srs_equal_check(srs))
-
-        if get_validation_type("gpkg_geometry_valid")["validation_code"] in validations:
-            geometry_type_names = gpkg_geometry_valid_check_query(dataset)
-            results.extend(gpkg_geometry_valid_check(geometry_type_names))
-
-        if get_validation_type("gpkg_geometry_match_table")[
-            "validation_code"
-        ] in validations and results_gpkg_geometry_valid(results):
-            table_geometry_type_names = geometry_type_check_query(dataset)
-            geometry_type_names = gpkg_geometry_valid_check_query(dataset)
+    if get_validation_type("rtree_valid")["validation_code"] in validations:
+        if table_definitions_path is not None:
+            table_definitions_current = generate_table_definitions(dataset)
             results.extend(
-                gpkg_geometry_match_table_check(
-                    table_geometry_type_names, geometry_type_names
+                table_definitions_check(
+                    table_definitions_path, table_definitions_current
                 )
             )
 
-        # Validation recommendation checks
-        if get_validation_type("geom_columnname")["validation_code"] in validations:
-            columns = geom_columnname_check_query(dataset)
-            results.extend(geom_columnname_check(columns))
+    if get_validation_type("srs")["validation_code"] in validations:
+        srs = srs_check_query(dataset)
+        results.extend(srs_check(srs))
 
-        if (
-            get_validation_type("geom_equal_columnnames")["validation_code"]
-            in validations
-        ):
-            columns = geom_columnname_check_query(dataset)
-            results.extend(geom_equal_columnname_check(columns))
+    if get_validation_type("srs_equal")["validation_code"] in validations:
+        srs = srs_equal_check_query(dataset)
+        results.extend(srs_equal_check(srs))
 
-    except:
-        # todo: if there is an error it should be reported -> fix this in new ticket
-        return result_format("system", [str(sys.exc_info()[0])])
+    if get_validation_type("gpkg_geometry_valid")["validation_code"] in validations:
+        geometry_type_names = gpkg_geometry_valid_check_query(dataset)
+        results.extend(gpkg_geometry_valid_check(geometry_type_names))
+
+    if get_validation_type("gpkg_geometry_match_table")[
+        "validation_code"
+    ] in validations and results_gpkg_geometry_valid(results):
+        table_geometry_type_names = geometry_type_check_query(dataset)
+        geometry_type_names = gpkg_geometry_valid_check_query(dataset)
+        results.extend(
+            gpkg_geometry_match_table_check(
+                table_geometry_type_names, geometry_type_names
+            )
+        )
+
+    # Validation recommendation checks
+    if get_validation_type("geom_columnname")["validation_code"] in validations:
+        columns = geom_columnname_check_query(dataset)
+        results.extend(geom_columnname_check(columns))
+
+    if (
+        get_validation_type("geom_equal_columnnames")["validation_code"]
+        in validations
+    ):
+        columns = geom_columnname_check_query(dataset)
+        results.extend(geom_equal_columnname_check(columns))
