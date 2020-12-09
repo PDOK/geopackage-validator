@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Dict, List
 
 from deepdiff import DeepDiff
@@ -16,6 +17,7 @@ def table_definitions_check(
 ):
     assert definitions_reference_path is not None
     assert definitions_current is not None
+    assert os.path.exists(definitions_reference_path)
 
     with open(definitions_reference_path) as json_file:
         definitions_reference = json.load(json_file)

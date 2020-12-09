@@ -8,7 +8,9 @@ import click_log
 
 from geopackage_validator.generate import generate_definitions_for_path
 from geopackage_validator.minio.minio_context import minio_resource
-from geopackage_validator.validations_overview.validations_overview import get_validations_list
+from geopackage_validator.validations_overview.validations_overview import (
+    get_validations_list,
+)
 
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
@@ -131,11 +133,7 @@ def geopackage_validator_command(
 
     if gpkg_path is not None:
         validate(
-            gpkg_path,
-            gpkg_path,
-            table_definitions_path,
-            validations_path,
-            validations,
+            gpkg_path, gpkg_path, table_definitions_path, validations_path, validations,
         )
     else:
         with minio_resource(
@@ -148,6 +146,7 @@ def geopackage_validator_command(
                 validations_path,
                 validations,
             )
+
 
 @cli.command(
     name="generate-definitions",

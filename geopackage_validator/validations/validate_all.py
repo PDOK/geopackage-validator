@@ -1,4 +1,3 @@
-import sys
 from typing import Dict, List
 
 from geopackage_validator.gdal.dataset import open_dataset
@@ -60,7 +59,6 @@ from geopackage_validator.validations.table_definitions_check import (
     table_definitions_check,
 )
 from geopackage_validator.validations_overview.validations_overview import (
-    result_format,
     get_validation_type,
 )
 
@@ -121,7 +119,7 @@ def validate_all(
         results.extend(rtree_valid_check(indexes))
 
     if get_validation_type("rtree_valid")["validation_code"] in validations:
-        if table_definitions_path is not None:
+        if table_definitions_path:
             table_definitions_current = generate_table_definitions(dataset)
             results.extend(
                 table_definitions_check(
@@ -157,9 +155,6 @@ def validate_all(
         columns = geom_columnname_check_query(dataset)
         results.extend(geom_columnname_check(columns))
 
-    if (
-        get_validation_type("geom_equal_columnnames")["validation_code"]
-        in validations
-    ):
+    if get_validation_type("geom_equal_columnnames")["validation_code"] in validations:
         columns = geom_columnname_check_query(dataset)
         results.extend(geom_equal_columnname_check(columns))

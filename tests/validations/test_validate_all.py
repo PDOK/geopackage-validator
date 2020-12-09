@@ -41,5 +41,8 @@ def test_validate_all_validations_no_error():
         ),
         results=results,
     )
-    assert len(results) == 1
+    assert len(results) == 2
     assert results[0]["locations"] == ["Error layer: test_LAYERNAME"]
+    assert results[1]["locations"] == [
+        "Found in table: test_LAYERNAME, column: geometry"
+    ]
