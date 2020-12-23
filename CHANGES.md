@@ -2,10 +2,10 @@ Changelog of geopackage-validator
 ===================================================
 
 
-0.4 (unreleased)
-----------------
+0.4.1 (2020-12-23)
+------------------
 
-- Nothing changed yet.
+- Better logging.
 
 
 0.3 (2020-10-09)
