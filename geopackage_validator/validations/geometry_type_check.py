@@ -21,7 +21,7 @@ def geometry_type_check_query(dataset) -> Iterable[Tuple[str, str]]:
                 randint(1, features) for _ in range(min(features, 100))
             ]
             for randomIndex in random_feature_indexes:
-                feature = layer[randomIndex]
+                feature = layer.GetFeature(randomIndex)
                 yield from get_layer_name_and_geometry_name(feature, layer)
 
 
