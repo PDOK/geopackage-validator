@@ -2,6 +2,8 @@
 """Main CLI entry for the Geopackage validator tool."""
 # Setup logging before package imports.
 import logging
+import sys
+import traceback
 
 import click
 import click_log
@@ -18,7 +20,6 @@ logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
 
 from geopackage_validator.validate import validate
-import sys
 import json
 
 
@@ -129,12 +130,11 @@ def geopackage_validator_command(
     s3_bucket,
     s3_key,
 ):
-
-    if gpkg_path is None and s3_endpoint_no_protocol is None:
-        logger.error("Give --gpkg-path or s3 location")
-        return
-
     try:
+        if gpkg_path is None and s3_endpoint_no_protocol is None:
+            logger.error("Give --gpkg-path or s3 location")
+            return
+
         if gpkg_path is not None:
             validate(
                 gpkg_path,
@@ -154,8 +154,19 @@ def geopackage_validator_command(
                     validations_path,
                     validations,
                 )
-    except:
-        log_output(result_format("system", trace=[str(sys.exc_info()[1])]))
+    except Exception:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        log_output(
+            result_format(
+                "system",
+                trace=[
+                    t.strip("\n")
+                    for t in traceback.format_exception(
+                        exc_type, exc_value, exc_traceback
+                    )
+                ],
+            )
+        )
 
 
 @cli.command(
