@@ -21,7 +21,7 @@ def parse_pipfile(development=False):
 
 
 setup(
-    name="geopackage-validator",
+    name="pdok-geopackage-validator",
     version=version,
     description="Validate Geopackage files",
     long_description=long_description,
