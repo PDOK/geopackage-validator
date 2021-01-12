@@ -2,7 +2,7 @@ Changelog of geopackage-validator
 ===================================================
 
 
-0.4.2 (unreleased)
+0.4.2 (2021-01-12)
 ------------------
 
 - Move to pdok-geopackage-validator
