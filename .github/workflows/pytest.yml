@@ -15,7 +15,6 @@ jobs:
         python-version: 3.8
     - name: install gdal
       run: |
-        sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable
         sudo apt-get update
         sudo apt-get install libgdal-dev
     - name: Install dependencies
