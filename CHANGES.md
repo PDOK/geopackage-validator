@@ -2,10 +2,22 @@ Changelog of geopackage-validator
 ===================================================
 
 
-0.4 (unreleased)
-----------------
+0.4.3 (unreleased)
+------------------
 
 - Nothing changed yet.
+
+
+0.4.2 (2021-01-12)
+------------------
+
+- Move to pdok-geopackage-validator
+
+
+0.4.1 (2020-12-23)
+------------------
+
+- Better logging.
 
 
 0.3 (2020-10-09)

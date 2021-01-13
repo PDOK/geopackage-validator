@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from configparser import ConfigParser
 
-version = "0.4.dev0"
+version = "0.4.3.dev0"
 
 long_description = "\n\n".join([open("README.md").read(), open("CHANGES.md").read()])
 
@@ -21,7 +21,7 @@ def parse_pipfile(development=False):
 
 
 setup(
-    name="geopackage-validator",
+    name="pdok-geopackage-validator",
     version=version,
     description="Validate Geopackage files",
     long_description=long_description,
