@@ -1,5 +1,9 @@
-##### Table of Contents
+# geopackage-validator
+
+## Table of Contents
+
 * [geopackage-validator](#geopackage-validator)
+  * [What does it do](#What-does-it-do)
   * [Installation](#installation)
     * [Ubuntu](#ubuntu)
     * [Windows](#windows)
@@ -16,7 +20,7 @@
     * [Tests](#pipenv-tests)
     * [Releasing](#releasing)
 
-# geopackage-validator
+## What does it do
 
 The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
 The current checks are (see also the 'show-validations' command):
@@ -42,33 +46,38 @@ The current checks are (see also the 'show-validations' command):
 |       RC2       | It is recommended to give all GEOMETRY type columns the same name. |
 
 ## Installation
-This package requires [GDAL](https://gdal.org/) version >= 3.0.4. 
-And python >= 3.8 to run. 
+
+This package requires [GDAL](https://gdal.org/) version >= 3.0.4.
+And python >= 3.8 to run.
 
 ### Ubuntu
+
 Install GDAL:
-```
+
+```sudo
 sudo apt-get install gdal-bin
 ```
 
 Install the validator with:  
+
 ```bash
 pip3 install pdok-geopackage-validator
 ```
 
 ### Windows
-Either use anaconda to install gdal: 
+
+Either use anaconda to install gdal:
 
 ```bash
 conda install -c conda-forge gdal
 ```
 
-Or download and install [OSGeo4W](https://trac.osgeo.org/osgeo4w/). And download 
+Or download and install [OSGeo4W](https://trac.osgeo.org/osgeo4w/). And download
 [get-pip.py](https://bootstrap.pypa.io/get-pip.py) and run it in the OSGeo4W shell:
 
 ```bash
 python3 get-pip.py
-``` 
+```
 
 Install the validator with:  
 
@@ -77,6 +86,7 @@ pip3 install pdok-geopackage-validator
 ```
 
 ### Docker
+
 Pull the latest version of the Docker image (only once needed, or after an update)
 
 ```bash
@@ -86,16 +96,17 @@ docker pull pdok/geopackage-validator:latest
 Or build the Docker image from source:
 
 ```bash
-docker build -t geopackage-validator .
+docker build -t pdok/geopackage-validator .
 ```
 
-The command is directly called so subcommands can be run in the container directly: 
+The command is directly called so subcommands can be run in the container directly:
 
 ```bash
 docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
 
 ## Usage
+
 ### Validate
 
 ```bash
@@ -231,6 +242,7 @@ This is to give an indication of the performance and by no means a guarantee.
 ## Local development
 
 ### Pipenv installation
+
 We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
 around pip and virtualenv. Install that first with `pip install pipenv`.
 
@@ -269,6 +281,7 @@ pipenv install --dev
 ```
 
 ### Pipenv usage
+
 There will be a script you can run like this:
 
 ```bash
@@ -276,6 +289,7 @@ pipenv run geopackage-validator
 ```
 
 ### Code style
+
 In order to get nicely formatted python files without having to spend manual
 work on it, run the following command periodically:
 
@@ -284,6 +298,7 @@ pipenv run black geopackage_validator
 ```
 
 ### Tests
+
 Run the tests regularly. This also checks with pyflakes and black:
 
 ```bash
@@ -291,14 +306,17 @@ pipenv run pytest
 ```
 
 Code coverage:
+
 ```bash
 pipenv run pytest --cov=geopackage_validator  --cov-report html
 ```
 
 ### Releasing
+
 Release in github by creating and pushing a new tag to master and create a new release in github.  
 
 ## Install pyenv
+
 We can install pyenv by running the following commands:
 
 ```bash
