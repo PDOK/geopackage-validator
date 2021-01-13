@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5fb4a718ffd9a034e8f7a880c0097b06249f8a10c9df4f00d28e64163f3b85cd"
+            "sha256": "e09a7962125658e40f4605fab46ff1c823fb7c4eb87d2a145abacfea249f4334"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -47,13 +47,6 @@
             "index": "pypi",
             "version": "==5.2.1"
         },
-        "gdal": {
-            "hashes": [
-                "sha256:2b758fbe60f7ec5c38400d72630df633765e46b5f3f54bcb3115eaea0d531a36"
-            ],
-            "index": "pypi",
-            "version": "==3.2.0"
-        },
         "geopackage-validator": {
             "editable": true,
             "path": "."
@@ -73,6 +66,10 @@
             "markers": "python_version >= '3.5'",
             "version": "==4.0.2"
         },
+        "pdok-geopackage-validator": {
+            "editable": true,
+            "path": "."
+        },
         "urllib3": {
             "hashes": [
                 "sha256:19188f96923873c92ccb987120ec4acaa12f0461fa9ce5d3d0772bc965a39e08",
@@ -80,10 +77,6 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
             "version": "==1.26.2"
-        },
-        "zest-releaser": {
-            "editable": true,
-            "path": "."
         }
     },
     "develop": {

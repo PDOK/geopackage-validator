@@ -19,10 +19,10 @@ name = "pypi"
 # === This package ===
 # Should always be installed like this, else setup.py is bypassed (and we would
 # have to modify PYTHONPATH at several points in the project)
+# We install python-gdal via gdal-bin
 "geopackage-validator" = {path = ".", editable = true}
 "Click" = "==7.*"
 "click-log" = "==0.3.*"
-"gdal" = "==3.2.0"
 "minio" = "*"
 "deepdiff" = "*"
 
