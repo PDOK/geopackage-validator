@@ -6,6 +6,7 @@ from geopackage_validator.validations.gpkg_geometry_valid import (
     gpkg_geometry_match_table_check,
     gpkg_geometry_valid_check_query,
     gpkg_geometry_valid_check,
+    gpkg_geometry_match_table_check_query,
 )
 
 
@@ -15,7 +16,7 @@ def test_gpkg_geometry_match_table_check():
 
 def test_gpkg_geometry_no_match_table_check():
     results = gpkg_geometry_match_table_check(
-        [("dummy_table", "GEOMETRY1")], ["GEOMETRY2"]
+        [("dummy_table", "GEOMETRY1")], [("dummy_table", "GEOMETRY2")]
     )
     assert len(results) == 1
     assert results[0]["validation_code"] == "RQ15"
@@ -35,7 +36,7 @@ def test_gpkg_match_valid_gemometries():
 def test_gpkg_geometry_match_table():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     table_geometry_type_names = geometry_type_check_query(dataset)
-    geometry_type_names = gpkg_geometry_valid_check_query(dataset)
+    geometry_type_names = gpkg_geometry_match_table_check_query(dataset)
     results = gpkg_geometry_match_table_check(
         table_geometry_type_names, geometry_type_names
     )

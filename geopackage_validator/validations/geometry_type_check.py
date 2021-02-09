@@ -17,9 +17,9 @@ def geometry_type_check_query(dataset) -> Iterable[Tuple[str, str]]:
                 yield from get_layer_name_and_geometry_name(feature, layer)
         else:
             # select a maximum of 100 random elements/features from the layer
-            random_feature_indexes: List[int] = [
+            random_feature_indexes: List[int] = {
                 randint(1, features) for _ in range(min(features, 100))
-            ]
+            }
             for randomIndex in random_feature_indexes:
                 feature = layer.GetFeature(randomIndex)
                 yield from get_layer_name_and_geometry_name(feature, layer)

@@ -26,7 +26,7 @@ def generate_table_definitions(
     )
 
     projection = None
-    column_name = None
+    geo_column_name = None
     table_list = {}
     for table in geometry_tables:
         columns = dataset.ExecuteSQL(
@@ -38,18 +38,21 @@ def generate_table_definitions(
         if columns[0][2] and not projection:
             projection = columns[0][2]
 
-        if columns[0][0] and not column_name:
-            column_name = columns[0][0]
+        if columns[0][0] and not geo_column_name:
+            geo_column_name = columns[0][0]
 
         info = dataset.ExecuteSQL(
             "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table[0])
         )
 
-        column_list = [Column(column_name=item[1], data_type=item[2]) for item in info]
+        column_list = [
+            Column(column_name=item[1], data_type=item[2].split("(")[0])
+            for item in info
+        ]
 
         table_list[table[0]] = {
             "table_name": table[0],
-            "geometry_column": column_name,
+            "geometry_column": geo_column_name,
             "columns": column_list,
         }
         dataset.ReleaseResultSet(columns)
