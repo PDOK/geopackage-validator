@@ -1,4 +1,4 @@
-FROM osgeo/gdal:ubuntu-small-3.2.0 AS base
+FROM osgeo/gdal:ubuntu-small-3.0.4 AS base
 
 # In case you need base debian dependencies install them here.
 RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
