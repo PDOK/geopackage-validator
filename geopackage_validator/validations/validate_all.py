@@ -131,8 +131,6 @@ def validate_all(
         srs = srs_equal_check_query(dataset)
         results.extend(srs_equal_check(srs))
 
-    # todo: @william Volgens mij is dit precies dezelfde test als in `geometry_type` -> dat is raar dit moet denk ik weg -> de termenologie loopt nu ook door elkaar beter fixen we dat
-    # todo: @william I think this should be a check: `table should have one geom`
     if get_validation_type("gpkg_geometry_valid")["validation_code"] in validations:
         geometry_type_names = gpkg_geometry_valid.gpkg_geometry_valid_check_query(
             dataset
