@@ -1,6 +1,6 @@
 from geopackage_validator.gdal.dataset import open_dataset
 from geopackage_validator.validations.geometry_type_check import (
-    geometry_type_check_query,
+    table_geometry_type_names_query,
 )
 from geopackage_validator.validations.gpkg_geometry_valid import (
     gpkg_geometry_match_table_check,
@@ -35,7 +35,7 @@ def test_gpkg_match_valid_gemometries():
 
 def test_gpkg_geometry_match_table():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    table_geometry_type_names = geometry_type_check_query(dataset)
+    table_geometry_type_names = table_geometry_type_names_query(dataset)
     geometry_type_names = gpkg_geometry_match_table_check_query(dataset)
     results = gpkg_geometry_match_table_check(
         table_geometry_type_names, geometry_type_names

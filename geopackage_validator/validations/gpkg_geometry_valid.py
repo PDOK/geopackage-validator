@@ -53,29 +53,22 @@ def gpkg_geometry_match_table_check(table_geometry_type_names, gpkg_geometries):
 
     results = []
 
-    # todo: does not take into consideration that there could be multiple geometries -> there should be a test that takes this upfront
-    gpkg_geometry_columns_table = {r[0]: r[1] for r in gpkg_geometries}
-    # test = {r[0]: r[1] for r in table_geometry_type_names}
+    gpkg_geometry_columns_table = dict(gpkg_geometries)
 
-    for feature in table_geometry_type_names:
-        table_name = feature[0]
-        table_geometry_type = feature[1]
+    for table_name, table_geometry_type in table_geometry_type_names:
 
-        # todo: There should be a test upfront that rules out that `gpkg_geometry_columns` matches the actual features
-        if table_name not in gpkg_geometry_columns_table:
-            raise Exception(
-                f"`gpkg_geometry_columns` does not contain feature `{table_name}`"
-            )
+        if table_name not in gpkg_geometry_columns_table.keys():
+            raise Exception(f"`{table_name}` not in `gpkg_geometry_columns`")
 
-        actual_feature_type = gpkg_geometry_columns_table[table_name]
+        feature_type = gpkg_geometry_columns_table[table_name]
 
-        if actual_feature_type != table_geometry_type:
+        if feature_type != table_geometry_type:
             results.append(
                 create_validation_message(
                     err_index="gpkg_geometry_match_table",
                     layer=table_name,
                     found_geometry=table_geometry_type,
-                    gpkg_geometry=actual_feature_type,
+                    gpkg_geometry=feature_type,
                 )
             )
 

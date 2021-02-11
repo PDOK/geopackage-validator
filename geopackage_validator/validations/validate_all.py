@@ -20,19 +20,14 @@ from geopackage_validator.validations.geom_column_check import (
     geom_equal_columnname_check,
 )
 from geopackage_validator.validations.geometry_type_check import (
-    geometry_type_check_query,
+    table_geometry_type_names_query,
     geometry_type_check,
 )
 from geopackage_validator.validations.geometry_valid_check import (
     geometry_valid_check_query,
     geometry_valid_check,
 )
-from geopackage_validator.validations.gpkg_geometry_valid import (
-    gpkg_geometry_valid_check_query,
-    gpkg_geometry_match_table_check,
-    gpkg_geometry_valid_check,
-    gpkg_geometry_match_table_check_query,
-)
+from geopackage_validator.validations import gpkg_geometry_valid
 from geopackage_validator.validations.layerfeature_check import (
     layerfeature_check_query,
     layerfeature_check_ogr_index,
@@ -92,7 +87,7 @@ def validate_all(
         results.extend(layerfeature_check_ogr_index(layerfeature_count))
 
     if get_validation_type("geometry_type")["validation_code"] in validations:
-        geometries = geometry_type_check_query(dataset)
+        geometries = table_geometry_type_names_query(dataset)
         results.extend(geometry_type_check(geometries))
 
     if get_validation_type("db_views")["validation_code"] in validations:
@@ -139,17 +134,23 @@ def validate_all(
     # todo: @william Volgens mij is dit precies dezelfde test als in `geometry_type` -> dat is raar dit moet denk ik weg -> de termenologie loopt nu ook door elkaar beter fixen we dat
     # todo: @william I think this should be a check: `table should have one geom`
     if get_validation_type("gpkg_geometry_valid")["validation_code"] in validations:
-        geometry_type_names = gpkg_geometry_valid_check_query(dataset)
-        results.extend(gpkg_geometry_valid_check(geometry_type_names))
+        geometry_type_names = gpkg_geometry_valid.gpkg_geometry_valid_check_query(
+            dataset
+        )
+        results.extend(
+            gpkg_geometry_valid.gpkg_geometry_valid_check(geometry_type_names)
+        )
 
     if (
         get_validation_type("gpkg_geometry_match_table")["validation_code"]
         in validations
-    ):  # and results_gpkg_geometry_valid(results):
-        table_geometry_type_names = geometry_type_check_query(dataset)
-        geometry_type_names = gpkg_geometry_match_table_check_query(dataset)
+    ):
+        table_geometry_type_names = table_geometry_type_names_query(dataset)
+        geometry_type_names = gpkg_geometry_valid.gpkg_geometry_match_table_check_query(
+            dataset
+        )
         results.extend(
-            gpkg_geometry_match_table_check(
+            gpkg_geometry_valid.gpkg_geometry_match_table_check(
                 table_geometry_type_names, geometry_type_names
             )
         )

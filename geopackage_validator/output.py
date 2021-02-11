@@ -14,7 +14,8 @@ def log_output(
 ) -> None:
     if validations_executed is None:
         validations_executed = []
-    script_version = pkg_resources.require("geopackage_validator")[0].version
+
+    script_version = pkg_resources.get_distribution("pdok_geopackage_validator").version
     print(
         json.dumps(
             {
