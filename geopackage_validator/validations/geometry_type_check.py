@@ -8,7 +8,7 @@ from geopackage_validator.validations_overview.validations_overview import (
 )
 
 
-def geometry_type_check_query(dataset) -> Iterable[Tuple[str, str]]:
+def table_geometry_type_names_query(dataset) -> Iterable[Tuple[str, str]]:
     for layer_index in range(dataset.GetLayerCount()):
         layer = dataset.GetLayerByIndex(layer_index)
         features = layer.GetFeatureCount()
