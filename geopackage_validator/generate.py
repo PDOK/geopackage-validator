@@ -18,9 +18,11 @@ class Column(TypedDict):
     data_type: str
 
 
+TableDefinition = Dict[str, Dict[str, List[Column]]]
+
+
 def generate_table_definitions(
-    dataset: DataSource,
-) -> Dict[str, Dict[str, List[Column]]]:
+    dataset: DataSource) -> TableDefinition:
     geometry_tables = dataset.ExecuteSQL(
         "SELECT distinct table_name FROM gpkg_geometry_columns;"
     )

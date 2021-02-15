@@ -2,14 +2,19 @@ import json
 import logging
 import time
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict
+from pathlib import Path
 
 from geopackage_validator.gdal.prerequisites import (
     check_gdal_installed,
     check_gdal_version,
 )
 from geopackage_validator.output import log_output
-from geopackage_validator.validations.validate_all import validate_all
+from geopackage_validator import validations
+from geopackage_validator.validations.validator import Validator
+from geopackage_validator.generate import TableDefinition
+
+
 from geopackage_validator.validations_overview.validations_overview import (
     result_format,
     VALIDATIONS,
@@ -18,42 +23,22 @@ from geopackage_validator.validations_overview.validations_overview import (
 logger = logging.getLogger(__name__)
 
 
-def determine_validations_to_use(
-    validations_path: Optional[str], validations: Optional[str]
-):
-    used_validations = []
+# TODO: this is really complex for what it ought to do. this can be 10 lines tops.
 
-    if validations_path is not None:
-        used_validations = get_validations_from_file(validations_path)
+def validations_to_use(validations_path="", validations=""):
+    if validations == "ALL" or (not validations_path and not validations):
+        return "ALL"
 
-    if validations is not None and validations != "ALL":
-        used_validations.extend(validations.replace(" ", "").split(","))
+    validations = validations.replace(" ", "").split(",")
 
-    if len(used_validations) == 0:
-        used_validations = get_all_validations()
-
-    return used_validations
-
-
-def get_all_validations():
-    used_validations = [
-        v["validation_code"]
-        for k, v in VALIDATIONS.items()
-        if v["validation_code"].startswith("R")
-    ]
-
-    return used_validations
-
-
-def get_validations_from_file(validations_path):
-    used_validations = []
-
-    with open(validations_path) as json_file:
-        used_validations.extend(json.load(json_file)["validations"])
-        if len(used_validations) == 0:
+    if validations_path:
+        validations_from_file = Path(validations_path).read_text()
+        try:
+            validations += json.loads(validations_from_file)["validations"]
+        except KeyError:
             raise Exception("Validation path file does not contain any validations")
 
-    return used_validations
+    return validations
 
 
 def validate(
@@ -74,6 +59,7 @@ def validate(
 
     results = []
 
+    # TODO: handle with Validator or create ErrorHandler that is inherited by Validator?
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
         result = result_format("gdal", [error.replace("\n", " ")])
@@ -81,9 +67,11 @@ def validate(
 
     init_gdal(gdal_error_handler)
 
-    validations_executed = determine_validations_to_use(validations_path, validations)
+    validations_executed = validations_to_use(validations_path, validations)
 
-    validate_all(gpkg_path, table_definitions_path, validations_executed, results)
+    table_definitions = load_table_definitions(table_definitions_path)
+
+    results += validate_all(gpkg_path, table_definitions, validations_executed)
 
     duration_seconds = time.monotonic() - duration_start
 
@@ -94,3 +82,24 @@ def validate(
         start_time=start_time,
         duration_seconds=duration_seconds,
     )
+
+
+def validate_all(dataset, requested_validations, table_definitions):
+    validator_classes = [getattr(validations, v) for v in validations.__all__]
+    results = []
+
+    for validator in validator_classes:
+        is_validator = issubclass(validator, Validator)
+        validator_is_requested = is_validator and (
+             requested_validations == "ALL" or validator.validation_code in requested_validations
+        )
+        if validator_is_requested:
+            results += validator(dataset, table_definitions).validate()
+
+    return results
+
+
+def load_table_definitions(definitions_path) -> TableDefinition:
+    path = Path(definitions_path)
+    assert path.exists()
+    return json.loads(path.read_text())

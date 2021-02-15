@@ -1,28 +1,26 @@
-import re
-from typing import Iterable
+from typing import Iterable, List
 
-from geopackage_validator.validations_overview.validations_overview import (
-    create_validation_message,
-    result_format,
-)
+from geopackage_validator.validations import validator
+from geopackage_validator.constants import SNAKE_CASE_REGEX
 
 
-def layername_check_query(dataset) -> Iterable[str]:
-    for i in range(dataset.GetLayerCount()):
-        layer = dataset.GetLayerByIndex(i)
-        yield layer.GetName()
+def query_layernames(dataset) -> List[str]:
+    return [layer.GetName() for layer in dataset]
 
 
-def layername_check(layername_list: Iterable[str]):
-    assert layername_list is not None
+class LayerNameValidator(validator.Validator):
+    """Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores."""
 
-    results = []
+    code = 1
+    level = validator.ValidationLevel.ERROR
+    message = "Error layer: {layer}"
 
-    for layername in layername_list:
-        match_valid = re.fullmatch(r"^[a-z][a-z0-9_]*$", layername)
-        if match_valid is None:
-            results.append(
-                create_validation_message(err_index="layername", layer=layername)
-            )
+    def check(self) -> Iterable[str]:
+        layernames = query_layernames(self.dataset)
+        return self.check_layernames(layernames)
 
-    return result_format("layername", results)
+    def check_layernames(self, layernames: Iterable[str]):
+        assert layernames is not None
+        return [
+            self.message.format(layer=layername) for layername in layernames if not SNAKE_CASE_REGEX.fullmatch(layername)
+        ]

@@ -1,4 +1,4 @@
-from geopackage_validator.validate import determine_validations_to_use
+from geopackage_validator.validate import validations_to_use
 from geopackage_validator.validations.validate_all import validate_all
 
 
@@ -13,7 +13,7 @@ def test_validate_single_validation():
     validate_all(
         "tests/data/test_layername.gpkg",
         table_definitions_path="",
-        validations=["RQ1"],
+        requested_validations=["RQ1"],
         results=results,
     )
     assert len(results) == 1
@@ -25,7 +25,7 @@ def test_validate_single_validation_no_error():
     validate_all(
         "tests/data/test_layername.gpkg",
         table_definitions_path="",
-        validations=["RQ2"],
+        requested_validations=["RQ2"],
         results=results,
     )
     assert len(results) == 0
@@ -36,7 +36,7 @@ def test_validate_all_validations_no_error():
     validate_all(
         "tests/data/test_layername.gpkg",
         table_definitions_path="",
-        validations=determine_validations_to_use(
+        requested_validations=validations_to_use(
             validations="ALL", validations_path=None
         ),
         results=results,

@@ -1,57 +1,53 @@
 from typing import Iterable, Tuple
 
-from geopackage_validator.validations_overview.validations_overview import (
-    create_validation_message,
-    result_format,
-)
+from geopackage_validator.validations import validator
 
+
+# TODO: layer or table: make a choice
 
 def layerfeature_check_query(dataset) -> Iterable[Tuple[str, int, int]]:
-    for i in range(dataset.GetLayerCount()):
-        layer = dataset.GetLayerByIndex(i)
+    for layer in dataset:
+        layer_name = layer.GetName()
 
         table_featurecount = dataset.ExecuteSQL(
-            "SELECT count(*) from {table_name}".format(table_name=layer.GetName())
+            "SELECT count(*) from {table_name}".format(table_name=layer_name)
         )
-        table = table_featurecount.GetNextFeature()
+        (table_count, ) = table_featurecount.GetNextFeature()
 
         dataset.ReleaseResultSet(table_featurecount)
 
-        yield layer.GetName(), table[0], layer.GetFeatureCount()
+        yield layer_name, table_count, layer.GetFeatureCount()
 
 
-def layerfeature_check_featurecount(
-    layerfeaturecount_list: Iterable[Tuple[str, int, int]]
-):
-    assert layerfeaturecount_list is not None
+class NonEmptyLayerValidator(validator.Validator):
+    """Layers must have at least one feature."""
 
-    results = []
+    code = 2
+    level = validator.ValidationLevel.ERROR
+    message = "Error layer: {layer}"
 
-    for layername, feature_count_real, feature_count_ogr in layerfeaturecount_list:
-        if feature_count_real == 0:
-            results.append(
-                create_validation_message(err_index="layerfeature", layer=layername)
-            )
+    def check(self) -> Iterable[str]:
+        counts = layerfeature_check_query(self.dataset)
+        return self.layerfeature_check_featurecount(counts)
 
-    return result_format("layerfeature", results)
+    def layerfeature_check_featurecount(self, counts: Iterable[Tuple[str, int, int]]):
+        assert counts is not None
+        return [self.message.format(layer=layer) for layer, count, _ in counts if counts == 0]
 
 
-def layerfeature_check_ogr_index(
-    layerfeaturecount_list: Iterable[Tuple[str, int, int]]
-):
-    assert layerfeaturecount_list is not None
+class OGRIndexValidator(validator.Validator):
+    """OGR indexed feature counts must be up to date"""
 
-    results = []
+    code = 11
+    level = validator.ValidationLevel.ERROR
+    message = "OGR index for feature count is not up to date for table: {layer}. Indexed feature count: {ogr_count}, real feature count: {count}"
 
-    for layername, feature_count_real, feature_count_ogr in layerfeaturecount_list:
-        if feature_count_real != feature_count_ogr:
-            results.append(
-                create_validation_message(
-                    err_index="layerfeature_ogr",
-                    layer=layername,
-                    feature_count_real=feature_count_real,
-                    feature_count_ogr=feature_count_ogr,
-                )
-            )
+    def layerfeature_check_ogr_index(
+        self, layers: Iterable[Tuple[str, int, int]]
+    ):
+        assert layers is not None
 
-    return result_format("layerfeature_ogr", results)
+        return [
+            self.message.format(layer=name, count=count, ogr_count=ogr_count)
+            for name, count, ogr_count in layers if count != ogr_count
+        ]

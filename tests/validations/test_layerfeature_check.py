@@ -1,29 +1,29 @@
 from geopackage_validator.gdal.dataset import open_dataset
 from geopackage_validator.validations.layerfeature_check import (
-    layerfeature_check_featurecount,
+    NonEmptyLayerValidator,
+    OGRIndexValidator,
     layerfeature_check_query,
-    layerfeature_check_ogr_index,
 )
 
 
 def test_zerofeatures():
-    assert len(layerfeature_check_featurecount([("layer2", 1, 1)])) == 0
+    assert len(NonEmptyLayerValidator(None).layerfeature_check_featurecount([("layer2", 1, 1)])) == 0
 
 
 def test_onefeature():
-    results = layerfeature_check_featurecount([("layer1", 0, 0), ("layer2", 1, 1)])
+    results = NonEmptyLayerValidator(None).layerfeature_check_featurecount([("layer1", 0, 0), ("layer2", 1, 1)])
     assert len(results) == 1
     assert results[0]["validation_code"] == "RQ2"
     assert results[0]["locations"][0] == "Error layer: layer1"
 
 
 def test_featurecount_index_not_uptodate():
-    results = layerfeature_check_featurecount([("layer1", 1, 1), ("layer2", 1, 0)])
+    results = NonEmptyLayerValidator(None).layerfeature_check_featurecount([("layer1", 1, 1), ("layer2", 1, 0)])
     assert len(results) == 0
 
 
 def test_featurecount_index_not_uptodate_ogr_error():
-    results = layerfeature_check_ogr_index([("layer1", 1, 1), ("layer2", 1, 0)])
+    results = OGRIndexValidator(None).layerfeature_check_ogr_index([("layer1", 1, 1), ("layer2", 1, 0)])
     assert len(results) == 1
     assert results[0]["validation_code"] == "RQ11"
     assert (
@@ -33,7 +33,7 @@ def test_featurecount_index_not_uptodate_ogr_error():
 
 
 def test_featurecount_index_not_uptodate_ogr_success():
-    results = layerfeature_check_ogr_index([("layer1", 1, 1), ("layer2", 1, 1)])
+    results = OGRIndexValidator(None).layerfeature_check_ogr_index([("layer1", 1, 1), ("layer2", 1, 1)])
     assert len(results) == 0
 
 

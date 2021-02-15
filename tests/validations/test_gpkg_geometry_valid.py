@@ -1,21 +1,19 @@
 from geopackage_validator.gdal.dataset import open_dataset
-from geopackage_validator.validations.geometry_type_check import (
-    table_geometry_type_names_query,
-)
+from geopackage_validator.validations.geometry_type_check import query_geometry_types
 from geopackage_validator.validations.gpkg_geometry_valid import (
-    gpkg_geometry_match_table_check,
-    gpkg_geometry_valid_check_query,
-    gpkg_geometry_valid_check,
+    GpkgGeometryTypeNameValidator,
+    GeometryTypeEqualsGpkgDefinitionValidator,
+    query_gpkg_geometry_type_names,
     gpkg_geometry_match_table_check_query,
 )
 
 
 def test_gpkg_geometry_match_table_check():
-    assert len(gpkg_geometry_match_table_check([], [])) == 0
+    assert len(GeometryTypeEqualsGpkgDefinitionValidator(None).gpkg_geometry_match_table_check([], [])) == 0
 
 
 def test_gpkg_geometry_no_match_table_check():
-    results = gpkg_geometry_match_table_check(
+    results = GeometryTypeEqualsGpkgDefinitionValidator(None).gpkg_geometry_match_table_check(
         [("dummy_table", "GEOMETRY1")], [("dummy_table", "GEOMETRY2")]
     )
     assert len(results) == 1
@@ -28,16 +26,16 @@ def test_gpkg_geometry_no_match_table_check():
 
 def test_gpkg_match_valid_gemometries():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    geometry_type_names = gpkg_geometry_valid_check_query(dataset)
-    result = gpkg_geometry_valid_check(geometry_type_names)
+    geometry_type_names = query_gpkg_geometry_type_names(dataset)
+    result = GpkgGeometryTypeNameValidator(dataset).gpkg_geometry_valid_check(geometry_type_names)
     assert len(result) == 0
 
 
 def test_gpkg_geometry_match_table():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    table_geometry_type_names = table_geometry_type_names_query(dataset)
+    table_geometry_type_names = query_geometry_types(dataset)
     geometry_type_names = gpkg_geometry_match_table_check_query(dataset)
-    results = gpkg_geometry_match_table_check(
+    results = GeometryTypeEqualsGpkgDefinitionValidator(dataset).gpkg_geometry_match_table_check(
         table_geometry_type_names, geometry_type_names
     )
     assert len(results) == 0

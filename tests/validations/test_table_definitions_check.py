@@ -1,8 +1,5 @@
 from geopackage_validator.generate import generate_definitions_for_path
-from geopackage_validator.validations.table_definitions_check import (
-    table_definitions_check,
-)
-
+from geopackage_validator.validations.table_definitions_check import TableDefinitionValidator
 
 def test_table_definitions_check_correct():
     current_definitions = generate_definitions_for_path(
@@ -10,7 +7,7 @@ def test_table_definitions_check_correct():
     )
     assert (
         len(
-            table_definitions_check(
+            TableDefinitionValidator(None).check_table_definitions(
                 "tests/data/test_allcorrect_definition.json", current_definitions
             )
         )
@@ -31,7 +28,7 @@ def test_table_definitions_check_incorrect_geometry():
         },
     }
 
-    diff = table_definitions_check(
+    diff = TableDefinitionValidator(None).check_table_definitions(
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
@@ -51,7 +48,7 @@ def test_table_definitions_check_incorrect_projection():
         },
     }
 
-    diff = table_definitions_check(
+    diff = TableDefinitionValidator(None).check_table_definitions(
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
 
@@ -79,7 +76,7 @@ def test_table_definitions_check_incorrect_column_name():
         },
     }
 
-    diff = table_definitions_check(
+    diff = TableDefinitionValidator(None).check_table_definitions(
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1
@@ -95,7 +92,7 @@ def test_table_definitions_check_table_changed():
         },
     }
 
-    diff = table_definitions_check(
+    diff = TableDefinitionValidator(None).check_table_definitions(
         "tests/data/test_allcorrect_definition.json", current_definitions
     )
     assert len(diff) == 1

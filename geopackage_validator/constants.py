@@ -1,3 +1,5 @@
+import re
+
 ALLOWED_PROJECTIONS_LIST = [
     28992,
     3034,
@@ -31,3 +33,5 @@ VALID_GEOMETRIES = [
     "MULTILINESTRING",
     "MULTIPOLYGON",
 ]
+
+SNAKE_CASE_REGEX = re.compile(r"^[a-z][a-z0-9_]*$")

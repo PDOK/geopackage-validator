@@ -2,50 +2,38 @@ from random import randint
 from typing import Iterable, Tuple, List
 
 from geopackage_validator.constants import VALID_GEOMETRIES
-from geopackage_validator.validations_overview.validations_overview import (
-    create_validation_message,
-    result_format,
-)
+from geopackage_validator.validations import validator
 
 
-def table_geometry_type_names_query(dataset) -> Iterable[Tuple[str, str]]:
-    for layer_index in range(dataset.GetLayerCount()):
-        layer = dataset.GetLayerByIndex(layer_index)
-        features = layer.GetFeatureCount()
-        if features == 1:
-            for feature in layer:
-                yield from get_layer_name_and_geometry_name(feature, layer)
-        else:
-            # select a maximum of 100 random elements/features from the layer
-            random_feature_indexes: List[int] = {
-                randint(1, features) for _ in range(min(features, 100))
-            }
-            for randomIndex in random_feature_indexes:
-                feature = layer.GetFeature(randomIndex)
-                yield from get_layer_name_and_geometry_name(feature, layer)
+def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
+    for layer in dataset:
+        feature_count = layer.GetFeatureCount()
+        layer_name = layer.GetName()
+
+        random_feature_indexes = {
+            randint(1, feature_count) for _ in range(min(feature_count, 100))
+        }
+        for random_index in random_feature_indexes:
+            feature = layer.GetFeature(random_index)
+            yield layer_name, feature.GetGeometryRef().GetGeometryName() or "UNKNOWN"
 
 
-def get_layer_name_and_geometry_name(feature, layer):
-    if feature.GetGeometryRef() is not None:
-        yield layer.GetName(), feature.GetGeometryRef().GetGeometryName()
-    else:
-        yield layer.GetName(), "UNKNOWN"
+class GeometryTypeValidator(validator.Validator):
+    """Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). (random sample of up to 100)"""
 
+    code = 3
+    level = validator.ValidationLevel.ERROR
+    message = "Error layer: {layer}, found geometry: {geometry}"
 
-def geometry_type_check(geometry_check_list: Iterable[Tuple[str, str]]):
-    assert geometry_check_list is not None
+    def check(self) -> Iterable[str]:
+        geometries = query_geometry_types(self.dataset)
+        return self.check_geometry_type(geometries)
 
-    results = []
+    def check_geometry_type(self, geometries: Iterable[Tuple[str, str]]):
+        assert geometries is not None
 
-    for geometry in geometry_check_list:
-        if geometry[1] not in VALID_GEOMETRIES:
-            results.append(
-                create_validation_message(
-                    err_index="geometry_type",
-                    layer=geometry[0],
-                    found_geometry=geometry[1],
-                    valid_geometries=",".join(VALID_GEOMETRIES),
-                )
-            )
-
-    return result_format("geometry_type", results)
+        return [
+            self.message.format(layer=layer, geometry=geometry)
+            for layer, geometry in geometries
+            if geometry not in VALID_GEOMETRIES
+        ]
