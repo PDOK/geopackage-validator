@@ -13,8 +13,7 @@ def test_zerofeatures():
 def test_onefeature():
     results = NonEmptyLayerValidator(None).layerfeature_check_featurecount([("layer1", 0, 0), ("layer2", 1, 1)])
     assert len(results) == 1
-    assert results[0]["validation_code"] == "RQ2"
-    assert results[0]["locations"][0] == "Error layer: layer1"
+    assert results[0] == "Error layer: layer1"
 
 
 def test_featurecount_index_not_uptodate():
@@ -25,11 +24,8 @@ def test_featurecount_index_not_uptodate():
 def test_featurecount_index_not_uptodate_ogr_error():
     results = OGRIndexValidator(None).layerfeature_check_ogr_index([("layer1", 1, 1), ("layer2", 1, 0)])
     assert len(results) == 1
-    assert results[0]["validation_code"] == "RQ11"
-    assert (
-        results[0]["locations"][0]
-        == "OGR index for feature count is not up to date for table: layer2. Indexed feature count: 0, real feature count: 1"
-    )
+    assert results[0] == "OGR index for feature count is not up to date for table: layer2. Indexed feature count: 0, real feature count: 1"
+
 
 
 def test_featurecount_index_not_uptodate_ogr_success():

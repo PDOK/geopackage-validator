@@ -17,11 +17,7 @@ def test_gpkg_geometry_no_match_table_check():
         [("dummy_table", "GEOMETRY1")], [("dummy_table", "GEOMETRY2")]
     )
     assert len(results) == 1
-    assert results[0]["validation_code"] == "RQ15"
-    assert (
-        results[0]["locations"][0]
-        == "Found geometry: GEOMETRY1, in layer: dummy_table, where gpkg_geometry is: GEOMETRY2."
-    )
+    assert results[0] == "Found geometry: GEOMETRY1, in layer: dummy_table, where gpkg_geometry is: GEOMETRY2."
 
 
 def test_gpkg_match_valid_gemometries():

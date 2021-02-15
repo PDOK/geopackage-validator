@@ -35,7 +35,7 @@ class Validator(ABC):
 
     def __init__(self, dataset, table_definitions=None):
         self.dataset = dataset
-        self.table_definitions = table_definitions
+        self.table_definitions = table_definitions # todo: Not sure if this should be in the abstract class
 
     def validate(self) -> List[Dict[str, List[str]]]:
         """TODO"""

@@ -71,7 +71,7 @@ def validate(
 
     table_definitions = load_table_definitions(table_definitions_path)
 
-    results += validate_all(gpkg_path, table_definitions, validations_executed)
+    results += validate_all(gpkg_path, table_definitions, validations_executed) # todo: wrong argument order and names could be better
 
     duration_seconds = time.monotonic() - duration_start
 
