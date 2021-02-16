@@ -6,7 +6,14 @@ from geopackage_validator.validations.rtree_present_check import (
 
 
 def test_rtree_present_all_tables():
-    assert len(RTreeExistsValidator(None).check_rtree_is_present(rtree_present_check_list=[])) == 0
+    assert (
+        len(
+            RTreeExistsValidator(None).check_rtree_is_present(
+                rtree_present_check_list=[]
+            )
+        )
+        == 0
+    )
 
 
 def test_rtree_present_no_tables():
@@ -17,9 +24,15 @@ def test_rtree_present_no_tables():
     assert results[0] == "Table without index: no table has an rtree index"
 
 
-
 def test_rtree_absent_one_table():
-    assert len(RTreeExistsValidator(None).check_rtree_is_present(rtree_present_check_list=["index_failed"])) == 1
+    assert (
+        len(
+            RTreeExistsValidator(None).check_rtree_is_present(
+                rtree_present_check_list=["index_failed"]
+            )
+        )
+        == 1
+    )
 
 
 def test_with_gpkg():

@@ -9,6 +9,12 @@ from geopackage_validator.validations import validator
 from geopackage_validator.generate import generate_table_definitions
 
 
+def get_definition_from_file(definitions_reference_path):
+    with open(definitions_reference_path) as json_file:
+        definitions_reference = json.load(json_file)
+        return definitions_reference
+
+
 class TableDefinitionValidator(validator.Validator):
     """Geopackage must conform to given JSON definitions."""
 
@@ -22,5 +28,5 @@ class TableDefinitionValidator(validator.Validator):
 
     def check_table_definitions(self, definitions_current: Dict[str, Dict[str, List[Column]]]):
         assert definitions_current is not None
-        deep_diff = DeepDiff(self.table_definitions, definitions_current).pretty()
-        return [self.message.format(difference) for difference in deep_diff.splitlines()]
+        deep_diff = DeepDiff(get_definition_from_file(self.table_definitions), definitions_current).pretty()
+        return [self.message.format(difference=difference) for difference in deep_diff.splitlines()]

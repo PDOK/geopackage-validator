@@ -38,4 +38,4 @@ class RTreeExistsValidator(validator.Validator):
 
     def check_rtree_is_present(self, rtree_present_check_list: Iterable[str]):
         assert rtree_present_check_list is not None
-        return [self.message.format(table=table) for table in rtree_present_check_list]
+        return [self.message.format(table_name=table) for table in rtree_present_check_list]

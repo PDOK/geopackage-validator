@@ -3,7 +3,7 @@ from geopackage_validator.validate import validations_to_use
 
 def test_validate_all_no_validations():
     results = []
-    #validate_all("tests/data/test_allcorrect.gpkg", "", [], results=results)
+    # validate_all("tests/data/test_allcorrect.gpkg", "", [], results=results)
     # assert len(results) == 0
     assert False
 

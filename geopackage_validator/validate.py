@@ -67,18 +67,18 @@ def validate(
 
     init_gdal(gdal_error_handler)
 
-    validations_executed = validations_to_use(validations_path, validations)
+    validations_to_execute = validations_to_use(validations_path, validations)
 
     table_definitions = load_table_definitions(table_definitions_path)
 
-    results += validate_all(gpkg_path, table_definitions, validations_executed) # todo: wrong argument order and names could be better
+    results += validate_all(gpkg_path, validations_to_execute, table_definitions)
 
     duration_seconds = time.monotonic() - duration_start
 
     log_output(
         results=results,
         filename=filename,
-        validations_executed=validations_executed,
+        validations_executed=validations_to_execute,
         start_time=start_time,
         duration_seconds=duration_seconds,
     )
