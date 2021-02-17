@@ -284,12 +284,7 @@ pipenv install --dev
 
 ## Releasing
 
-Pipenv installs zest.releaser which allows you to release the package to a git(hub) repo. It has a
-`fullrelease` command that asks you a few questions, which you all respond to with `<enter>`:
-
-```bash
-pipenv run fullrelease
-```
+Release in github by bumping to a higher version. 
 
 ## Install pyenv
 
