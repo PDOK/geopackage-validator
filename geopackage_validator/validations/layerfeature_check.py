@@ -12,7 +12,7 @@ def layerfeature_check_query(dataset) -> Iterable[Tuple[str, int, int]]:
         table_featurecount = dataset.ExecuteSQL(
             "SELECT count(*) from {table_name}".format(table_name=layer_name)
         )
-        (table_count, ) = table_featurecount.GetNextFeature()
+        (table_count,) = table_featurecount.GetNextFeature()
 
         dataset.ReleaseResultSet(table_featurecount)
 
@@ -32,7 +32,8 @@ class NonEmptyLayerValidator(validator.Validator):
 
     def layerfeature_check_featurecount(self, counts: Iterable[Tuple[str, int, int]]):
         assert counts is not None
-        return [self.message.format(layer=layer) for layer, count, _ in counts if counts == 0]
+        # todo: @William I don't like this check -> the name is vague - the error message is vague
+        return [self.message.format(layer=layer) for layer, count, _ in counts if count == 0]
 
 
 class OGRIndexValidator(validator.Validator):
@@ -41,6 +42,10 @@ class OGRIndexValidator(validator.Validator):
     code = 11
     level = validator.ValidationLevel.ERROR
     message = "OGR index for feature count is not up to date for table: {layer}. Indexed feature count: {ogr_count}, real feature count: {count}"
+
+    def check(self) -> Iterable[str]:
+        counts = layerfeature_check_query(self.dataset)
+        return self.layerfeature_check_ogr_index(counts)
 
     def layerfeature_check_ogr_index(
         self, layers: Iterable[Tuple[str, int, int]]

@@ -2,16 +2,12 @@ from geopackage_validator.validate import validations_to_use
 
 
 def test_determine_validations_to_use_param():
-    validations = validations_to_use(
-        validations="RQ2,RQ3", validations_path=None
-    )
+    validations = validations_to_use(validations="RQ2,RQ3", validations_path=None)
     assert validations == ["RQ2", "RQ3"]
 
 
 def test_determine_validations_to_use_param_spaces():
-    validations = validations_to_use(
-        validations="RQ10, RQ3", validations_path=None
-    )
+    validations = validations_to_use(validations="RQ10, RQ3", validations_path=None)
     assert validations == ["RQ10", "RQ3"]
 
 

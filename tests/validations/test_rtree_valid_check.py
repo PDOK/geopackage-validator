@@ -10,12 +10,11 @@ def test_rtree_valid_all_tables():
 
 
 def test_rtree_invalidvalid_one_tables():
-    results = ValidRtreeValidator(None).check_rtree_is_valid(rtree_index_list=["tablename"])
-    assert len(results) == 1
-    assert results[0]["validation_code"] == "RQ10"
-    assert (
-        results[0]["locations"][0] == "Invalid rtree index found for table: tablename"
+    results = ValidRtreeValidator(None).check_rtree_is_valid(
+        rtree_index_list=["tablename"]
     )
+    assert len(results) == 1
+    assert results[0] == "Invalid rtree index found for table: tablename"
 
 
 def test_with_gpkg():
