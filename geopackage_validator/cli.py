@@ -8,18 +8,15 @@ import traceback
 import click
 import click_log
 
-from geopackage_validator.generate import generate_definitions_for_path
-from geopackage_validator.minio.minio_context import minio_resource
-from geopackage_validator.output import log_output
-from geopackage_validator.validations_overview.validations_overview import (
-    get_validations_list,
-    result_format,
-)
-
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
 
-from geopackage_validator.validate import validate
+
+from geopackage_validator.generate import generate_definitions_for_path
+from geopackage_validator.minio.minio_context import minio_resource
+from geopackage_validator.output import log_output
+from geopackage_validator.validations import validator
+from geopackage_validator.validate import validate, get_validation_descriptions
 import json
 
 
@@ -156,17 +153,18 @@ def geopackage_validator_command(
                 )
     except Exception:
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        log_output(
-            result_format(
-                "system",
-                trace=[
-                    t.strip("\n")
-                    for t in traceback.format_exception(
-                        exc_type, exc_value, exc_traceback
-                    )
-                ],
-            )
+        trace = [
+            t.strip("\n")
+            for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
+        ]
+        output = validator.format_result(
+            validation_code="ERROR",
+            validation_description="No unexpected errors must occur.",
+            level=validator.ValidationLevel.UNKNOWN,
+            trace=trace,
         )
+
+        log_output(results=[output])
 
 
 @cli.command(
@@ -247,9 +245,9 @@ def geopackage_validator_command_generate_table_definitions(
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_show_validations():
     try:
-        validations_list = get_validations_list()
-        print(json.dumps(validations_list, indent=4, sort_keys=True))
-    except:
+        validation_codes = get_validation_descriptions()
+        print(json.dumps(validation_codes, indent=4, sort_keys=True))
+    except Exception:
         logger.exception("Error while listing validations")
 
 
