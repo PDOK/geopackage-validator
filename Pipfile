@@ -23,12 +23,12 @@ name = "pypi"
 "pdok-geopackage-validator" = {path = ".", editable = true}
 "Click" = "==7.*"
 "click-log" = "==0.3.*"
-"gdal" = ">=3.0.4"
+"gdal" = "==3.0.4"
 "minio" = "*"
 "deepdiff" = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3"
 
 [pipenv]
 # This is necessary to be able to install black and pipenv-black.
