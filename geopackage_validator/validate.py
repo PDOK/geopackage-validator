@@ -2,20 +2,17 @@ import json
 import logging
 import time
 from datetime import datetime
-from typing import Optional, Dict
 from pathlib import Path
 
 from geopackage_validator.output import log_output
 from geopackage_validator import validations
-from geopackage_validator.validations.validator import Validator
-from geopackage_validator.generate import TableDefinition
+from geopackage_validator.validations.validator import (
+    Validator,
+    ValidationLevel,
+    format_result,
+)
 from geopackage_validator import gdal_utils
 
-
-from geopackage_validator.validations_overview.validations_overview import (
-    result_format,
-    VALIDATIONS,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -60,8 +57,13 @@ def validate(
     # TODO: handle with Validator or create ErrorHandler that is inherited by Validator?
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
-        result = result_format("gdal", [error.replace("\n", " ")])
-        results.extend(result)
+        result = format_result(
+            validation_code="GDAL_ERROR",
+            validation_description="No unexpected GDAL errors must occur.",
+            level=ValidationLevel.UNKNOWN,
+            trace=[error.replace("\n", " ")],
+        )
+        results.append(result)
 
     init_gdal(gdal_error_handler)
 
@@ -83,10 +85,19 @@ def validate(
     )
 
 
-def validate_all(gpkg_path, requested_validations, table_definitions):
-    validator_classes = [getattr(validations, v) for v in validations.__all__]
-    results = []
+def validate_all(gpkg_path, requested_validations, context):
+    validator_classes = get_validators(requested_validations)
+    return [validator(gpkg_path, context).validate() for validator in validator_classes]
 
+
+def get_validation_codes(requested_validations="ALL"):
+    validation_classes = get_validators(requested_validations)
+    return [klass.validation_code for klass in validation_classes]
+
+
+def get_validators(requested_validations="ALL"):
+    validator_classes = [getattr(validations, v) for v in validations.__all__]
+    validators = []
     for validator in validator_classes:
         is_validator = issubclass(validator, Validator)
         validator_is_requested = is_validator and (
@@ -94,12 +105,6 @@ def validate_all(gpkg_path, requested_validations, table_definitions):
             or validator.validation_code in requested_validations
         )
         if validator_is_requested:
-            results += validator(gpkg_path, table_definitions).validate()
+            validators.append(validator)
 
-    return results
-
-
-def load_table_definitions(definitions_path) -> TableDefinition:
-    path = Path(definitions_path)
-    assert path.exists()
-    return json.loads(path.read_text())
+    return validators

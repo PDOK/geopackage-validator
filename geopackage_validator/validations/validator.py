@@ -6,10 +6,18 @@ from geopackage_validator.gdal_utils import open_dataset
 
 
 class ValidationLevel(Enum):
+    UNKNOWN = 0
     RQ = 1
     ERROR = 1
     RC = 2
     RECCOMENDATION = 2
+
+
+VALIDATION_LEVELS = {
+    ValidationLevel.UNKNOWN: "unknown_error",
+    ValidationLevel.RQ: "error",
+    ValidationLevel.RC: "recommendation",
+}
 
 
 class classproperty:
@@ -30,6 +38,20 @@ class classproperty:
         return self
 
 
+def format_result(
+    validation_code: str,
+    validation_description: str,
+    level: ValidationLevel,
+    trace: List[str],
+):
+    return {
+        "validation_code": validation_code,
+        "validation_description": validation_description,
+        "level": VALIDATION_LEVELS[level],
+        "locations": trace,
+    }
+
+
 class Validator(ABC):
     code: int
     level: ValidationLevel
@@ -42,21 +64,17 @@ class Validator(ABC):
 
     def validate(self) -> List[Dict[str, List[str]]]:
         """TODO"""
-        return self.format(list(self.check()))
-
-    def format(self, trace: List[str]) -> List[Dict[str, List[str]]]:
-        """TODO"""
-        if len(trace) == 0:
-            return []
-
-        return [
-            {
-                "validation_code": self.validation_code,
-                "validation_description": self.__doc__,
-                "level": self.level.name,
-                "locations": trace,
-            }
-        ]
+        results = list(self.check())
+        if results:
+            return [
+                format_result(
+                    validation_code=self.validation_code,
+                    validation_description=self.__doc__,
+                    level=self.level,
+                    trace=results,
+                ),
+            ]
+        return []
 
     @abstractmethod
     def check(self) -> Iterable[str]:
