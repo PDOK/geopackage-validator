@@ -12,6 +12,7 @@ name = "pypi"
 "pytest-cov" = "*"
 "pytest-black" = "*"
 "pytest-flakes" = "*"
+"pytest-mock" = "*"
 
 [packages]
 # === This package ===
