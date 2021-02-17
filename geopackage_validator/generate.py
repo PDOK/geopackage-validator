@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, TypedDict
+from typing import Dict, List
 
 from osgeo import ogr
 from osgeo.ogr import DataSource
@@ -9,13 +9,7 @@ from geopackage_validator.gdal_utils import check_gdal_version, check_gdal_insta
 logger = logging.getLogger(__name__)
 
 
-class Column(TypedDict):
-    column_name: str
-    geometry_type_name: str
-    data_type: str
-
-
-TableDefinition = Dict[str, Dict[str, List[Column]]]
+TableDefinition = Dict[str, Dict[str, List[Dict[str, str]]]]
 
 
 def generate_table_definitions(dataset: DataSource) -> TableDefinition:
@@ -44,8 +38,7 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
         )
 
         column_list = [
-            Column(column_name=item[1], data_type=item[2].split("(")[0])
-            for item in info
+            dict(column_name=item[1], data_type=item[2].split("(")[0]) for item in info
         ]
 
         table_list[table[0]] = {
@@ -64,7 +57,7 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
     return result
 
 
-def generate_definitions_for_path(gpkg_path: str) -> Dict[str, Dict[str, List[Column]]]:
+def generate_definitions_for_path(gpkg_path: str) -> TableDefinition:
     """Starts the geopackage validation."""
     check_gdal_installed()
     check_gdal_version()
