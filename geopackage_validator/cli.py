@@ -16,7 +16,7 @@ from geopackage_validator.generate import generate_definitions_for_path
 from geopackage_validator.minio.minio_context import minio_resource
 from geopackage_validator.output import log_output
 from geopackage_validator.validations import validator
-from geopackage_validator.validate import validate, get_validation_codes
+from geopackage_validator.validate import validate, get_validation_descriptions
 import json
 
 
@@ -245,9 +245,9 @@ def geopackage_validator_command_generate_table_definitions(
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_show_validations():
     try:
-        validation_codes = get_validation_codes()
+        validation_codes = get_validation_descriptions()
         print(json.dumps(validation_codes, indent=4, sort_keys=True))
-    except:
+    except Exception:
         logger.exception("Error while listing validations")
 
 

@@ -1,11 +1,9 @@
 from typing import Iterable, List, Dict
 from abc import ABC, abstractmethod
-from enum import Enum
-
-from geopackage_validator.gdal_utils import open_dataset
+from enum import IntEnum
 
 
-class ValidationLevel(Enum):
+class ValidationLevel(IntEnum):
     UNKNOWN = 0
     RQ = 1
     ERROR = 1
@@ -57,10 +55,8 @@ class Validator(ABC):
     level: ValidationLevel
     message: str
 
-    def __init__(self, gpkg_path, table_definitions=None):
-        self.gpkg_path = gpkg_path
-        self.dataset = open_dataset(gpkg_path)
-        self.table_definitions = table_definitions
+    def __init__(self, dataset, **kwargs):
+        self.dataset = dataset
 
     def validate(self) -> List[Dict[str, List[str]]]:
         """TODO"""

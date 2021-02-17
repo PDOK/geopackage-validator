@@ -7,6 +7,9 @@ from geopackage_validator.validations.layerfeature_check import (
     OGRIndexValidator,
     NonEmptyLayerValidator,
 )
+from geopackage_validator.validations.table_definitions_check import (
+    TableDefinitionValidator,
+)
 from geopackage_validator.validations.layername_check import LayerNameValidator
 from geopackage_validator.validations.rtree_present_check import RTreeExistsValidator
 from geopackage_validator.validations.rtree_valid_check import ValidRtreeValidator
@@ -32,6 +35,7 @@ __all__ = [
     "LayerNameValidator",
     "RTreeExistsValidator",
     "ValidRtreeValidator",
+    "TableDefinitionValidator",
     "SrsValidator",
     "SrsEqualValidator",
     "GpkgGeometryTypeNameValidator",

@@ -17,23 +17,25 @@ from geopackage_validator import gdal_utils
 logger = logging.getLogger(__name__)
 
 
-# TODO: this is really complex for what it ought to do. this can be 10 lines tops.
+def validators_to_use(validations_path="", validation_codes=""):
+    validator_classes = get_validator_classes()
+    if validation_codes == "ALL" or (not validations_path and not validation_codes):
+        return validator_classes
 
-
-def validations_to_use(validations_path="", validations=""):
-    if validations == "ALL" or (not validations_path and not validations):
-        return "ALL"
-
-    validations = validations.replace(" ", "").split(",")
+    codes = []
 
     if validations_path:
         validations_from_file = Path(validations_path).read_text()
         try:
-            validations += json.loads(validations_from_file)["validations"]
+            codes += json.loads(validations_from_file)["validations"]
         except KeyError:
             raise Exception("Validation path file does not contain any validations")
 
-    return validations
+    codes += [v for v in validation_codes.replace(" ", "").split(",") if v]
+
+    validator_dict = {v.validation_code: v for v in validator_classes}
+
+    return [validator_dict[code] for code in codes]
 
 
 def validate(
@@ -67,44 +69,39 @@ def validate(
 
     init_gdal(gdal_error_handler)
 
-    validations_to_execute = validations_to_use(validations_path, validations)
+    validators = validators_to_use(validations_path, validations)
 
     context = {"table_definitions_path": table_definitions_path}
 
     # todo: load in lower level or refactor lower code
-    results += validate_all(gpkg_path, validations_to_execute, context)
+
+    dataset = gdal_utils.open_dataset(gpkg_path)
+    results += [validator(dataset, **context).validate() for validator in validators]
 
     duration_seconds = time.monotonic() - duration_start
 
     log_output(
         results=results,
         filename=filename,
-        validations_executed=validations_to_execute,
+        validations_executed=get_validation_codes(validators),
         start_time=start_time,
         duration_seconds=duration_seconds,
     )
 
 
-def validate_all(gpkg_path, requested_validations, context):
-    validator_classes = get_validators(requested_validations)
-    return [validator(gpkg_path, context).validate() for validator in validator_classes]
+def get_validation_descriptions():
+    validation_classes = get_validator_classes()
+    return {klass.validation_code: klass.__doc__ for klass in validation_classes}
 
 
-def get_validation_codes(requested_validations="ALL"):
-    validation_classes = get_validators(requested_validations)
-    return [klass.validation_code for klass in validation_classes]
+def get_validation_codes(validators):
+    return [validator.validation_code for validator in validators]
 
 
-def get_validators(requested_validations="ALL"):
-    validator_classes = [getattr(validations, v) for v in validations.__all__]
-    validators = []
-    for validator in validator_classes:
-        is_validator = issubclass(validator, Validator)
-        validator_is_requested = is_validator and (
-            requested_validations == "ALL"
-            or validator.validation_code in requested_validations
-        )
-        if validator_is_requested:
-            validators.append(validator)
-
-    return validators
+def get_validator_classes():
+    validator_classes = [
+        getattr(validations, validator)
+        for validator in validations.__all__
+        if issubclass(getattr(validations, validator), Validator)
+    ]
+    return sorted(validator_classes, key=lambda v: (v.level, v.code))
