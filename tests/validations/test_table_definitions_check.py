@@ -30,7 +30,7 @@ def test_table_definitions_check_incorrect_geometry():
     }
 
     diff = TableDefinitionValidator(
-        None, "tests/data/test_allcorrect_definition.json"
+        None, table_definitions_path="tests/data/test_allcorrect_definition.json"
     ).check_table_definitions(current_definitions)
 
     assert len(diff) == 1

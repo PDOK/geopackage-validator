@@ -19,7 +19,7 @@ def query_rtree_presence(dataset) -> Iterable[str]:
         "where not exists(select * from gpkg_extensions gce where gce.table_name = gc.table_name "
         "and extension_name = 'gpkg_rtree_index');"
     )
-    for (index, ) in indexes:
+    for (index,) in indexes:
         yield index
 
     dataset.ReleaseResultSet(indexes)
@@ -38,4 +38,6 @@ class RTreeExistsValidator(validator.Validator):
 
     def check_rtree_is_present(self, rtree_present_check_list: Iterable[str]):
         assert rtree_present_check_list is not None
-        return [self.message.format(table_name=table) for table in rtree_present_check_list]
+        return [
+            self.message.format(table_name=table) for table in rtree_present_check_list
+        ]

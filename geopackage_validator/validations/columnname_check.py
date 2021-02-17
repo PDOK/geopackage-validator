@@ -36,5 +36,6 @@ class ColumnNameValidator(validator.Validator):
         assert column_names is not None
         return [
             self.message.format(column_name=column_name, table_name=table_name)
-            for table_name, column_name in column_names if not SNAKE_CASE_REGEX.fullmatch(column_name)
+            for table_name, column_name in column_names
+            if not SNAKE_CASE_REGEX.fullmatch(column_name)
         ]

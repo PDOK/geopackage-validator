@@ -5,14 +5,11 @@ from datetime import datetime
 from typing import Optional, Dict
 from pathlib import Path
 
-from geopackage_validator.gdal.prerequisites import (
-    check_gdal_installed,
-    check_gdal_version,
-)
 from geopackage_validator.output import log_output
 from geopackage_validator import validations
 from geopackage_validator.validations.validator import Validator
 from geopackage_validator.generate import TableDefinition
+from geopackage_validator import gdal_utils
 
 
 from geopackage_validator.validations_overview.validations_overview import (
@@ -24,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 # TODO: this is really complex for what it ought to do. this can be 10 lines tops.
+
 
 def validations_to_use(validations_path="", validations=""):
     if validations == "ALL" or (not validations_path and not validations):
@@ -51,11 +49,11 @@ def validate(
     """Starts the geopackage validation."""
     start_time = datetime.now()
     duration_start = time.monotonic()
-    check_gdal_installed()
-    check_gdal_version()
+    gdal_utils.check_gdal_installed()
+    gdal_utils.check_gdal_version()
 
     # Explicit import here
-    from geopackage_validator.gdal.init import init_gdal
+    from geopackage_validator.gdal_utils import init_gdal
 
     results = []
 
@@ -69,9 +67,10 @@ def validate(
 
     validations_to_execute = validations_to_use(validations_path, validations)
 
-    table_definitions = load_table_definitions(table_definitions_path)
+    context = {"table_definitions_path": table_definitions_path}
 
-    results += validate_all(gpkg_path, validations_to_execute, table_definitions)
+    # todo: load in lower level or refactor lower code
+    results += validate_all(gpkg_path, validations_to_execute, context)
 
     duration_seconds = time.monotonic() - duration_start
 
@@ -84,17 +83,18 @@ def validate(
     )
 
 
-def validate_all(dataset, requested_validations, table_definitions):
+def validate_all(gpkg_path, requested_validations, table_definitions):
     validator_classes = [getattr(validations, v) for v in validations.__all__]
     results = []
 
     for validator in validator_classes:
         is_validator = issubclass(validator, Validator)
         validator_is_requested = is_validator and (
-             requested_validations == "ALL" or validator.validation_code in requested_validations
+            requested_validations == "ALL"
+            or validator.validation_code in requested_validations
         )
         if validator_is_requested:
-            results += validator(dataset, table_definitions).validate()
+            results += validator(gpkg_path, table_definitions).validate()
 
     return results
 
