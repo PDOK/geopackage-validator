@@ -2,7 +2,7 @@ from typing import Iterable, List, Dict
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from geopackage_validator.gdal.dataset import open_dataset
+from geopackage_validator.gdal_utils import open_dataset
 
 
 class ValidationLevel(Enum):

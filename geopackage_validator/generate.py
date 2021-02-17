@@ -4,10 +4,7 @@ from typing import Dict, List, TypedDict
 from osgeo import ogr
 from osgeo.ogr import DataSource
 
-from geopackage_validator.gdal.prerequisites import (
-    check_gdal_installed,
-    check_gdal_version,
-)
+from geopackage_validator.gdal_utils import check_gdal_version, check_gdal_installed
 
 logger = logging.getLogger(__name__)
 
