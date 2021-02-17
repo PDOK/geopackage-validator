@@ -2,6 +2,8 @@ from typing import Iterable, List, Dict
 from abc import ABC, abstractmethod
 from enum import Enum
 
+from geopackage_validator.gdal.dataset import open_dataset
+
 
 class ValidationLevel(Enum):
     RQ = 1
@@ -33,8 +35,9 @@ class Validator(ABC):
     level: ValidationLevel
     message: str
 
-    def __init__(self, dataset, table_definitions=None):
-        self.dataset = dataset
+    def __init__(self, gpkg_path, table_definitions=None):
+        self.gpkg_path = gpkg_path
+        self.dataset = open_dataset(gpkg_path)
         self.table_definitions = table_definitions
 
     def validate(self) -> List[Dict[str, List[str]]]:

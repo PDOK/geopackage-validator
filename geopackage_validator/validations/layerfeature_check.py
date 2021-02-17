@@ -5,6 +5,7 @@ from geopackage_validator.validations import validator
 
 # TODO: layer or table: make a choice
 
+
 def layerfeature_check_query(dataset) -> Iterable[Tuple[str, int, int]]:
     for layer in dataset:
         layer_name = layer.GetName()
@@ -33,7 +34,9 @@ class NonEmptyLayerValidator(validator.Validator):
     def layerfeature_check_featurecount(self, counts: Iterable[Tuple[str, int, int]]):
         assert counts is not None
         # todo: @William I don't like this check -> the name is vague - the error message is vague
-        return [self.message.format(layer=layer) for layer, count, _ in counts if count == 0]
+        return [
+            self.message.format(layer=layer) for layer, count, _ in counts if count == 0
+        ]
 
 
 class OGRIndexValidator(validator.Validator):
@@ -47,12 +50,11 @@ class OGRIndexValidator(validator.Validator):
         counts = layerfeature_check_query(self.dataset)
         return self.layerfeature_check_ogr_index(counts)
 
-    def layerfeature_check_ogr_index(
-        self, layers: Iterable[Tuple[str, int, int]]
-    ):
+    def layerfeature_check_ogr_index(self, layers: Iterable[Tuple[str, int, int]]):
         assert layers is not None
 
         return [
             self.message.format(layer=name, count=count, ogr_count=ogr_count)
-            for name, count, ogr_count in layers if count != ogr_count
+            for name, count, ogr_count in layers
+            if count != ogr_count
         ]

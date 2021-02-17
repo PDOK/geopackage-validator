@@ -22,5 +22,7 @@ class LayerNameValidator(validator.Validator):
     def check_layernames(self, layernames: Iterable[str]):
         assert layernames is not None
         return [
-            self.message.format(layer=layername) for layername in layernames if not SNAKE_CASE_REGEX.fullmatch(layername)
+            self.message.format(layer=layername)
+            for layername in layernames
+            if not SNAKE_CASE_REGEX.fullmatch(layername)
         ]

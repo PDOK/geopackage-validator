@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 # TODO: this is really complex for what it ought to do. this can be 10 lines tops.
 
+
 def validations_to_use(validations_path="", validations=""):
     if validations == "ALL" or (not validations_path and not validations):
         return "ALL"
@@ -69,6 +70,7 @@ def validate(
 
     validations_to_execute = validations_to_use(validations_path, validations)
 
+    # todo: load in lower level or refactor lower code
     table_definitions = load_table_definitions(table_definitions_path)
 
     results += validate_all(gpkg_path, validations_to_execute, table_definitions)
@@ -84,22 +86,24 @@ def validate(
     )
 
 
-def validate_all(dataset, requested_validations, table_definitions):
+def validate_all(gpkg_path, requested_validations, table_definitions):
     validator_classes = [getattr(validations, v) for v in validations.__all__]
     results = []
 
     for validator in validator_classes:
         is_validator = issubclass(validator, Validator)
         validator_is_requested = is_validator and (
-             requested_validations == "ALL" or validator.validation_code in requested_validations
+            requested_validations == "ALL"
+            or validator.validation_code in requested_validations
         )
         if validator_is_requested:
-            results += validator(dataset, table_definitions).validate()
+            results += validator(gpkg_path, table_definitions).validate()
 
     return results
 
 
 def load_table_definitions(definitions_path) -> TableDefinition:
-    path = Path(definitions_path)
-    assert path.exists()
-    return json.loads(path.read_text())
+    # path = Path(definitions_path)
+    # assert path.exists()
+    # return json.loads(path.read_text())
+    pass
