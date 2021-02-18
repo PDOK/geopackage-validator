@@ -79,4 +79,3 @@ def test_validate_with_rq8_by_setting_definitions_path():
     )
     assert result.exit_code == 0
     assert "RQ8" in result.output
-
