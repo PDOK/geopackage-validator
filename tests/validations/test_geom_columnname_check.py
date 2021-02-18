@@ -1,16 +1,16 @@
-from geopackage_validator.gdal.dataset import open_dataset
+from geopackage_validator.gdal_utils import open_dataset
 from geopackage_validator.validations.geom_column_check import (
-    geom_columnname_check_query,
-    geom_columnname_check,
-    geom_equal_columnname_check,
+    query_geom_columnname,
+    GeomColumnNameValidator,
+    GeomColumnNameEqualValidator,
 )
 
 
 def test_geom_name_success():
     assert (
         len(
-            geom_columnname_check(
-                column_info_list=[
+            GeomColumnNameValidator(None).geom_columnname_check(
+                columns=[
                     ("table1", "geom"),
                     ("table2", "geom"),
                     ("table3", "geom"),
@@ -23,8 +23,8 @@ def test_geom_name_success():
 
 
 def test_geom_name_failure():
-    result = geom_columnname_check(
-        column_info_list=[
+    result = GeomColumnNameValidator(None).geom_columnname_check(
+        columns=[
             ("table1", "geom"),
             ("table2", "geom2"),
             ("table3", "geom"),
@@ -32,16 +32,14 @@ def test_geom_name_failure():
         ]
     )
 
-    assert len(result) == 1
-    assert result[0]["validation_code"] == "RC1"
-    assert len(result[0]["locations"]) == 2
+    assert len(result) == 2
 
 
 def test_equal_name_success():
     assert (
         len(
-            geom_equal_columnname_check(
-                column_info_list=[
+            GeomColumnNameEqualValidator(None).geom_equal_columnname_check(
+                columns=[
                     ("table1", "geometry"),
                     ("table2", "geometry"),
                     ("table3", "geometry"),
@@ -56,8 +54,8 @@ def test_equal_name_success():
 def test_equal_name_failure():
     assert (
         len(
-            geom_equal_columnname_check(
-                column_info_list=[
+            GeomColumnNameEqualValidator(None).geom_equal_columnname_check(
+                columns=[
                     ("table1", "geometry"),
                     ("table2", "geom"),
                     ("table3", "geometry"),
@@ -71,7 +69,7 @@ def test_equal_name_failure():
 
 def test_with_gpkg():
     dataset = open_dataset("tests/data/test_geom_columnname.gpkg")
-    checks = list(geom_columnname_check_query(dataset))
+    checks = list(query_geom_columnname(dataset))
     assert len(checks) == 3
     assert checks[0][0] == "test_columnname"
     assert checks[0][1] == "geom"

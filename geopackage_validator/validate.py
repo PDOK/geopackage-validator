@@ -1,96 +1,122 @@
 import json
 import logging
-import time
-from datetime import datetime
-from typing import Optional
+from pathlib import Path
 
-from geopackage_validator.gdal.prerequisites import (
-    check_gdal_installed,
-    check_gdal_version,
+from geopackage_validator.generate import TableDefinition
+from geopackage_validator import validations as validation
+from geopackage_validator.validations.validator import (
+    Validator,
+    ValidationLevel,
+    format_result,
 )
-from geopackage_validator.output import log_output
-from geopackage_validator.validations.validate_all import validate_all
-from geopackage_validator.validations_overview.validations_overview import (
-    result_format,
-    VALIDATIONS,
-)
+from geopackage_validator import gdal_utils
+
 
 logger = logging.getLogger(__name__)
 
+RQ8 = "RQ8"
 
-def determine_validations_to_use(
-    validations_path: Optional[str], validations: Optional[str]
+
+def validators_to_use(
+    validation_codes="", validations_path=None, is_rq8_requested=False
 ):
-    used_validations = []
+    validator_classes = get_validator_classes()
+    if validation_codes == "ALL" or (validations_path is None and not validation_codes):
+        if not is_rq8_requested:
+            return [v for v in validator_classes if v.validation_code != RQ8]
+        else:
+            return validator_classes
+
+    codes = []
 
     if validations_path is not None:
-        used_validations = get_validations_from_file(validations_path)
-
-    if validations is not None and validations != "ALL":
-        used_validations.extend(validations.replace(" ", "").split(","))
-
-    if len(used_validations) == 0:
-        used_validations = get_all_validations()
-
-    return used_validations
-
-
-def get_all_validations():
-    used_validations = [
-        v["validation_code"]
-        for k, v in VALIDATIONS.items()
-        if v["validation_code"].startswith("R")
-    ]
-
-    return used_validations
-
-
-def get_validations_from_file(validations_path):
-    used_validations = []
-
-    with open(validations_path) as json_file:
-        used_validations.extend(json.load(json_file)["validations"])
-        if len(used_validations) == 0:
+        validations_from_file = Path(validations_path).read_text()
+        try:
+            codes += json.loads(validations_from_file)["validations"]
+        except KeyError:
             raise Exception("Validation path file does not contain any validations")
 
-    return used_validations
+    codes += [v for v in validation_codes.replace(" ", "").split(",") if v]
+
+    if is_rq8_requested and RQ8 not in codes:
+        codes += [RQ8]
+
+    validator_dict = {v.validation_code: v for v in validator_classes}
+
+    return [validator_dict[code] for code in codes]
 
 
 def validate(
-    gpkg_path: str,
-    filename: str,
-    table_definitions_path: str,
-    validations_path: str,
-    validations: str,
+    gpkg_path, table_definitions_path=None, validations_path=None, validations=""
 ):
-    """Starts the geopackage validation."""
-    start_time = datetime.now()
-    duration_start = time.monotonic()
-    check_gdal_installed()
-    check_gdal_version()
+    """Starts the geopackage validations."""
+    gdal_utils.check_gdal_installed()
+    gdal_utils.check_gdal_version()
 
     # Explicit import here
-    from geopackage_validator.gdal.init import init_gdal
+    from geopackage_validator.gdal_utils import init_gdal
 
     results = []
 
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
-        result = result_format("gdal", [error.replace("\n", " ")])
-        results.extend(result)
+        result = format_result(
+            validation_code="GDAL_ERROR",
+            validation_description="No unexpected GDAL errors must occur.",
+            level=ValidationLevel.UNKNOWN,
+            trace=[error.replace("\n", " ")],
+        )
+        results.append(result)
 
     init_gdal(gdal_error_handler)
 
-    validations_executed = determine_validations_to_use(validations_path, validations)
+    dataset = gdal_utils.open_dataset(gpkg_path)
 
-    validate_all(gpkg_path, table_definitions_path, validations_executed, results)
+    if dataset is None:
+        return results, None, False
 
-    duration_seconds = time.monotonic() - duration_start
-
-    log_output(
-        results=results,
-        filename=filename,
-        validations_executed=validations_executed,
-        start_time=start_time,
-        duration_seconds=duration_seconds,
+    is_rq8_requested = table_definitions_path is not None
+    table_definitions = (
+        load_table_definitions(table_definitions_path) if is_rq8_requested else None
     )
+
+    validators = validators_to_use(validations, validations_path, is_rq8_requested)
+
+    validation_results = []
+    success = True
+
+    for validator in validators:
+        result = validator(dataset, table_definitions=table_definitions).validate()
+
+        if result is not None:
+            validation_results.append(result)
+            success = success and validator.level == ValidationLevel.RECCOMENDATION
+
+    # results has values when a gdal error is thrown:
+    success = success and not results
+
+    return results + validation_results, get_validation_codes(validators), success
+
+
+def get_validation_descriptions():
+    validation_classes = get_validator_classes()
+    return {klass.validation_code: klass.__doc__ for klass in validation_classes}
+
+
+def get_validation_codes(validators):
+    return [validator.validation_code for validator in validators]
+
+
+def get_validator_classes():
+    validator_classes = [
+        getattr(validation, validator)
+        for validator in validation.__all__
+        if issubclass(getattr(validation, validator), Validator)
+    ]
+    return sorted(validator_classes, key=lambda v: (v.level, v.code))
+
+
+def load_table_definitions(table_definitions_path) -> TableDefinition:
+    path = Path(table_definitions_path)
+    assert path.exists()
+    return json.loads(path.read_text())

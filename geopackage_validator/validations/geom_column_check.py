@@ -1,62 +1,56 @@
 from typing import Iterable, Tuple
+from functools import lru_cache
 
-from geopackage_validator.validations_overview.validations_overview import (
-    create_validation_message,
-    result_format,
-)
+from geopackage_validator.validations import validator
 
 
-def geom_columnname_check_query(dataset) -> Iterable[Tuple[str, str]]:
+@lru_cache(None)
+def query_geom_columnname(dataset) -> Iterable[Tuple[str, str]]:
     column_info_list = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"
     )
 
-    for column_info in column_info_list:
-        yield column_info[0], column_info[1]
+    for table_name, column_name in column_info_list:
+        yield table_name, column_name
 
     dataset.ReleaseResultSet(column_info_list)
 
 
-def geom_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
-    assert column_info_list is not None
+class GeomColumnNameValidator(validator.Validator):
+    """It is recommended to name all GEOMETRY type columns 'geom'."""
 
-    results = []
-    for column_info in column_info_list:
+    code = 1
+    level = validator.ValidationLevel.RECCOMENDATION
+    message = "Found in table: {table_name}, column: {column_name}"
 
-        table_name = column_info[0]
-        column_name = column_info[1]
+    def check(self) -> Iterable[str]:
+        columns = query_geom_columnname(self.dataset)
+        return self.geom_columnname_check(columns)
 
-        if column_name != "geom":
-            results.append(
-                create_validation_message(
-                    err_index="geom_columnname",
-                    column_name=column_name,
-                    table_name=table_name,
-                )
-            )
-
-    return result_format("geom_columnname", results)
+    def geom_columnname_check(self, columns: Iterable[Tuple[str, str]]):
+        assert columns is not None
+        return [
+            self.message.format(column_name=column_name, table_name=table_name)
+            for table_name, column_name in columns
+            if column_name != "geom"
+        ]
 
 
-def geom_equal_columnname_check(column_info_list: Iterable[Tuple[str, str]]):
-    assert column_info_list is not None
+class GeomColumnNameEqualValidator(validator.Validator):
+    """It is recommended to give all GEOMETRY type columns the same name."""
 
-    results = []
-    column_name_list = []
+    code = 2
+    level = validator.ValidationLevel.RECCOMENDATION
+    message = "Found column names are unequal: {column_names}"
 
-    for column_info in column_info_list:
+    def check(self) -> Iterable[str]:
+        columns = query_geom_columnname(self.dataset)
+        return self.geom_equal_columnname_check(columns)
 
-        column_name = column_info[1]
-        column_name_list.append(column_name)
+    def geom_equal_columnname_check(self, columns: Iterable[Tuple[str, str]]):
+        assert columns is not None
+        unique_column_names = {column_name for _, column_name in columns}
 
-    column_names = set(column_name_list)
-
-    if len(column_names) > 1:
-        results.append(
-            create_validation_message(
-                err_index="geom_equal_columnnames",
-                column_names=", ".join(column_names),
-            )
-        )
-
-    return result_format("geom_equal_columnnames", results)
+        if len(unique_column_names) > 1:
+            return [self.message.format(column_names=", ".join(unique_column_names))]
+        return []

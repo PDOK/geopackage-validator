@@ -1,20 +1,17 @@
 from typing import Iterable
 
-from geopackage_validator.validations_overview.validations_overview import (
-    create_validation_message,
-    result_format,
-)
+from geopackage_validator.validations import validator
 
 
-def rtree_present_check_query(dataset) -> Iterable[str]:
+def query_rtree_presence(dataset) -> Iterable[str]:
     # Check if gpkg_extensions table is present
-    gpkg_extensions_present = dataset.ExecuteSQL(
+    gpkg_extensions = dataset.ExecuteSQL(
         "select * from sqlite_master where type = 'table' and name = 'gpkg_extensions';"
     )
 
-    if gpkg_extensions_present.GetFeatureCount() == 0:
+    if len(gpkg_extensions) == 0:
         yield "no table has an rtree index"
-        dataset.ReleaseResultSet(gpkg_extensions_present)
+        dataset.ReleaseResultSet(gpkg_extensions)
         return
 
     indexes = dataset.ExecuteSQL(
@@ -22,20 +19,25 @@ def rtree_present_check_query(dataset) -> Iterable[str]:
         "where not exists(select * from gpkg_extensions gce where gce.table_name = gc.table_name "
         "and extension_name = 'gpkg_rtree_index');"
     )
-    for index in indexes:
-        yield index[0]
+    for (index,) in indexes:
+        yield index
 
     dataset.ReleaseResultSet(indexes)
 
 
-def rtree_present_check(rtree_present_check_list: Iterable[str]):
-    assert rtree_present_check_list is not None
+class RTreeExistsValidator(validator.Validator):
+    """All geometry tables must have an rtree index."""
 
-    results = []
+    code = 9
+    level = validator.ValidationLevel.ERROR
+    message = "Table without index: {table_name}"
 
-    for table in rtree_present_check_list:
-        results.append(
-            create_validation_message(err_index="rtree_present", table_name=table)
-        )
+    def check(self) -> Iterable[str]:
+        rtrees = query_rtree_presence(self.dataset)
+        return self.check_rtree_is_present(rtrees)
 
-    return result_format("rtree_present", results)
+    def check_rtree_is_present(self, rtree_present_check_list: Iterable[str]):
+        assert rtree_present_check_list is not None
+        return [
+            self.message.format(table_name=table) for table in rtree_present_check_list
+        ]

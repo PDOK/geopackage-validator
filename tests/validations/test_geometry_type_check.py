@@ -1,7 +1,7 @@
-from geopackage_validator.gdal.dataset import open_dataset
+from geopackage_validator.gdal_utils import open_dataset
 from geopackage_validator.validations.geometry_type_check import (
-    geometry_type_check,
-    table_geometry_type_names_query,
+    GeometryTypeValidator,
+    query_geometry_types,
 )
 
 
@@ -15,29 +15,31 @@ def test_valid_geometries():
         ("layer2", "MULTIPOLYGON"),
     ]
 
-    assert len(geometry_type_check(geometries)) == 0
+    assert len(GeometryTypeValidator(None).check_geometry_type(geometries)) == 0
 
 
 def test_invalid_geometry():
-    results = geometry_type_check([("layer2", "WRONG_GEOMETRY")])
-    assert len(results) == 1
-    assert results[0]["validation_code"] == "RQ3"
-    assert (
-        results[0]["locations"][0]
-        == "Error layer: layer2, found geometry: WRONG_GEOMETRY"
+    results = GeometryTypeValidator(None).check_geometry_type(
+        [("layer2", "WRONG_GEOMETRY")]
     )
+    assert len(results) == 1
+    assert results[0] == "Error layer: layer2, found geometry: WRONG_GEOMETRY"
 
 
 def test_mixed_geometries():
     assert (
-        len(geometry_type_check([("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")]))
+        len(
+            GeometryTypeValidator(None).check_geometry_type(
+                [("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")]
+            )
+        )
         == 1
     )
 
 
 def test_with_gpkg():
     dataset = open_dataset("tests/data/test_geometry_type.gpkg")
-    checks = list(table_geometry_type_names_query(dataset))
+    checks = list(query_geometry_types(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_geometry_type"
     assert checks[0][1] == "COMPOUNDCURVE"
@@ -45,7 +47,7 @@ def test_with_gpkg():
 
 def test_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    checks = list(table_geometry_type_names_query(dataset))
+    checks = list(query_geometry_types(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_allcorrect"
     assert checks[0][1] == "POLYGON"
