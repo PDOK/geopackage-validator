@@ -4,6 +4,8 @@ from typing import Dict, List
 
 import pkg_resources  # part of setuptools
 
+from geopackage_validator.validations.validator import VALIDATION_LEVELS_THAT_RESULT_IN_FAIL
+
 
 def log_output(
     results: List[Dict[str, List[str]]],
@@ -34,8 +36,8 @@ def log_output(
 
 def is_success(result_list):
     for result in result_list:
-        validation_code = result["validation_code"]
-        if validation_code.startswith("RQ") or validation_code.startswith("UNKNOWN"):
+        level = result["level"]
+        if level in VALIDATION_LEVELS_THAT_RESULT_IN_FAIL:
             return False
 
     return True

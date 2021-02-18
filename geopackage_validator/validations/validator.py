@@ -17,6 +17,8 @@ VALIDATION_LEVELS = {
     ValidationLevel.RC: "recommendation",
 }
 
+VALIDATION_LEVELS_THAT_RESULT_IN_FAIL = [VALIDATION_LEVELS[ValidationLevel.UNKNOWN], VALIDATION_LEVELS[ValidationLevel.RQ]]
+
 
 class classproperty:
     """
