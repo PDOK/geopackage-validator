@@ -23,7 +23,7 @@ The current checks are (see also the 'show-validations' command):
 | :-------------: | ------------------------------------------------------------ |
 |       RQ1       | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
 |       RQ2       | Layers must have at least one feature.                       |
-|       RQ3       | Layer features should have a valid geometry (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). _(random sample of up to 100)_ |
+|       RQ3       | Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
 |       RQ4       | The geopackage should have no views defined.                 |
 |       RQ5       | Geometry should be valid.                                    |
 |       RQ6       | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
@@ -35,7 +35,7 @@ The current checks are (see also the 'show-validations' command):
 |       RQ12      | Only the following ESPG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409. |
 |       RQ13      | It is required to give all GEOMETRY features the same default spatial reference system. |
 |       RQ14      | The geometry_type_name from the gpkg_geometry_columns table must be one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON. |
-|       RQ15      | All table geometries must match the geometry_type_name from the gpkg_geometry_columns table. _(random sample of up to 100)_ |
+|       RQ15      | All table geometries must match the geometry_type_name from the gpkg_geometry_columns table. |
 |       RC1       | It is recommended to name all GEOMETRY type columns 'geom'.  |
 |       RC2       | It is recommended to give all GEOMETRY type columns the same name. |
 
