@@ -8,11 +8,7 @@ from geopackage_validator.validations.layerfeature_check import (
 
 def test_zerofeatures():
     assert (
-        len(
-            NonEmptyLayerValidator(None).check_contains_features(
-                [("layer2", 1, 1)]
-            )
-        )
+        len(NonEmptyLayerValidator(None).check_contains_features([("layer2", 1, 1)]))
         == 0
     )
 
