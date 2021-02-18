@@ -91,3 +91,13 @@ def test_validate_all_validations_no_error():
     assert results[1]["locations"] == [
         "Found in table: test_LAYERNAME, column: geometry"
     ]
+
+
+def test_validate_all_validations_with_broken_gpkg_throws_gdal_error():
+    results, validations_executed, success = validate(
+        gpkg_path="tests/data/test_broken_geopackage.gpkg", validations="ALL"
+    )
+    assert len(results) == 1
+    assert results[0]["locations"] == [
+        "At least one of the required GeoPackage tables, gpkg_spatial_ref_sys or gpkg_contents, is missing"
+    ]

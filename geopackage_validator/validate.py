@@ -72,6 +72,9 @@ def validate(
 
     dataset = gdal_utils.open_dataset(gpkg_path)
 
+    if dataset is None:
+        return results, None, False
+
     is_rq8_requested = table_definitions_path is not None
     table_definitions = (
         load_table_definitions(table_definitions_path) if is_rq8_requested else None
@@ -79,16 +82,20 @@ def validate(
 
     validators = validators_to_use(validations, validations_path, is_rq8_requested)
 
+    validation_results = []
     success = True
 
     for validator in validators:
         result = validator(dataset, table_definitions=table_definitions).validate()
 
         if result is not None:
-            results.append(result)
-            success = success and validator.level != ValidationLevel.ERROR
+            validation_results.append(result)
+            success = success and validator.level == ValidationLevel.RECCOMENDATION
 
-    return results, get_validation_codes(validators), success
+    # results has values when a gdal error is thrown:
+    success = success and not results
+
+    return results + validation_results, get_validation_codes(validators), success
 
 
 def get_validation_descriptions():
