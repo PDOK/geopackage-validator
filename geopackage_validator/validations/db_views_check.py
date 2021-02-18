@@ -1,12 +1,9 @@
 from typing import Iterable
 
-from geopackage_validator.validations_overview.validations_overview import (
-    create_validation_message,
-    result_format,
-)
+from geopackage_validator.validations import validator
 
 
-def db_views_check_query(dataset) -> Iterable[str]:
+def query_db_views(dataset) -> Iterable[str]:
     views = dataset.ExecuteSQL(
         "SELECT name FROM `main`.sqlite_master where type = 'view';"
     )
@@ -17,12 +14,17 @@ def db_views_check_query(dataset) -> Iterable[str]:
     dataset.ReleaseResultSet(views)
 
 
-def db_views_check(db_views_check_list: Iterable[str]):
-    assert db_views_check_list is not None
+class ViewsValidator(validator.Validator):
+    """The geopackage should have no views defined."""
 
-    results = []
+    code = 4
+    level = validator.ValidationLevel.ERROR
+    message = "Found view: {view}"
 
-    for db_views in db_views_check_list:
-        results.append(create_validation_message(err_index="db_views", view=db_views))
+    def check(self) -> Iterable[str]:
+        views = query_db_views(self.dataset)
+        return self.db_views_check(views)
 
-    return result_format("db_views", results)
+    def db_views_check(self, views: Iterable[str]):
+        assert views is not None
+        return [self.message.format(view=view) for view in views]

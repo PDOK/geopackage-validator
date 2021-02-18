@@ -1,20 +1,21 @@
-from geopackage_validator.gdal.dataset import open_dataset
+from geopackage_validator.gdal_utils import open_dataset
 from geopackage_validator.validations.geometry_valid_check import (
-    geometry_valid_check,
+    ValidGeometryValidator,
     geometry_valid_check_query,
 )
 
 
 def test_valid_geometries():
-    assert len(geometry_valid_check([])) == 0
+    assert len(ValidGeometryValidator(None).geometry_valid_check([])) == 0
 
 
 def test_invalid_geometry():
-    results = geometry_valid_check([("Geometry invalid", "table", "column", 123)])
+    results = ValidGeometryValidator(None).geometry_valid_check(
+        [("Geometry invalid", "table", "column", 123)]
+    )
     assert len(results) == 1
-    assert results[0]["validation_code"] == "RQ5"
     assert (
-        results[0]["locations"][0]
+        results[0]
         == "Found invalid geometry in table: table, id 123, column column, reason: Geometry invalid"
     )
 

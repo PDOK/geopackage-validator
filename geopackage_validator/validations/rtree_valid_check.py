@@ -1,9 +1,6 @@
 from typing import Iterable
 
-from geopackage_validator.validations_overview.validations_overview import (
-    create_validation_message,
-    result_format,
-)
+from geopackage_validator.validations import validator
 
 
 def rtree_valid_check_query(dataset) -> Iterable[str]:
@@ -35,14 +32,17 @@ def rtree_valid_check_query(dataset) -> Iterable[str]:
     dataset.ReleaseResultSet(indexes)
 
 
-def rtree_valid_check(rtree_index_list: Iterable[str]):
-    assert rtree_index_list is not None
+class ValidRtreeValidator(validator.Validator):
+    """All geometry table rtree indexes must be valid."""
 
-    results = []
+    code = 10
+    level = validator.ValidationLevel.ERROR
+    message = "Invalid rtree index found for table: {table_name}"
 
-    for table in rtree_index_list:
-        results.append(
-            create_validation_message(err_index="rtree_valid", table_name=table)
-        )
+    def check(self) -> Iterable[str]:
+        rtree_index_list = rtree_valid_check_query(self.dataset)
+        return self.check_rtree_is_valid(rtree_index_list)
 
-    return result_format("rtree_valid", results)
+    def check_rtree_is_valid(self, rtree_index_list: Iterable[str]):
+        assert rtree_index_list is not None
+        return [self.message.format(table_name=table) for table in rtree_index_list]

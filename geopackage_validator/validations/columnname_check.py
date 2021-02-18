@@ -1,41 +1,41 @@
-import re
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, List
 
-from geopackage_validator.validations_overview.validations_overview import (
-    create_validation_message,
-    result_format,
-)
+from geopackage_validator.constants import SNAKE_CASE_REGEX
+from geopackage_validator.validations import validator
 
 
-def columnname_check_query(dataset) -> Iterable[Tuple[str, str]]:
+def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
     tables = dataset.ExecuteSQL("SELECT table_name FROM gpkg_contents;")
 
-    for table in tables:
+    for (table,) in tables:
         columns = dataset.ExecuteSQL(
-            "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table[0])
+            "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table)
         )
 
-        for column in columns:
-            yield table[0], column[1]
+        for _, column, *_ in columns:
+            yield table, column
 
         dataset.ReleaseResultSet(columns)
     dataset.ReleaseResultSet(tables)
 
 
-def columnname_check(columnname_list: Iterable[Tuple[str, str]]):
-    assert columnname_list is not None
+class ColumnNameValidator(validator.Validator):
+    """
+    Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.
+    """
 
-    results = []
+    code = 6
+    level = validator.ValidationLevel.ERROR
+    message = "Error found in table: {table_name}, column: {column_name}"
 
-    for columnname in columnname_list:
-        match_valid = re.fullmatch(r"^[a-z][a-z0-9_]*$", columnname[1])
-        if match_valid is None:
-            results.append(
-                create_validation_message(
-                    err_index="columnname",
-                    column_name=columnname[1],
-                    table_name=columnname[0],
-                )
-            )
+    def check(self) -> Iterable[str]:
+        column_names = query_columnames(self.dataset)
+        return self.check_columns(column_names)
 
-    return result_format("columnname", results)
+    def check_columns(self, column_names: Iterable[Tuple[str, str]]) -> List[str]:
+        assert column_names is not None
+        return [
+            self.message.format(column_name=column_name, table_name=table_name)
+            for table_name, column_name in column_names
+            if not SNAKE_CASE_REGEX.fullmatch(column_name)
+        ]

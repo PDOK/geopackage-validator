@@ -2,24 +2,23 @@
 """Main CLI entry for the Geopackage validator tool."""
 # Setup logging before package imports.
 import logging
+from datetime import datetime
 import sys
 import traceback
+import time
 
 import click
 import click_log
 
-from geopackage_validator.generate import generate_definitions_for_path
-from geopackage_validator.minio.minio_context import minio_resource
-from geopackage_validator.output import log_output
-from geopackage_validator.validations_overview.validations_overview import (
-    get_validations_list,
-    result_format,
-)
-
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
 
-from geopackage_validator.validate import validate
+
+from geopackage_validator.generate import generate_definitions_for_path
+from geopackage_validator.minio.minio_context import minio_resource
+from geopackage_validator.output import log_output
+from geopackage_validator.validations import validator
+from geopackage_validator.validate import validate, get_validation_descriptions
 import json
 
 
@@ -130,43 +129,56 @@ def geopackage_validator_command(
     s3_bucket,
     s3_key,
 ):
+    start_time = datetime.now()
+    duration_start = time.monotonic()
+
     try:
         if gpkg_path is None and s3_endpoint_no_protocol is None:
             logger.error("Give --gpkg-path or s3 location")
             return
 
         if gpkg_path is not None:
-            validate(
-                gpkg_path,
-                gpkg_path,
-                table_definitions_path,
-                validations_path,
-                validations,
+            filename = gpkg_path
+            results, validations_executed, success = validate(
+                gpkg_path, table_definitions_path, validations_path, validations,
             )
         else:
             with minio_resource(
                 s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
             ) as localfilename:
-                validate(
+                filename = s3_key
+                results, validations_executed, success = validate(
                     localfilename,
-                    s3_key,
                     table_definitions_path,
                     validations_path,
                     validations,
                 )
     except Exception:
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        log_output(
-            result_format(
-                "system",
-                trace=[
-                    t.strip("\n")
-                    for t in traceback.format_exception(
-                        exc_type, exc_value, exc_traceback
-                    )
-                ],
-            )
+        trace = [
+            t.strip("\n")
+            for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
+        ]
+        output = validator.format_result(
+            validation_code="ERROR",
+            validation_description="No unexpected errors must occur.",
+            level=validator.ValidationLevel.UNKNOWN,
+            trace=trace,
         )
+        success = False
+        filename = ""
+        validations_executed = None
+        results = [output]
+
+    duration_seconds = time.monotonic() - duration_start
+    log_output(
+        filename=filename,
+        results=results,
+        validations_executed=validations_executed,
+        start_time=start_time,
+        duration_seconds=duration_seconds,
+        success=success,
+    )
 
 
 @cli.command(
@@ -247,9 +259,9 @@ def geopackage_validator_command_generate_table_definitions(
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_show_validations():
     try:
-        validations_list = get_validations_list()
-        print(json.dumps(validations_list, indent=4, sort_keys=True))
-    except:
+        validation_codes = get_validation_descriptions()
+        print(json.dumps(validation_codes, indent=4, sort_keys=True))
+    except Exception:
         logger.exception("Error while listing validations")
 
 
