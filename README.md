@@ -1,20 +1,26 @@
-##### Table of Contents
+# geopackage-validator
+
+## Table of Contents
+
 * [geopackage-validator](#geopackage-validator)
+  * [What does it do](#What-does-it-do)
   * [Installation](#installation)
-    * [GDAL](#gdal)
+    * [Ubuntu](#ubuntu)
+    * [Windows](#windows)
+    * [Docker](#docker)
   * [Usage](#usage)
-    * [Usage through Docker (pull from Docker Hub)](#usage-through-docker-pull-from-docker-hub)
-    * [Usage through Docker (local build)](#usage-through-docker-local-build)
-  * [Commands](#commands)
     * [Validate](#validate)
     * [Show validations](#show-validations)
     * [Generate table definitions](#generate-table-definitions)
   * [Performance](#performance)
-  * [Development installation](#development-installation)
-  * [Releasing](#releasing)
-  * [Install pyenv](#install-pyenv)
+  * [Local development](#local-development)
+    * [Installation](#pipenv-installation)
+    * [Usage](#pipenv-usage)
+    * [Code style](#pipenv-code-style)
+    * [Tests](#pipenv-tests)
+    * [Releasing](#releasing)
 
-# geopackage-validator
+## What does it do
 
 The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
 The current checks are (see also the 'show-validations' command):
@@ -40,15 +46,65 @@ The current checks are (see also the 'show-validations' command):
 |       RC2       | It is recommended to give all GEOMETRY type columns the same name. |
 
 ## Installation
-We are installed with:
 
-```bash
-pip3 install geopackage-validator
+This package requires [GDAL](https://gdal.org/) version >= 3.0.4.
+And python >= 3.8 to run.
+
+### Ubuntu
+
+Install GDAL:
+
+```sudo
+sudo apt-get install gdal-bin
 ```
 
-### GDAL
-This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) and has a runtime dependency on an installed
-[GDAL](https://gdal.org/) (when not running through Docker, which is the recommended way of running this package.)
+Install the validator with:  
+
+```bash
+pip3 install pdok-geopackage-validator
+```
+
+### Windows
+
+
+Either use anaconda to install gdal:
+
+```bash
+conda install -c conda-forge gdal
+```
+
+Or download and install [OSGeo4W](https://trac.osgeo.org/osgeo4w/). And download
+[get-pip.py](https://bootstrap.pypa.io/get-pip.py) and run it in the OSGeo4W shell:
+
+```bash
+python3 get-pip.py
+```
+
+Install the validator with:  
+
+```bash
+pip3 install pdok-geopackage-validator
+```
+
+### Docker
+
+Pull the latest version of the Docker image (only once needed, or after an update)
+
+```bash
+docker pull pdok/geopackage-validator:latest
+```
+
+Or build the Docker image from source:
+
+```bash
+docker build -t pdok/geopackage-validator .
+```
+
+The command is directly called so subcommands can be run in the container directly:
+
+```bash
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
+```
 
 ## Usage
 
@@ -59,40 +115,6 @@ To validate RQ8 you have to generate definitions first.
 ```bash
 geopackage-validator generate-definitions --gpkg-path /path/to/file.gpkg
 ````
-
-### Usage through Docker (pull from Docker Hub)
-
-Place your geopackage somewhere on disk or in an S3 storage repository.
-
-Pull the latest version of the Docker image (only once needed, or after an update)
-
-```bash
-docker pull pdok/geopackage-validator:latest
-```
-
-Run the Docker container, mounting the current directory to /gpkg (adjust where needed)
-
-```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
-```
-
-### Usage through Docker (local build)
-
-Place your geopackage somewhere on disk or in an S3 storage repository.
-
-Build the Docker image (only once needed, or after an update)
-
-```bash
-docker build -t geopackage-validator .
-```
-
-Run the Docker container, mounting the current directory to /gpkg (adjust where needed)
-
-```bash
-docker run -v ${PWD}:/gpkg --rm geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
-```
-
-## Commands
 
 ### Validate
 
@@ -226,7 +248,9 @@ On a PC with 32GB memory and Intel Core i7-8850H CPU @ 2.6 ghz, the following pe
 
 This is to give an indication of the performance and by no means a guarantee.
 
-## Development installation
+## Local development
+
+### Pipenv installation
 
 We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
 around pip and virtualenv. Install that first with `pip install pipenv`.
@@ -257,11 +281,23 @@ In case you do not have python 3.8 on your machine, install python using
 [pyenv](https://github.com/pyenv/pyenv) and try the previous command again.
 See install pyenv below for instructions.
 
+If you need a new dependency (like `requests`), add it in `setup.py` in
+`install_requires`. Afterwards, run install again to actually install your
+dependency:
+
+```bash
+pipenv install --dev
+```
+
+### Pipenv usage
+
 There will be a script you can run like this:
 
 ```bash
 pipenv run geopackage-validator
 ```
+
+### Code style
 
 In order to get nicely formatted python files without having to spend manual
 work on it, run the following command periodically:
@@ -269,6 +305,8 @@ work on it, run the following command periodically:
 ```bash
 pipenv run black geopackage_validator
 ```
+
+### Tests
 
 Run the tests regularly. This also checks with pyflakes and black:
 
@@ -282,17 +320,11 @@ Code coverage:
 pipenv run pytest --cov=geopackage_validator  --cov-report html
 ```
 
-If you need a new dependency (like `requests`), add it in `setup.py` in
-`install_requires`. Afterwards, run install again to actually install your
-dependency:
+### Releasing
 
-```bash
-pipenv install --dev
-```
+Release in github by creating and pushing a new tag to master and create a new release in github.  
 
-## Releasing
 
-Release in github by bumping to a higher version. 
 
 ## Install pyenv
 
