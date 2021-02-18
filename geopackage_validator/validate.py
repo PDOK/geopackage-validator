@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+from geopackage_validator.constants import EXCLUDED_VALIDATIONS_FROM_ALL
 from geopackage_validator.output import log_output
 from geopackage_validator import validations
 from geopackage_validator.validations.validator import (
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 def validators_to_use(validations_path="", validation_codes=""):
     validator_classes = get_validator_classes()
     if validation_codes == "ALL" or (not validations_path and not validation_codes):
-        return validator_classes
+        return [v for v in validator_classes if v.code not in EXCLUDED_VALIDATIONS_FROM_ALL]
 
     codes = []
 

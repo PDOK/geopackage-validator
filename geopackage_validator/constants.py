@@ -35,3 +35,5 @@ VALID_GEOMETRIES = [
 ]
 
 SNAKE_CASE_REGEX = re.compile(r"^[a-z][a-z0-9_]*$")
+
+EXCLUDED_VALIDATIONS_FROM_ALL = [8]
