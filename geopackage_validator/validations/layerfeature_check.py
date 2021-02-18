@@ -3,9 +3,7 @@ from typing import Iterable, Tuple
 from geopackage_validator.validations import validator
 
 
-# TODO: layer or table: make a choice
-
-def layerfeature_check_query(dataset) -> Iterable[Tuple[str, int, int]]:
+def query_layerfeature_counts(dataset) -> Iterable[Tuple[str, int, int]]:
     for layer in dataset:
         layer_name = layer.GetName()
 
@@ -27,13 +25,14 @@ class NonEmptyLayerValidator(validator.Validator):
     message = "Error layer: {layer}"
 
     def check(self) -> Iterable[str]:
-        counts = layerfeature_check_query(self.dataset)
-        return self.layerfeature_check_featurecount(counts)
+        counts = query_layerfeature_counts(self.dataset)
+        return self.check_contains_features(counts)
 
-    def layerfeature_check_featurecount(self, counts: Iterable[Tuple[str, int, int]]):
+    def check_contains_features(self, counts: Iterable[Tuple[str, int, int]]):
         assert counts is not None
-        # todo: @William I don't like this check -> the name is vague - the error message is vague
-        return [self.message.format(layer=layer) for layer, count, _ in counts if count == 0]
+        return [
+            self.message.format(layer=layer) for layer, count, _ in counts if count == 0
+        ]
 
 
 class OGRIndexValidator(validator.Validator):
@@ -44,15 +43,14 @@ class OGRIndexValidator(validator.Validator):
     message = "OGR index for feature count is not up to date for table: {layer}. Indexed feature count: {ogr_count}, real feature count: {count}"
 
     def check(self) -> Iterable[str]:
-        counts = layerfeature_check_query(self.dataset)
+        counts = query_layerfeature_counts(self.dataset)
         return self.layerfeature_check_ogr_index(counts)
 
-    def layerfeature_check_ogr_index(
-        self, layers: Iterable[Tuple[str, int, int]]
-    ):
+    def layerfeature_check_ogr_index(self, layers: Iterable[Tuple[str, int, int]]):
         assert layers is not None
 
         return [
             self.message.format(layer=name, count=count, ogr_count=ogr_count)
-            for name, count, ogr_count in layers if count != ogr_count
+            for name, count, ogr_count in layers
+            if count != ogr_count
         ]

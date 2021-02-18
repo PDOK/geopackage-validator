@@ -22,7 +22,7 @@ def srs_check_query(dataset) -> Iterable[Tuple[str, str]]:
 def srs_equal_check_query(dataset) -> Iterable[str]:
     srs_list = dataset.ExecuteSQL("SELECT srs_id FROM gpkg_geometry_columns;")
 
-    for (srs, ) in srs_list:
+    for (srs,) in srs_list:
         yield srs
 
     dataset.ReleaseResultSet(srs_list)

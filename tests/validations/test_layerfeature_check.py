@@ -1,24 +1,20 @@
-from geopackage_validator.gdal.dataset import open_dataset
+from geopackage_validator.gdal_utils import open_dataset
 from geopackage_validator.validations.layerfeature_check import (
     NonEmptyLayerValidator,
     OGRIndexValidator,
-    layerfeature_check_query,
+    query_layerfeature_counts,
 )
 
 
 def test_zerofeatures():
     assert (
-        len(
-            NonEmptyLayerValidator(None).layerfeature_check_featurecount(
-                [("layer2", 1, 1)]
-            )
-        )
+        len(NonEmptyLayerValidator(None).check_contains_features([("layer2", 1, 1)]))
         == 0
     )
 
 
 def test_onefeature():
-    results = NonEmptyLayerValidator(None).layerfeature_check_featurecount(
+    results = NonEmptyLayerValidator(None).check_contains_features(
         [("layer1", 0, 0), ("layer2", 1, 1)]
     )
     assert len(results) == 1
@@ -26,7 +22,7 @@ def test_onefeature():
 
 
 def test_featurecount_index_not_uptodate():
-    results = NonEmptyLayerValidator(None).layerfeature_check_featurecount(
+    results = NonEmptyLayerValidator(None).check_contains_features(
         [("layer1", 1, 1), ("layer2", 1, 0)]
     )
     assert len(results) == 0
@@ -52,7 +48,7 @@ def test_featurecount_index_not_uptodate_ogr_success():
 
 def test_with_gpkg():
     dataset = open_dataset("tests/data/test_layerfeature.gpkg")
-    checks = list(layerfeature_check_query(dataset))
+    checks = list(query_layerfeature_counts(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_layerfeature"
     assert checks[0][1] == 0
@@ -61,7 +57,7 @@ def test_with_gpkg():
 
 def test_with_gpkg_falsenegative():
     dataset = open_dataset("tests/data/test_layerfeature_falsenegative.gpkg")
-    checks = list(layerfeature_check_query(dataset))
+    checks = list(query_layerfeature_counts(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_layerfeature_falsenegative"
     assert checks[0][1] == 1
@@ -70,7 +66,7 @@ def test_with_gpkg_falsenegative():
 
 def test_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    checks = list(layerfeature_check_query(dataset))
+    checks = list(query_layerfeature_counts(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_allcorrect"
     assert checks[0][1] == 1

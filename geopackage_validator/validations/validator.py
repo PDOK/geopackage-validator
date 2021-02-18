@@ -1,13 +1,21 @@
 from typing import Iterable, List, Dict
 from abc import ABC, abstractmethod
-from enum import Enum
+from enum import IntEnum
 
 
-class ValidationLevel(Enum):
+class ValidationLevel(IntEnum):
+    UNKNOWN = 0
     RQ = 1
     ERROR = 1
     RC = 2
     RECCOMENDATION = 2
+
+
+VALIDATION_LEVELS = {
+    ValidationLevel.UNKNOWN: "unknown_error",
+    ValidationLevel.RQ: "error",
+    ValidationLevel.RC: "recommendation",
+}
 
 
 class classproperty:
@@ -28,36 +36,45 @@ class classproperty:
         return self
 
 
+def format_result(
+    validation_code: str,
+    validation_description: str,
+    level: ValidationLevel,
+    trace: List[str],
+):
+    return {
+        "validation_code": validation_code,
+        "validation_description": validation_description,
+        "level": VALIDATION_LEVELS[level],
+        "locations": trace,
+    }
+
+
 class Validator(ABC):
     code: int
     level: ValidationLevel
     message: str
 
-    def __init__(self, dataset, table_definitions=None):
+    def __init__(self, dataset, **kwargs):
         self.dataset = dataset
-        self.table_definitions = table_definitions
 
     def validate(self) -> List[Dict[str, List[str]]]:
-        """TODO"""
-        return self.format(list(self.check()))
-
-    def format(self, trace: List[str]) -> List[Dict[str, List[str]]]:
-        """TODO"""
-        if len(trace) == 0:
-            return []
-
-        return [
-            {
-                "validation_code": self.validation_code,
-                "validation_description": self.__doc__,
-                "level": self.level.name,
-                "locations": trace,
-            }
-        ]
+        """Run validation at geopackage."""
+        results = list(self.check())
+        if results:
+            return [
+                format_result(
+                    validation_code=self.validation_code,
+                    validation_description=self.__doc__,
+                    level=self.level,
+                    trace=results,
+                ),
+            ]
+        return []
 
     @abstractmethod
     def check(self) -> Iterable[str]:
-        """TODO"""
+        """Check the geopackage and return a list of validation results."""
         ...
 
     @classproperty

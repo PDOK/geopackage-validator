@@ -4,7 +4,7 @@ from functools import lru_cache
 from geopackage_validator.validations import validator
 
 
-@lru_cache
+@lru_cache(None)
 def query_geom_columnname(dataset) -> Iterable[Tuple[str, str]]:
     column_info_list = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"

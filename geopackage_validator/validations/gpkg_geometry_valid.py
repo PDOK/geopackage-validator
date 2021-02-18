@@ -9,7 +9,7 @@ def query_gpkg_geometry_type_names(dataset) -> Iterable[Tuple[str, str]]:
         "SELECT distinct geometry_type_name FROM gpkg_geometry_columns;"
     )
 
-    for geometry_type_name, in geometry_type_names:
+    for (geometry_type_name,) in geometry_type_names:
         yield geometry_type_name
 
     dataset.ReleaseResultSet(geometry_type_names)
@@ -31,7 +31,9 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
 
     code = 14
     level = validator.ValidationLevel.ERROR
-    message = "Found geometry_type_name: {geometry} (from the gpkg_geometry_columns table)."
+    message = (
+        "Found geometry_type_name: {geometry} (from the gpkg_geometry_columns table)."
+    )
 
     def check(self) -> Iterable[str]:
         geometry_types = gpkg_geometry_match_table_check_query(self.dataset)
@@ -39,7 +41,11 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
 
     def gpkg_geometry_valid_check(self, geometry_type_names: Iterable[Tuple[str, str]]):
         assert geometry_type_names is not None
-        return [self.message.format(geometry=geometry) for geometry in geometry_type_names if geometry not in VALID_GEOMETRIES]
+        return [
+            self.message.format(geometry=geometry)
+            for geometry in geometry_type_names
+            if geometry not in VALID_GEOMETRIES
+        ]
 
 
 # TODO: this check is not what they advertise.
@@ -53,9 +59,15 @@ class GeometryTypeEqualsGpkgDefinitionValidator(validator.Validator):
     def check(self) -> Iterable[str]:
         table_geometry_type_names = gpkg_geometry_match_table_check_query(self.dataset)
         gpkg_geometries = query_gpkg_geometry_type_names(self.dataset)
-        return self.gpkg_geometry_match_table_check(table_geometry_type_names, gpkg_geometries)
+        return self.gpkg_geometry_match_table_check(
+            table_geometry_type_names, gpkg_geometries
+        )
 
-    def gpkg_geometry_match_table_check(self, table_geometry_type_names: Iterable[Tuple[str, str]], gpkg_geometries: Iterable[Tuple[str, str]]):
+    def gpkg_geometry_match_table_check(
+        self,
+        table_geometry_type_names: Iterable[Tuple[str, str]],
+        gpkg_geometries: Iterable[Tuple[str, str]],
+    ):
         assert table_geometry_type_names is not None
         assert gpkg_geometries is not None
 
@@ -75,7 +87,7 @@ class GeometryTypeEqualsGpkgDefinitionValidator(validator.Validator):
                     self.message.format(
                         layer=table_name,
                         found_geometry=table_geometry_type,
-                        gpkg_geometry=feature_type
+                        gpkg_geometry=feature_type,
                     )
                 )
 
