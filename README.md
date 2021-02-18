@@ -52,6 +52,14 @@ This package uses [Python bindings for GDAL](https://pypi.org/project/GDAL/)) an
 
 ## Usage
 
+### RQ8 Validation
+
+To validate RQ8 you have to generate definitions first.
+
+```bash
+geopackage-validator generate-definitions --gpkg-path /path/to/file.gpkg
+````
+
 ### Usage through Docker (pull from Docker Hub)
 
 Place your geopackage somewhere on disk or in an S3 storage repository.
@@ -65,7 +73,7 @@ docker pull pdok/geopackage-validator:latest
 Run the Docker container, mounting the current directory to /gpkg (adjust where needed)
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
 
 ### Usage through Docker (local build)
@@ -81,7 +89,7 @@ docker build -t geopackage-validator .
 Run the Docker container, mounting the current directory to /gpkg (adjust where needed)
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm geopackage-validator validate --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
+docker run -v ${PWD}:/gpkg --rm geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
 
 ## Commands
@@ -137,7 +145,7 @@ Options:
 Examples:
 
 ```bash
-pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg
+pipenv run geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path tests/data/test_allcorrect.gpkg
 ```
 
 Run with specific validations only
