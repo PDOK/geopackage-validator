@@ -36,23 +36,40 @@ def gpkg_geometry_valid_check(geometry_type_names: Iterable[Tuple[str, str]]):
     return result_format("gpkg_geometry_valid", results)
 
 
-def gpkg_geometry_match_table_check(
-    table_geometry_type_names: Iterable[Tuple[str, str]], gpkg_geometries
-):
+def gpkg_geometry_match_table_check_query(dataset):
+    geometry_type_names = dataset.ExecuteSQL(
+        "SELECT table_name, geometry_type_name FROM gpkg_geometry_columns;"
+    )
+
+    for geometry_type_name in geometry_type_names:
+        yield geometry_type_name[0], geometry_type_name[1]
+
+    dataset.ReleaseResultSet(geometry_type_names)
+
+
+def gpkg_geometry_match_table_check(table_geometry_type_names, gpkg_geometries):
     assert table_geometry_type_names is not None
+    assert gpkg_geometries is not None
 
     results = []
 
-    for gpkg_geometry in gpkg_geometries:
-        for table_geometry in table_geometry_type_names:
-            if table_geometry[1] != gpkg_geometry:
-                results.append(
-                    create_validation_message(
-                        err_index="gpkg_geometry_match_table",
-                        layer=table_geometry[0],
-                        found_geometry=table_geometry[1],
-                        gpkg_geometry=gpkg_geometry,
-                    )
+    gpkg_geometry_columns_table = dict(gpkg_geometries)
+
+    for table_name, table_geometry_type in table_geometry_type_names:
+
+        if table_name not in gpkg_geometry_columns_table.keys():
+            raise Exception(f"`{table_name}` not in `gpkg_geometry_columns`")
+
+        feature_type = gpkg_geometry_columns_table[table_name]
+
+        if feature_type != table_geometry_type:
+            results.append(
+                create_validation_message(
+                    err_index="gpkg_geometry_match_table",
+                    layer=table_name,
+                    found_geometry=table_geometry_type,
+                    gpkg_geometry=feature_type,
                 )
+            )
 
     return result_format("gpkg_geometry_match_table", results)

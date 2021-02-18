@@ -76,7 +76,8 @@ def validate(
 
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
-        results.append(result_format("gdal", [error.replace("\n", " ")]))
+        result = result_format("gdal", [error.replace("\n", " ")])
+        results.extend(result)
 
     init_gdal(gdal_error_handler)
 

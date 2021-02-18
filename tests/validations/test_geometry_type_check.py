@@ -1,7 +1,7 @@
 from geopackage_validator.gdal.dataset import open_dataset
 from geopackage_validator.validations.geometry_type_check import (
     geometry_type_check,
-    geometry_type_check_query,
+    table_geometry_type_names_query,
 )
 
 
@@ -37,7 +37,7 @@ def test_mixed_geometries():
 
 def test_with_gpkg():
     dataset = open_dataset("tests/data/test_geometry_type.gpkg")
-    checks = list(geometry_type_check_query(dataset))
+    checks = list(table_geometry_type_names_query(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_geometry_type"
     assert checks[0][1] == "COMPOUNDCURVE"
@@ -45,7 +45,7 @@ def test_with_gpkg():
 
 def test_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    checks = list(geometry_type_check_query(dataset))
+    checks = list(table_geometry_type_names_query(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_allcorrect"
     assert checks[0][1] == "POLYGON"
