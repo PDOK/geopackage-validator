@@ -11,18 +11,16 @@ from geopackage_validator.validations.gpkg_geometry_valid import (
 def test_gpkg_geometry_match_table_check():
     assert (
         len(
-            GeometryTypeEqualsGpkgDefinitionValidator(
-                None
-            ).gpkg_geometry_match_table_check([], [])
+            GeometryTypeEqualsGpkgDefinitionValidator.gpkg_geometry_match_table_check(
+                [], []
+            )
         )
         == 0
     )
 
 
 def test_gpkg_geometry_no_match_table_check():
-    results = GeometryTypeEqualsGpkgDefinitionValidator(
-        None
-    ).gpkg_geometry_match_table_check(
+    results = GeometryTypeEqualsGpkgDefinitionValidator.gpkg_geometry_match_table_check(
         [("dummy_table", "GEOMETRY1")], [("dummy_table", "GEOMETRY2")]
     )
     assert len(results) == 1

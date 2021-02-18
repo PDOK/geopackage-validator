@@ -64,8 +64,9 @@ class GeometryTypeEqualsGpkgDefinitionValidator(validator.Validator):
             table_geometry_types, gpkg_table_geometry_types
         )
 
+    @classmethod
     def gpkg_geometry_match_table_check(
-        self,
+        cls,
         table_geometry_type_names: Iterable[Tuple[str, str]],
         gpkg_table_geometry_types: Iterable[Tuple[str, str]],
     ):
@@ -85,7 +86,7 @@ class GeometryTypeEqualsGpkgDefinitionValidator(validator.Validator):
 
             if feature_type != table_geometry_type:
                 results.append(
-                    self.message.format(
+                    cls.message.format(
                         layer=table_name,
                         found_geometry=table_geometry_type,
                         gpkg_geometry=feature_type,
