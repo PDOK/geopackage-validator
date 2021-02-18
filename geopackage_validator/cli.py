@@ -2,8 +2,10 @@
 """Main CLI entry for the Geopackage validator tool."""
 # Setup logging before package imports.
 import logging
+from datetime import datetime
 import sys
 import traceback
+import time
 
 import click
 import click_log
@@ -127,26 +129,26 @@ def geopackage_validator_command(
     s3_bucket,
     s3_key,
 ):
+    start_time = datetime.now()
+    duration_start = time.monotonic()
+
     try:
         if gpkg_path is None and s3_endpoint_no_protocol is None:
             logger.error("Give --gpkg-path or s3 location")
             return
 
         if gpkg_path is not None:
-            validate(
-                gpkg_path,
-                gpkg_path,
-                table_definitions_path,
-                validations_path,
-                validations,
+            filename = gpkg_path
+            results, validations_executed, success = validate(
+                gpkg_path, table_definitions_path, validations_path, validations,
             )
         else:
             with minio_resource(
                 s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
             ) as localfilename:
-                validate(
+                filename = s3_key
+                results, validations_executed, success = validate(
                     localfilename,
-                    s3_key,
                     table_definitions_path,
                     validations_path,
                     validations,
@@ -163,8 +165,20 @@ def geopackage_validator_command(
             level=validator.ValidationLevel.UNKNOWN,
             trace=trace,
         )
+        success = False
+        filename = ""
+        validations_executed = None
+        results = [output]
 
-        log_output(results=[output])
+    duration_seconds = time.monotonic() - duration_start
+    log_output(
+        filename=filename,
+        results=results,
+        validations_executed=validations_executed,
+        start_time=start_time,
+        duration_seconds=duration_seconds,
+        success=success,
+    )
 
 
 @cli.command(
