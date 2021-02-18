@@ -9,6 +9,7 @@ from geopackage_validator.validations.validator import (
 )
 
 
+
 def log_output(
     results: List[Dict[str, List[str]]],
     filename: str = "",
