@@ -56,7 +56,6 @@ def validate(
 
     results = []
 
-    # TODO: handle with Validator or create ErrorHandler that is inherited by Validator?
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
         result = format_result(
@@ -72,8 +71,6 @@ def validate(
     validators = validators_to_use(validations_path, validations)
 
     context = {"table_definitions_path": table_definitions_path}
-
-    # todo: load in lower level or refactor lower code
 
     dataset = gdal_utils.open_dataset(gpkg_path)
     results += [validator(dataset, **context).validate() for validator in validators]

@@ -59,7 +59,7 @@ class Validator(ABC):
         self.dataset = dataset
 
     def validate(self) -> List[Dict[str, List[str]]]:
-        """TODO"""
+        """Run validation at geopackage."""
         results = list(self.check())
         if results:
             return [
@@ -74,7 +74,7 @@ class Validator(ABC):
 
     @abstractmethod
     def check(self) -> Iterable[str]:
-        """TODO"""
+        """Check the geopackage and return a list of validation results."""
         ...
 
     @classproperty
