@@ -61,4 +61,4 @@ def test_with_gpkg_allcorrect():
     assert checks[0][0] == "test_allcorrect"
     assert checks[0][1] == "fid"
     assert checks[1][0] == "test_allcorrect"
-    assert checks[1][1] == "geometry"
+    assert checks[1][1] == "geom"

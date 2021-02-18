@@ -58,7 +58,7 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
 
 
 def generate_definitions_for_path(gpkg_path: str) -> TableDefinition:
-    """Starts the geopackage validation."""
+    """Starts the geopackage validations."""
     check_gdal_installed()
     check_gdal_version()
 

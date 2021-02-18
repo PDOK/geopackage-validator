@@ -1,12 +1,9 @@
 import json
 import logging
-import time
-from datetime import datetime
 from pathlib import Path
 
 from geopackage_validator.generate import TableDefinition
-from geopackage_validator.output import log_output
-from geopackage_validator import validations
+from geopackage_validator import validations as validation
 from geopackage_validator.validations.validator import (
     Validator,
     ValidationLevel,
@@ -20,9 +17,11 @@ logger = logging.getLogger(__name__)
 RQ8 = "RQ8"
 
 
-def validators_to_use(validations_path="", validation_codes="", is_rq8_requested=False):
+def validators_to_use(
+    validation_codes="", validations_path=None, is_rq8_requested=False
+):
     validator_classes = get_validator_classes()
-    if validation_codes == "ALL" or (not validations_path and not validation_codes):
+    if validation_codes == "ALL" or (validations_path is None and not validation_codes):
         if not is_rq8_requested:
             return [v for v in validator_classes if v.validation_code != RQ8]
         else:
@@ -30,7 +29,7 @@ def validators_to_use(validations_path="", validation_codes="", is_rq8_requested
 
     codes = []
 
-    if validations_path:
+    if validations_path is not None:
         validations_from_file = Path(validations_path).read_text()
         try:
             codes += json.loads(validations_from_file)["validations"]
@@ -48,15 +47,9 @@ def validators_to_use(validations_path="", validation_codes="", is_rq8_requested
 
 
 def validate(
-    gpkg_path: str,
-    filename: str,
-    table_definitions_path: str,
-    validations_path: str,
-    validations: str,
+    gpkg_path, table_definitions_path=None, validations_path=None, validations=""
 ):
-    """Starts the geopackage validation."""
-    start_time = datetime.now()
-    duration_start = time.monotonic()
+    """Starts the geopackage validations."""
     gdal_utils.check_gdal_installed()
     gdal_utils.check_gdal_version()
 
@@ -84,23 +77,18 @@ def validate(
         load_table_definitions(table_definitions_path) if is_rq8_requested else None
     )
 
-    validators = validators_to_use(validations_path, validations, is_rq8_requested)
+    validators = validators_to_use(validations, validations_path, is_rq8_requested)
+
+    success = True
 
     for validator in validators:
         result = validator(dataset, table_definitions=table_definitions).validate()
 
         if result is not None:
             results.append(result)
+            success = success and validator.level != ValidationLevel.ERROR
 
-    duration_seconds = time.monotonic() - duration_start
-
-    log_output(
-        results=results,
-        filename=filename,
-        validations_executed=get_validation_codes(validators),
-        start_time=start_time,
-        duration_seconds=duration_seconds,
-    )
+    return results, get_validation_codes(validators), success
 
 
 def get_validation_descriptions():
@@ -114,9 +102,9 @@ def get_validation_codes(validators):
 
 def get_validator_classes():
     validator_classes = [
-        getattr(validations, validator)
-        for validator in validations.__all__
-        if issubclass(getattr(validations, validator), Validator)
+        getattr(validation, validator)
+        for validator in validation.__all__
+        if issubclass(getattr(validation, validator), Validator)
     ]
     return sorted(validator_classes, key=lambda v: (v.level, v.code))
 

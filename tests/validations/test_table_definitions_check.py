@@ -39,10 +39,10 @@ def test_table_definitions_check_incorrect_geometry():
         "projection": 28992,
         "test_allcorrect": {
             "table_name": "test_allcorrect",
-            "geometry_column": "geometry",
+            "geometry_column": "geom",
             "columns": [
                 {"column_name": "fid", "data_type": "INTEGER"},
-                {"column_name": "geometry", "data_type": "POINT"},
+                {"column_name": "geom", "data_type": "POINT"},
             ],
         },
     }
@@ -63,10 +63,10 @@ def test_table_definitions_check_incorrect_projection():
         "projection": 4326,
         "test_allcorrect": {
             "table_name": "test_allcorrect",
-            "geometry_column": "geometry",
+            "geometry_column": "geom",
             "columns": [
                 {"column_name": "fid", "data_type": "INTEGER"},
-                {"column_name": "geometry", "data_type": "POLYGON"},
+                {"column_name": "geom", "data_type": "POLYGON"},
             ],
         },
     }
