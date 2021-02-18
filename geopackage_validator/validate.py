@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from geopackage_validator.constants import EXCLUDED_VALIDATIONS_FROM_ALL
+from geopackage_validator.generate import TableDefinition
 from geopackage_validator.output import log_output
 from geopackage_validator import validations
 from geopackage_validator.validations.validator import (
@@ -17,11 +17,16 @@ from geopackage_validator import gdal_utils
 
 logger = logging.getLogger(__name__)
 
+RQ8 = "RQ8"
 
-def validators_to_use(validations_path="", validation_codes=""):
+
+def validators_to_use(validations_path="", validation_codes="", is_rq8_requested=False):
     validator_classes = get_validator_classes()
     if validation_codes == "ALL" or (not validations_path and not validation_codes):
-        return [v for v in validator_classes if v.code not in EXCLUDED_VALIDATIONS_FROM_ALL]
+        if not is_rq8_requested:
+            return [v for v in validator_classes if v.validation_code != RQ8]
+        else:
+            return validator_classes
 
     codes = []
 
@@ -33,6 +38,9 @@ def validators_to_use(validations_path="", validation_codes=""):
             raise Exception("Validation path file does not contain any validations")
 
     codes += [v for v in validation_codes.replace(" ", "").split(",") if v]
+
+    if is_rq8_requested and RQ8 not in codes:
+        codes += [RQ8]
 
     validator_dict = {v.validation_code: v for v in validator_classes}
 
@@ -69,12 +77,20 @@ def validate(
 
     init_gdal(gdal_error_handler)
 
-    validators = validators_to_use(validations_path, validations)
-
-    context = {"table_definitions_path": table_definitions_path}
-
     dataset = gdal_utils.open_dataset(gpkg_path)
-    results += [validator(dataset, **context).validate() for validator in validators]
+
+    is_rq8_requested = table_definitions_path is not None
+    table_definitions = (
+        load_table_definitions(table_definitions_path) if is_rq8_requested else None
+    )
+
+    validators = validators_to_use(validations_path, validations, is_rq8_requested)
+
+    for validator in validators:
+        result = validator(dataset, table_definitions=table_definitions).validate()
+
+        if result is not None:
+            results.append(result)
 
     duration_seconds = time.monotonic() - duration_start
 
@@ -103,3 +119,9 @@ def get_validator_classes():
         if issubclass(getattr(validations, validator), Validator)
     ]
     return sorted(validator_classes, key=lambda v: (v.level, v.code))
+
+
+def load_table_definitions(table_definitions_path) -> TableDefinition:
+    path = Path(table_definitions_path)
+    assert path.exists()
+    return json.loads(path.read_text())
