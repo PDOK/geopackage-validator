@@ -1,4 +1,5 @@
 from geopackage_validator.generate import generate_definitions_for_path
+from geopackage_validator.validate import load_table_definitions
 from geopackage_validator.validations.table_definitions_check import (
     TableDefinitionValidator,
 )
@@ -10,7 +11,7 @@ def test_table_definitions_input_is_none():
     )
 
     diff = TableDefinitionValidator(
-        None, table_definitions_path=None
+        None, table_definitions=None
     ).check_table_definitions(current_definitions)
 
     assert len(diff) == 1
@@ -22,8 +23,12 @@ def test_table_definitions_check_correct():
         "tests/data/test_allcorrect.gpkg"
     )
 
+    table_definitions = load_table_definitions(
+        "tests/data/test_allcorrect_definition.json"
+    )
+
     diff = TableDefinitionValidator(
-        None, table_definitions_path="tests/data/test_allcorrect_definition.json"
+        None, table_definitions=table_definitions
     ).check_table_definitions(current_definitions)
 
     assert len(diff) == 0
@@ -42,8 +47,12 @@ def test_table_definitions_check_incorrect_geometry():
         },
     }
 
+    table_definitions = load_table_definitions(
+        "tests/data/test_allcorrect_definition.json"
+    )
+
     diff = TableDefinitionValidator(
-        None, table_definitions_path="tests/data/test_allcorrect_definition.json"
+        None, table_definitions=table_definitions
     ).check_table_definitions(current_definitions)
 
     assert len(diff) == 1
@@ -62,8 +71,12 @@ def test_table_definitions_check_incorrect_projection():
         },
     }
 
+    table_definitions = load_table_definitions(
+        "tests/data/test_allcorrect_definition.json"
+    )
+
     diff = TableDefinitionValidator(
-        None, table_definitions_path="tests/data/test_allcorrect_definition.json"
+        None, table_definitions=table_definitions
     ).check_table_definitions(current_definitions)
 
     assert len(diff) == 1
@@ -85,8 +98,12 @@ def test_table_definitions_check_incorrect_column_name():
         },
     }
 
+    table_definitions = load_table_definitions(
+        "tests/data/test_allcorrect_definition.json"
+    )
+
     diff = TableDefinitionValidator(
-        None, table_definitions_path="tests/data/test_allcorrect_definition.json"
+        None, table_definitions=table_definitions
     ).check_table_definitions(current_definitions)
 
     assert len(diff) == 1
@@ -105,8 +122,12 @@ def test_table_definitions_check_table_changed():
         },
     }
 
+    table_definitions = load_table_definitions(
+        "tests/data/test_allcorrect_definition.json"
+    )
+
     diff = TableDefinitionValidator(
-        None, table_definitions_path="tests/data/test_allcorrect_definition.json"
+        None, table_definitions=table_definitions
     ).check_table_definitions(current_definitions)
 
     assert len(diff) == 2
