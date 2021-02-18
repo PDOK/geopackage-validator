@@ -30,7 +30,7 @@ class TableDefinitionValidator(validator.Validator):
 
         # todo: discuss -> return exception or is this fine
         if self.table_definitions is None:
-            return self.message.format(difference="Missing '--table-definitions-path' input")
+            return [self.message.format(difference="Missing '--table-definitions-path' input")]
 
         deep_diff = DeepDiff(self.table_definitions, definitions_current).pretty()
         return [

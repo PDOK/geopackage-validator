@@ -4,6 +4,19 @@ from geopackage_validator.validations.table_definitions_check import (
 )
 
 
+def test_table_definitions_input_is_none():
+    current_definitions = generate_definitions_for_path(
+        "tests/data/test_allcorrect.gpkg"
+    )
+
+    diff = TableDefinitionValidator(
+        None, table_definitions_path=None
+    ).check_table_definitions(current_definitions)
+
+    assert len(diff) == 1
+    assert diff[0] == "Difference: Missing '--table-definitions-path' input"
+
+
 def test_table_definitions_check_correct():
     current_definitions = generate_definitions_for_path(
         "tests/data/test_allcorrect.gpkg"
