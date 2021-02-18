@@ -183,7 +183,7 @@ def geopackage_validator_command(
 
 @cli.command(
     name="generate-definitions",
-    help="Generate Geopackage table definition JSON from given local or s3 package. Use the generated definition JSON in the validations step by providing the table definitions with the --table-definitions-path parameter.",
+    help="Generate Geopackage table definition JSON from given local or s3 package. Use the generated definition JSON in the validation step by providing the table definitions with the --table-definitions-path parameter.",
 )
 @click.option(
     "--gpkg-path",

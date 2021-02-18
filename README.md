@@ -145,7 +145,7 @@ Run with specific validations only
 Specified in file:
 
 ```bash
-pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-path tests/validationsets/example-validations-set.json
+pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-path tests/validationsets/example-validation-set.json
 ```
 
 Or specified on command line:
@@ -177,7 +177,7 @@ Generate Geopackage table definition JSON from given local or s3 package. This c
 Usage: geopackage-validator generate-definitions [OPTIONS]
 
   Generate Geopackage table definition JSON from given local or s3 package.
-  Use the generated definition JSON in the validations step by providing the
+  Use the generated definition JSON in the validation step by providing the
   table definitions with the --table-definitions-path parameter.
 
 Options:
