@@ -1,6 +1,8 @@
 import json
 import logging
 from pathlib import Path
+import sys
+import traceback
 
 from geopackage_validator.generate import TableDefinition
 from geopackage_validator import validations as validation
@@ -85,12 +87,26 @@ def validate(
     validation_results = []
     success = True
 
-    for validator in validators:
-        result = validator(dataset, table_definitions=table_definitions).validate()
+    try:
+        for validator in validators:
+            result = validator(dataset, table_definitions=table_definitions).validate()
 
-        if result is not None:
-            validation_results.append(result)
-            success = success and validator.level == ValidationLevel.RECCOMENDATION
+            if result is not None:
+                validation_results.append(result)
+                success = success and validator.level == ValidationLevel.RECCOMENDATION
+    except Exception:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        trace = [
+            t.strip("\n")
+            for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
+        ]
+        output = validator.format_result(
+            validation_code="ERROR",
+            validation_description="No unexpected errors must occur.",
+            level=validator.ValidationLevel.UNKNOWN,
+            trace=trace,
+        )
+        return [output], None, False
 
     # results has values when a gdal error is thrown:
     success = success and not results

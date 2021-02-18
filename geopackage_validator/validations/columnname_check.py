@@ -20,9 +20,7 @@ def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
 
 
 class ColumnNameValidator(validator.Validator):
-    """
-    Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.
-    """
+    """Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores."""
 
     code = 6
     level = validator.ValidationLevel.ERROR
