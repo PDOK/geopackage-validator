@@ -25,6 +25,7 @@ class ViewsValidator(validator.Validator):
         views = query_db_views(self.dataset)
         return self.db_views_check(views)
 
-    def db_views_check(self, views: Iterable[str]):
+    @classmethod
+    def db_views_check(cls, views: Iterable[str]):
         assert views is not None
-        return [self.message.format(view=view) for view in views]
+        return [cls.message.format(view=view) for view in views]
