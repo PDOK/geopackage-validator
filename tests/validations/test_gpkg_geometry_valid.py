@@ -1,8 +1,9 @@
 from geopackage_validator.gdal_utils import open_dataset
-from geopackage_validator.validations.geometry_type_check import query_geometry_types
-from geopackage_validator.validations.gpkg_geometry_valid import (
+from geopackage_validator.validations import (
     GpkgGeometryTypeNameValidator,
     GeometryTypeEqualsGpkgDefinitionValidator,
+)
+from geopackage_validator.validations.geometry_type_check import (
     query_table_geometry_types,
     query_gpkg_metadata_geometry_types,
 )
@@ -41,9 +42,23 @@ def test_gpkg_match_valid_gemometries():
 
 def test_gpkg_geometry_match_table():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    table_geometry_type_names = query_geometry_types(dataset)
+    table_geometry_type_names = query_table_geometry_types(dataset)
     geometry_type_names = query_gpkg_metadata_geometry_types(dataset)
     results = GeometryTypeEqualsGpkgDefinitionValidator(
         dataset
     ).gpkg_geometry_match_table_check(table_geometry_type_names, geometry_type_names)
     assert len(results) == 0
+
+
+def test_gpkg_geometry_match_table():
+    dataset = open_dataset("tests/data/test_geometry_valid.gpkg")
+    table_geometry_type_names = query_table_geometry_types(dataset)
+    geometry_type_names = query_gpkg_metadata_geometry_types(dataset)
+    results = GeometryTypeEqualsGpkgDefinitionValidator(
+        dataset
+    ).gpkg_geometry_match_table_check(table_geometry_type_names, geometry_type_names)
+    assert len(results) == 1
+    assert (
+        results[0]
+        == "Found geometry: POINT, in layer: test_geometry_valid, where gpkg_geometry is: POLYGON."
+    )
