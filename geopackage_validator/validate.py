@@ -86,10 +86,11 @@ def validate(
 
     validators = validators_to_use(validations_path, validations, is_rq8_requested)
 
-    results += [
-        validator(dataset, table_definitions=table_definitions).validate()
-        for validator in validators
-    ]
+    for validator in validators:
+        result = validator(dataset, table_definitions=table_definitions).validate()
+
+        if result is not None:
+            results.append(result)
 
     duration_seconds = time.monotonic() - duration_start
 

@@ -18,7 +18,6 @@ def query_table_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"
     )
     for table_name, column_name in columns:
-        dataset.ExecuteSQL(f"SELECT load_extension('mod_spatialite');")
         validations = dataset.ExecuteSQL(
             f"SELECT DISTINCT GeometryType({column_name}) as geometry_type FROM {table_name};"
         )

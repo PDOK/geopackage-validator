@@ -66,7 +66,14 @@ def test_validate_with_gpkg():
 def test_validate_with_rq8_missing_definitions_path():
     runner = CliRunner()
     result = runner.invoke(
-        cli, ["validate", "--gpkg-path", "tests/data/test_allcorrect.gpkg", "--validations", "RQ8"]
+        cli,
+        [
+            "validate",
+            "--gpkg-path",
+            "tests/data/test_allcorrect.gpkg",
+            "--validations",
+            "RQ8",
+        ],
     )
     assert result.exit_code == 0
     assert "Missing '--table-definitions-path' input" in result.output
@@ -75,7 +82,14 @@ def test_validate_with_rq8_missing_definitions_path():
 def test_validate_with_rq8_by_setting_definitions_path():
     runner = CliRunner()
     result = runner.invoke(
-        cli, ["validate", "--gpkg-path", "tests/data/test_allcorrect.gpkg", "--table-definitions-path", "tests/data/test_allcorrect_definition.json"]
+        cli,
+        [
+            "validate",
+            "--gpkg-path",
+            "tests/data/test_allcorrect.gpkg",
+            "--table-definitions-path",
+            "tests/data/test_allcorrect_definition.json",
+        ],
     )
     assert result.exit_code == 0
     assert "RQ8" in result.output
