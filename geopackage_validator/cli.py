@@ -3,8 +3,6 @@
 # Setup logging before package imports.
 import logging
 from datetime import datetime
-import sys
-import traceback
 import time
 
 import click
@@ -17,7 +15,6 @@ click_log.basic_config(logger)
 from geopackage_validator.generate import generate_definitions_for_path
 from geopackage_validator.minio.minio_context import minio_resource
 from geopackage_validator.output import log_output
-from geopackage_validator.validations import validator
 from geopackage_validator.validate import validate, get_validation_descriptions
 import json
 
@@ -132,17 +129,17 @@ def geopackage_validator_command(
     start_time = datetime.now()
     duration_start = time.monotonic()
 
-    try:
-        if gpkg_path is None and s3_endpoint_no_protocol is None:
-            logger.error("Give --gpkg-path or s3 location")
-            return
+    if gpkg_path is None and s3_endpoint_no_protocol is None:
+        logger.error("Give --gpkg-path or s3 location")
+        return
 
-        if gpkg_path is not None:
-            filename = gpkg_path
-            results, validations_executed, success = validate(
-                gpkg_path, table_definitions_path, validations_path, validations,
-            )
-        else:
+    if gpkg_path is not None:
+        filename = gpkg_path
+        results, validations_executed, success = validate(
+            gpkg_path, table_definitions_path, validations_path, validations,
+        )
+    else:
+        try:
             with minio_resource(
                 s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
             ) as localfilename:
@@ -153,23 +150,9 @@ def geopackage_validator_command(
                     validations_path,
                     validations,
                 )
-    except Exception:
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        trace = [
-            t.strip("\n")
-            for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
-        ]
-        output = validator.format_result(
-            validation_code="ERROR",
-            validation_description="No unexpected errors must occur.",
-            level=validator.ValidationLevel.UNKNOWN,
-            trace=trace,
-        )
-        success = False
-        filename = ""
-        validations_executed = None
-        results = [output]
-
+        except (AssertionError, IOError) as e:
+            logger.error(str(e))
+            return
     duration_seconds = time.monotonic() - duration_start
     log_output(
         filename=filename,
