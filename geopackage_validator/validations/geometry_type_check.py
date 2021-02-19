@@ -7,6 +7,9 @@ from geopackage_validator.validations import validator
 
 def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
     for layer in dataset:
+        if not layer.GetGeometryColumn():
+            continue
+
         layer_name = layer.GetName()
 
         for feature in layer:
