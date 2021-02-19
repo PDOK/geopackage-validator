@@ -97,10 +97,10 @@ def validate(
             t.strip("\n")
             for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
         ]
-        output = validator.format_result(
+        output = format_result(
             validation_code="ERROR",
             validation_description="No unexpected errors must occur.",
-            level=validator.ValidationLevel.UNKNOWN,
+            level=ValidationLevel.UNKNOWN,
             trace=trace,
         )
         return [output], None, False
