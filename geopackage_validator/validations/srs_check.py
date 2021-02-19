@@ -39,7 +39,8 @@ class SrsValidator(validator.Validator):
         srs_metadata = srs_check_query(self.dataset)
         return self.srs_check(srs_metadata)
 
-    def srs_check(self, srs_list: Iterable[Tuple[str, str]]):
+    @classmethod
+    def srs_check(cls, srs_list: Iterable[Tuple[str, str]]):
         assert srs_list is not None
 
         results = []
@@ -48,7 +49,7 @@ class SrsValidator(validator.Validator):
 
             if srs_organisation != "EPSG":
                 results.append(
-                    self.message.format(
+                    cls.message.format(
                         srs_organisation=srs_organisation,
                         srs_id=srs_id,
                         srs_name=srs_name,
@@ -57,7 +58,7 @@ class SrsValidator(validator.Validator):
 
             if srs_id not in ALLOWED_PROJECTIONS_LIST:
                 results.append(
-                    self.message.format(
+                    cls.message.format(
                         srs_organisation=srs_organisation,
                         srs_id=srs_id,
                         srs_name=srs_name,

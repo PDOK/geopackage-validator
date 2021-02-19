@@ -8,7 +8,7 @@ from geopackage_validator.validations.columnname_check import (
 def test_lowercasecolumnname_success():
     assert (
         len(
-            ColumnNameValidator(None).check_columns(
+            ColumnNameValidator.check_columns(
                 column_names=[
                     ("table", "column"),
                     ("table", "lower_case"),
@@ -22,9 +22,7 @@ def test_lowercasecolumnname_success():
 
 
 def test_lowercasecolumnname_start_number():
-    results = ColumnNameValidator(None).check_columns(
-        column_names=[("table", "1column")]
-    )
+    results = ColumnNameValidator.check_columns(column_names=[("table", "1column")])
     assert len(results) == 1
     assert results[0] == "Error found in table: table, column: 1column"
 
@@ -32,7 +30,7 @@ def test_lowercasecolumnname_start_number():
 def test_lowercasecolumnname_with_capitals():
     assert (
         len(
-            ColumnNameValidator(None).check_columns(
+            ColumnNameValidator.check_columns(
                 column_names=[
                     ("table", "columnR"),
                     ("table", "column"),

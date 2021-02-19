@@ -43,6 +43,7 @@ class ValidRtreeValidator(validator.Validator):
         rtree_index_list = rtree_valid_check_query(self.dataset)
         return self.check_rtree_is_valid(rtree_index_list)
 
-    def check_rtree_is_valid(self, rtree_index_list: Iterable[str]):
+    @classmethod
+    def check_rtree_is_valid(cls, rtree_index_list: Iterable[str]):
         assert rtree_index_list is not None
-        return [self.message.format(table_name=table) for table in rtree_index_list]
+        return [cls.message.format(table_name=table) for table in rtree_index_list]

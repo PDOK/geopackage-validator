@@ -18,12 +18,6 @@ VALIDATION_LEVELS = {
 }
 
 
-VALIDATION_LEVELS_THAT_RESULT_IN_FAIL = [
-    VALIDATION_LEVELS[ValidationLevel.UNKNOWN],
-    VALIDATION_LEVELS[ValidationLevel.RQ],
-]
-
-
 class classproperty:
     """
     Property decorator that also works on classes.

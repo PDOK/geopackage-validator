@@ -52,11 +52,12 @@ class GeometryTypeValidator(validator.Validator):
         geometries = query_geometry_types(self.dataset)
         return self.check_geometry_type(geometries)
 
-    def check_geometry_type(self, geometries: Iterable[Tuple[str, str]]):
+    @classmethod
+    def check_geometry_type(cls, geometries: Iterable[Tuple[str, str]]):
         assert geometries is not None
 
         return [
-            self.message.format(layer=layer, geometry=geometry)
+            cls.message.format(layer=layer, geometry=geometry)
             for layer, geometry in geometries
             if geometry not in VALID_GEOMETRIES
         ]
@@ -73,10 +74,11 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
         geometry_types = query_gpkg_metadata_geometry_types(self.dataset)
         return self.gpkg_geometry_valid_check(geometry_types)
 
-    def gpkg_geometry_valid_check(self, geometry_type_names: Iterable[Tuple[str, str]]):
+    @classmethod
+    def gpkg_geometry_valid_check(cls, geometry_type_names: Iterable[Tuple[str, str]]):
         assert geometry_type_names is not None
         return [
-            self.message.format(table=table, geometry_type=geometry_type)
+            cls.message.format(table=table, geometry_type=geometry_type)
             for table, geometry_type in geometry_type_names
             if geometry_type not in VALID_GEOMETRIES
         ]

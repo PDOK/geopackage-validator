@@ -15,13 +15,11 @@ def test_valid_geometries():
         ("layer2", "MULTIPOLYGON"),
     ]
 
-    assert len(GeometryTypeValidator(None).check_geometry_type(geometries)) == 0
+    assert len(GeometryTypeValidator.check_geometry_type(geometries)) == 0
 
 
 def test_invalid_geometry():
-    results = GeometryTypeValidator(None).check_geometry_type(
-        [("layer2", "WRONG_GEOMETRY")]
-    )
+    results = GeometryTypeValidator.check_geometry_type([("layer2", "WRONG_GEOMETRY")])
     assert len(results) == 1
     assert results[0] == "Error layer: layer2, found geometry: WRONG_GEOMETRY"
 
@@ -29,7 +27,7 @@ def test_invalid_geometry():
 def test_mixed_geometries():
     assert (
         len(
-            GeometryTypeValidator(None).check_geometry_type(
+            GeometryTypeValidator.check_geometry_type(
                 [("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")]
             )
         )
