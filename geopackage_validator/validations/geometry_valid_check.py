@@ -36,12 +36,13 @@ class ValidGeometryValidator(validator.Validator):
         geometry_check_list = geometry_valid_check_query(self.dataset)
         return self.geometry_valid_check(geometry_check_list)
 
+    @classmethod
     def geometry_valid_check(
-        self, geometry_check_list: Iterable[Tuple[str, str, str, int]]
+        cls, geometry_check_list: Iterable[Tuple[str, str, str, int]]
     ):
         assert geometry_check_list is not None
 
         return [
-            self.message.format(reason=reason, table=table, column=column, rowid=rowid)
+            cls.message.format(reason=reason, table=table, column=column, rowid=rowid)
             for reason, table, column, rowid in geometry_check_list
         ]

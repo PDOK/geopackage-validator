@@ -9,7 +9,7 @@ from geopackage_validator.validations.geom_column_check import (
 def test_geom_name_success():
     assert (
         len(
-            GeomColumnNameValidator(None).geom_columnname_check(
+            GeomColumnNameValidator.geom_columnname_check(
                 columns=[
                     ("table1", "geom"),
                     ("table2", "geom"),
@@ -23,7 +23,7 @@ def test_geom_name_success():
 
 
 def test_geom_name_failure():
-    result = GeomColumnNameValidator(None).geom_columnname_check(
+    result = GeomColumnNameValidator.geom_columnname_check(
         columns=[
             ("table1", "geom"),
             ("table2", "geom2"),
@@ -38,7 +38,7 @@ def test_geom_name_failure():
 def test_equal_name_success():
     assert (
         len(
-            GeomColumnNameEqualValidator(None).geom_equal_columnname_check(
+            GeomColumnNameEqualValidator.geom_equal_columnname_check(
                 columns=[
                     ("table1", "geometry"),
                     ("table2", "geometry"),
@@ -54,7 +54,7 @@ def test_equal_name_success():
 def test_equal_name_failure():
     assert (
         len(
-            GeomColumnNameEqualValidator(None).geom_equal_columnname_check(
+            GeomColumnNameEqualValidator.geom_equal_columnname_check(
                 columns=[
                     ("table1", "geometry"),
                     ("table2", "geom"),

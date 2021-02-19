@@ -7,14 +7,11 @@ from geopackage_validator.validations.layerfeature_check import (
 
 
 def test_zerofeatures():
-    assert (
-        len(NonEmptyLayerValidator(None).check_contains_features([("layer2", 1, 1)]))
-        == 0
-    )
+    assert len(NonEmptyLayerValidator.check_contains_features([("layer2", 1, 1)])) == 0
 
 
 def test_onefeature():
-    results = NonEmptyLayerValidator(None).check_contains_features(
+    results = NonEmptyLayerValidator.check_contains_features(
         [("layer1", 0, 0), ("layer2", 1, 1)]
     )
     assert len(results) == 1
@@ -22,14 +19,14 @@ def test_onefeature():
 
 
 def test_featurecount_index_not_uptodate():
-    results = NonEmptyLayerValidator(None).check_contains_features(
+    results = NonEmptyLayerValidator.check_contains_features(
         [("layer1", 1, 1), ("layer2", 1, 0)]
     )
     assert len(results) == 0
 
 
 def test_featurecount_index_not_uptodate_ogr_error():
-    results = OGRIndexValidator(None).layerfeature_check_ogr_index(
+    results = OGRIndexValidator.layerfeature_check_ogr_index(
         [("layer1", 1, 1), ("layer2", 1, 0)]
     )
     assert len(results) == 1
@@ -40,7 +37,7 @@ def test_featurecount_index_not_uptodate_ogr_error():
 
 
 def test_featurecount_index_not_uptodate_ogr_success():
-    results = OGRIndexValidator(None).layerfeature_check_ogr_index(
+    results = OGRIndexValidator.layerfeature_check_ogr_index(
         [("layer1", 1, 1), ("layer2", 1, 1)]
     )
     assert len(results) == 0

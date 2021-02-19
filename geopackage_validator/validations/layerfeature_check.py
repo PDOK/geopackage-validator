@@ -28,10 +28,11 @@ class NonEmptyLayerValidator(validator.Validator):
         counts = query_layerfeature_counts(self.dataset)
         return self.check_contains_features(counts)
 
-    def check_contains_features(self, counts: Iterable[Tuple[str, int, int]]):
+    @classmethod
+    def check_contains_features(cls, counts: Iterable[Tuple[str, int, int]]):
         assert counts is not None
         return [
-            self.message.format(layer=layer) for layer, count, _ in counts if count == 0
+            cls.message.format(layer=layer) for layer, count, _ in counts if count == 0
         ]
 
 
@@ -46,11 +47,12 @@ class OGRIndexValidator(validator.Validator):
         counts = query_layerfeature_counts(self.dataset)
         return self.layerfeature_check_ogr_index(counts)
 
-    def layerfeature_check_ogr_index(self, layers: Iterable[Tuple[str, int, int]]):
+    @classmethod
+    def layerfeature_check_ogr_index(cls, layers: Iterable[Tuple[str, int, int]]):
         assert layers is not None
 
         return [
-            self.message.format(layer=name, count=count, ogr_count=ogr_count)
+            cls.message.format(layer=name, count=count, ogr_count=ogr_count)
             for name, count, ogr_count in layers
             if count != ogr_count
         ]

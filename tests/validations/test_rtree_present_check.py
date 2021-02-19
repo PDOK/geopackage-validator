@@ -7,17 +7,13 @@ from geopackage_validator.validations.rtree_present_check import (
 
 def test_rtree_present_all_tables():
     assert (
-        len(
-            RTreeExistsValidator(None).check_rtree_is_present(
-                rtree_present_check_list=[]
-            )
-        )
+        len(RTreeExistsValidator.check_rtree_is_present(rtree_present_check_list=[]))
         == 0
     )
 
 
 def test_rtree_present_no_tables():
-    results = RTreeExistsValidator(None).check_rtree_is_present(
+    results = RTreeExistsValidator.check_rtree_is_present(
         rtree_present_check_list=["no table has an rtree index"]
     )
     assert len(results) == 1
@@ -27,7 +23,7 @@ def test_rtree_present_no_tables():
 def test_rtree_absent_one_table():
     assert (
         len(
-            RTreeExistsValidator(None).check_rtree_is_present(
+            RTreeExistsValidator.check_rtree_is_present(
                 rtree_present_check_list=["index_failed"]
             )
         )
