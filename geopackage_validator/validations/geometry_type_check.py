@@ -68,7 +68,7 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
 
     code = 14
     level = validator.ValidationLevel.ERROR
-    message = "Found geometry_type_name: {geometry} for table {table} (from the gpkg_geometry_columns table)."
+    message = "Found geometry_type_name: {geometry_type} for table {table} (from the gpkg_geometry_columns table)."
 
     def check(self) -> Iterable[str]:
         geometry_types = query_gpkg_metadata_geometry_types(self.dataset)
