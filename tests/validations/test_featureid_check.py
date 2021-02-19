@@ -6,11 +6,11 @@ from geopackage_validator.validations.feature_id_check import (
 
 
 def test_valid_featureid():
-    assert len(FeatureIdValidator(None).check_feature_id([("table", 1)])) == 0
+    assert len(FeatureIdValidator.check_feature_id([("table", 1)])) == 0
 
 
 def test_invalid_featureid():
-    results = FeatureIdValidator(None).check_feature_id([("table", 0)])
+    results = FeatureIdValidator.check_feature_id([("table", 0)])
     assert len(results) == 1
     assert results[0] == "Error found in table: table"
 

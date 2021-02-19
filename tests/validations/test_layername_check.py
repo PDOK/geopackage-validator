@@ -8,7 +8,7 @@ from geopackage_validator.validations.layername_check import (
 def test_lowercaselayername_success():
     assert (
         len(
-            LayerNameValidator(None).check_layernames(
+            LayerNameValidator.check_layernames(
                 layernames=["table", "lower_case", "is", "good"]
             )
         )
@@ -17,7 +17,7 @@ def test_lowercaselayername_success():
 
 
 def test_lowercaselayername_start_number():
-    results = LayerNameValidator(None).check_layernames(layernames=["1layer"])
+    results = LayerNameValidator.check_layernames(layernames=["1layer"])
     assert len(results) == 1
     assert results[0] == "Error layer: 1layer"
 
@@ -25,9 +25,7 @@ def test_lowercaselayername_start_number():
 def test_lowercaselayername_with_capitals():
     assert (
         len(
-            LayerNameValidator(None).check_layernames(
-                layernames=["layeRR", "layer", "layer"]
-            )
+            LayerNameValidator.check_layernames(layernames=["layeRR", "layer", "layer"])
         )
         == 1
     )

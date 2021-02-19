@@ -6,11 +6,11 @@ from geopackage_validator.validations.db_views_check import (
 
 
 def test_zeroviews():
-    assert len(ViewsValidator(None).db_views_check([])) == 0
+    assert len(ViewsValidator.db_views_check([])) == 0
 
 
 def test_oneview():
-    results = ViewsValidator(None).db_views_check(["view1"])
+    results = ViewsValidator.db_views_check(["view1"])
     assert len(results) == 1
     assert results[0] == "Found view: view1"
 

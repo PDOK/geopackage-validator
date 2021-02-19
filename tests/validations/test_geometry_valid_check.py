@@ -6,11 +6,11 @@ from geopackage_validator.validations.geometry_valid_check import (
 
 
 def test_valid_geometries():
-    assert len(ValidGeometryValidator(None).geometry_valid_check([])) == 0
+    assert len(ValidGeometryValidator.geometry_valid_check([])) == 0
 
 
 def test_invalid_geometry():
-    results = ValidGeometryValidator(None).geometry_valid_check(
+    results = ValidGeometryValidator.geometry_valid_check(
         [("Geometry invalid", "table", "column", 123)]
     )
     assert len(results) == 1
