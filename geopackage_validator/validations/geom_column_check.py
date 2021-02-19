@@ -27,10 +27,11 @@ class GeomColumnNameValidator(validator.Validator):
         columns = query_geom_columnname(self.dataset)
         return self.geom_columnname_check(columns)
 
-    def geom_columnname_check(self, columns: Iterable[Tuple[str, str]]):
+    @classmethod
+    def geom_columnname_check(cls, columns: Iterable[Tuple[str, str]]):
         assert columns is not None
         return [
-            self.message.format(column_name=column_name, table_name=table_name)
+            cls.message.format(column_name=column_name, table_name=table_name)
             for table_name, column_name in columns
             if column_name != "geom"
         ]
@@ -47,10 +48,11 @@ class GeomColumnNameEqualValidator(validator.Validator):
         columns = query_geom_columnname(self.dataset)
         return self.geom_equal_columnname_check(columns)
 
-    def geom_equal_columnname_check(self, columns: Iterable[Tuple[str, str]]):
+    @classmethod
+    def geom_equal_columnname_check(cls, columns: Iterable[Tuple[str, str]]):
         assert columns is not None
         unique_column_names = {column_name for _, column_name in columns}
 
         if len(unique_column_names) > 1:
-            return [self.message.format(column_names=", ".join(unique_column_names))]
+            return [cls.message.format(column_names=", ".join(unique_column_names))]
         return []

@@ -32,10 +32,11 @@ class FeatureIdValidator(validator.Validator):
         feature_ids = query_feature_id(self.dataset)
         return self.check_feature_id(feature_ids)
 
-    def check_feature_id(self, feature_ids: Iterable[Tuple[str, int]]) -> List[str]:
+    @classmethod
+    def check_feature_id(cls, feature_ids: Iterable[Tuple[str, int]]) -> List[str]:
         assert feature_ids is not None
         return [
-            self.message.format(table_name=table)
+            cls.message.format(table_name=table)
             for table, count in feature_ids
             if count != 1
         ]

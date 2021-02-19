@@ -45,8 +45,8 @@ def minio_resource(
             )
 
             yield localfilename
-        except:
-            raise Exception("Could not open file from S3")
+        except (ValueError, IOError):
+            raise IOError("Could not open file from S3")
 
     finally:
         if os.path.exists(localfilename):

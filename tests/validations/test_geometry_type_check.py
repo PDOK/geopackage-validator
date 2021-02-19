@@ -15,13 +15,11 @@ def test_valid_geometries():
         ("layer2", "MULTIPOLYGON"),
     ]
 
-    assert len(GeometryTypeValidator(None).check_geometry_type(geometries)) == 0
+    assert len(GeometryTypeValidator.check_geometry_type(geometries)) == 0
 
 
 def test_invalid_geometry():
-    results = GeometryTypeValidator(None).check_geometry_type(
-        [("layer2", "WRONG_GEOMETRY")]
-    )
+    results = GeometryTypeValidator.check_geometry_type([("layer2", "WRONG_GEOMETRY")])
     assert len(results) == 1
     assert results[0] == "Error layer: layer2, found geometry: WRONG_GEOMETRY"
 
@@ -29,7 +27,7 @@ def test_invalid_geometry():
 def test_mixed_geometries():
     assert (
         len(
-            GeometryTypeValidator(None).check_geometry_type(
+            GeometryTypeValidator.check_geometry_type(
                 [("layer2", "WRONG_GEOMETRY"), ("layer3", "POINT")]
             )
         )
@@ -47,6 +45,14 @@ def test_with_gpkg():
 
 def test_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
+    checks = list(query_geometry_types(dataset))
+    assert len(checks) == 1
+    assert checks[0][0] == "test_allcorrect"
+    assert checks[0][1] == "POLYGON"
+
+
+def test_with_gpkg_allcorrect():
+    dataset = open_dataset("tests/data/test_correct_attribute.gpkg")
     checks = list(query_geometry_types(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_allcorrect"

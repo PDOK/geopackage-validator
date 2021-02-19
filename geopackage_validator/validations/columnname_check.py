@@ -20,9 +20,7 @@ def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
 
 
 class ColumnNameValidator(validator.Validator):
-    """
-    Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.
-    """
+    """Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores."""
 
     code = 6
     level = validator.ValidationLevel.ERROR
@@ -32,10 +30,11 @@ class ColumnNameValidator(validator.Validator):
         column_names = query_columnames(self.dataset)
         return self.check_columns(column_names)
 
-    def check_columns(self, column_names: Iterable[Tuple[str, str]]) -> List[str]:
+    @classmethod
+    def check_columns(cls, column_names: Iterable[Tuple[str, str]]) -> List[str]:
         assert column_names is not None
         return [
-            self.message.format(column_name=column_name, table_name=table_name)
+            cls.message.format(column_name=column_name, table_name=table_name)
             for table_name, column_name in column_names
             if not SNAKE_CASE_REGEX.fullmatch(column_name)
         ]
