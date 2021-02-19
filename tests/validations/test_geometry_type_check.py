@@ -49,3 +49,11 @@ def test_with_gpkg_allcorrect():
     assert len(checks) == 1
     assert checks[0][0] == "test_allcorrect"
     assert checks[0][1] == "POLYGON"
+
+
+def test_with_gpkg_allcorrect():
+    dataset = open_dataset("tests/data/test_correct_attribute.gpkg")
+    checks = list(query_geometry_types(dataset))
+    assert len(checks) == 1
+    assert checks[0][0] == "test_allcorrect"
+    assert checks[0][1] == "POLYGON"
