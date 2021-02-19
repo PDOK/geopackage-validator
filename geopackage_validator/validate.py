@@ -40,9 +40,6 @@ def validators_to_use(
 
     codes += [v for v in validation_codes.replace(" ", "").split(",") if v]
 
-    if is_rq8_requested and RQ8 not in codes:
-        codes += [RQ8]
-
     validator_dict = {v.validation_code: v for v in validator_classes}
 
     return [validator_dict[code] for code in codes]
