@@ -45,6 +45,12 @@ def test_singletable_with_gpkg():
     assert checks[0] == "test_rtree_present_single_table"
 
 
+def test_rtrees_query_has_no_result_on_table__with_no_geometry():
+    dataset = open_dataset("tests/data/test_correct_attribute.gpkg")
+    checks = list(query_rtree_presence(dataset))
+    assert len(checks) == 0
+
+
 def test_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_rtree_presence(dataset))
