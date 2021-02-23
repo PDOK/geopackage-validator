@@ -16,7 +16,7 @@ def query_rtree_presence(dataset) -> Iterable[str]:
 
     indexes = dataset.ExecuteSQL(
         "select gc.table_name from gpkg_contents gc "
-        "where gc.data_type != 'attributes' and "
+        "where gc.data_type = 'features' and "
         "not exists(select * from gpkg_extensions gce "
         "   where gce.table_name = gc.table_name "
         "   and extension_name = 'gpkg_rtree_index');"
