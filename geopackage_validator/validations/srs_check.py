@@ -83,6 +83,6 @@ class SrsEqualValidator(validator.Validator):
         assert srs_list is not None
         srs_set = set(srs_list)
         if len(srs_set) > 1:
-            return [self.message.format(srs=", ".join(srs_set))]
+            return [self.message.format(srs=", ".join([str(x) for x in srs_set]))]
 
         return []
