@@ -48,7 +48,7 @@ WORKDIR /code
 COPY --from=compile-image "/code/pdok_geopackage_validator.egg-info/" "/code/pdok_geopackage_validator.egg-info/"
 COPY --from=compile-image "/code/geopackage_validator" "/code/geopackage_validator"
 COPY --from=compile-image /code/.venv /code/.venv
-COPY --from=compile-image "/usr/local/lib/python3.6/dist-packages" "/usr/local/lib/python3.6/dist-packages"
+COPY --from=compile-image "/usr/local/lib/python3.8/dist-packages" "/usr/local/lib/python3.8/dist-packages"
 
 # Make sure we use the virtualenv:
 ENV PATH="/code/.venv/bin:$PATH"
