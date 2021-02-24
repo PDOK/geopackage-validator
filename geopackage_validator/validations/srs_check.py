@@ -55,7 +55,8 @@ class SrsValidator(validator.Validator):
                         srs_name=srs_name,
                     )
                 )
-
+                continue # prevent duplicate error message for the same srs entry
+            
             if srs_id not in ALLOWED_PROJECTIONS_LIST:
                 results.append(
                     cls.message.format(
