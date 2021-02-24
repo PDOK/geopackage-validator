@@ -103,7 +103,7 @@ def validate(
             level=ValidationLevel.UNKNOWN,
             trace=trace,
         )
-        return [output], None, False
+        return [output] + results, None, False
 
     # results has values when a gdal error is thrown:
     success = success and not results
