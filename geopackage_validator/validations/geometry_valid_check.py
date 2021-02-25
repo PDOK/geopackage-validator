@@ -12,7 +12,6 @@ SQL_TEMPLATE = """SELECT
     cast(rowid as INTEGER) as row_id
 from "{table_name}" where ST_IsValid("{column_name}") = 0 LIMIT {limit};"""
 
-
 def geometry_valid_check_query(dataset) -> Iterable[Tuple[str, str, str, int]]:
     columns = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"
@@ -60,6 +59,9 @@ class ValidGeometryValidator(validator.Validator):
                 aggregate[key]["desc"] = "times, example record id's"
                 if aggregate[key]["amount"] <= 5:
                     aggregate[key]["rowid_list"] += [rowid]
+
+                if aggregate[key]["amount"] <= MAX_VALIDATION_ITERATIONS:
+                    aggregate[key]["desc"] = "times and possibly more, example record id's"
             else:
                 aggregate[key] = {
                     "table": table,

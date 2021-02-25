@@ -11,9 +11,16 @@ def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
             continue
 
         layer_name = layer.GetName()
+        geom_types = []
 
         for feature in layer:
-            yield layer_name, feature.GetGeometryRef().GetGeometryName() or "UNKNOWN"
+            geom_type = feature.GetGeometryRef().GetGeometryName() or "UNKNOWN"
+
+            if geom_type in geom_types:
+                continue
+
+            geom_types += [geom_type]
+            yield layer_name, geom_type
 
 
 def query_table_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
@@ -55,6 +62,12 @@ class GeometryTypeValidator(validator.Validator):
     @classmethod
     def check_geometry_type(cls, geometries: Iterable[Tuple[str, str]]):
         assert geometries is not None
+
+        # test = [
+        #     (layer, geometry)
+        #     for layer, geometry in geometries
+        #     # if geometry not in VALID_GEOMETRIES
+        # ]
 
         return [
             cls.message.format(layer=layer, geometry=geometry)
