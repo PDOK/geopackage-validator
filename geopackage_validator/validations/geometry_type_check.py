@@ -5,7 +5,7 @@ from geopackage_validator.constants import VALID_GEOMETRIES
 from geopackage_validator.validations import validator
 
 
-def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
+def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:   # RQ3
     for layer in dataset:
         if not layer.GetGeometryColumn():
             continue
@@ -20,16 +20,16 @@ def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
                 continue
 
             geom_types += [geom_type]
-            yield layer_name, geom_type
+            yield layer_name, geom_types
 
 
-def query_table_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
+def query_table_geometry_types(dataset) -> Iterable[Tuple[str, str]]:   # RQ14?
     columns = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"
     )
     for table_name, column_name in columns:
         validations = dataset.ExecuteSQL(
-            f"SELECT DISTINCT GeometryType({column_name}) as geometry_type FROM {table_name};"
+            f"SELECT DISTINCT CASE ST_AsText({column_name}) WHEN 'GEOMETRYCOLLECTION()' THEN 'GEOMETRYCOLLECTION' ELSE ST_GEOMETRYTYPE({column_name}) END as geometry_type FROM {table_name};"
         )
         for (geometry_type,) in validations:
             yield table_name, geometry_type
@@ -37,7 +37,7 @@ def query_table_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
     dataset.ReleaseResultSet(columns)
 
 
-def query_gpkg_metadata_geometry_types(dataset):
+def query_gpkg_metadata_geometry_types(dataset):   # RQ 15?
     geometry_type_names = dataset.ExecuteSQL(
         "SELECT table_name, geometry_type_name FROM gpkg_geometry_columns;"
     )
@@ -98,6 +98,9 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
 
 
 class GeometryTypeEqualsGpkgDefinitionValidator(validator.Validator):
+    # > haal de geometrytypen op voor de verschillende geometry tabellen
+    # > haal een set van de geometrytypen eerste 100(of N)
+
     """All table geometries types must match the geometry_type_name from the gpkg_geometry_columns table."""
 
     code = 15
