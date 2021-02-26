@@ -158,9 +158,6 @@ Options:
   --s3-key TEXT                   Key where the geopackage is in the bucket
                                   [env var: S3_KEY]
 
-  -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
-                                  DEBUG
-
   --help                          Show this message and exit.
 ```
 
@@ -195,7 +192,6 @@ Usage: geopackage-validator show-validations [OPTIONS]
   command.
 
 Options:
-  -v, --verbosity LVL  Either CRITICAL, ERROR, WARNING, INFO or DEBUG
   --help               Show this message and exit.
 ```
 
@@ -228,9 +224,6 @@ Options:
 
   --s3-key TEXT                   Key where the geopackage is in the bucket
                                   [env var: S3_KEY]
-
-  -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
-                                  DEBUG
 
   --help                          Show this message and exit.
 ```
