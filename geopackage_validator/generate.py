@@ -10,11 +10,11 @@ from geopackage_validator import __version__
 
 logger = logging.getLogger(__name__)
 
-ColumnDefinition = Dict[str, str]
-TableDefinition = Dict[str, Union[int, Dict[str, List[ColumnDefinition]]]]
+ColumnDefinition = List[Dict[str, str]]
+TableDefinition = Dict[str, Union[int, Dict[str, ColumnDefinition]]]
 
 
-def columns_definition(table) -> List[ColumnDefinition]:
+def columns_definition(table) -> ColumnDefinition:
     layer_definition = table.GetLayerDefn()
 
     assert layer_definition, f'Invalid Layer {"" if not table else table.GetName()}'
@@ -31,26 +31,27 @@ def columns_definition(table) -> List[ColumnDefinition]:
     geom_column = geometry_column_definition(table)
     fid_column = fid_column_definition(table)
 
-    return [fid_column, geom_column] + columns
+    return fid_column + geom_column + columns
 
 
 def geometry_column_definition(table) -> ColumnDefinition:
     geom_type = ogr.GeometryTypeToName(table.GetGeomType()).upper().replace(" ", "")
 
     if geom_type == "NONE":
-        return {}
+        return []
 
     assert (
         geom_type in VALID_GEOMETRIES
     ), f"{geom_type} for {table.GetName()} is ot a valid geometry type, geometry type should be one of: {', '.join(VALID_GEOMETRIES)}."
 
-    return {"name": table.GetGeometryColumn(), "data_type": geom_type}
+    return [{"name": table.GetGeometryColumn(), "data_type": geom_type}]
 
 
 def fid_column_definition(table) -> ColumnDefinition:
     name = table.GetFIDColumn()
-    assert name, "A table must have an integer primary key."
-    return {"name": name, "data_type": "INTEGER"}
+    if not name:
+        return []
+    return [{"name": name, "data_type": "INTEGER"}]
 
 
 def generate_table_definitions(dataset: DataSource) -> TableDefinition:
