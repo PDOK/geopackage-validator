@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from osgeo import ogr
 from osgeo.ogr import DataSource
@@ -11,7 +11,7 @@ from geopackage_validator import __version__
 logger = logging.getLogger(__name__)
 
 ColumnDefinition = Dict[str, str]
-TableDefinition = Dict[str, Dict[str, List[ColumnDefinition]]]
+TableDefinition = Dict[str, Union[int, Dict[str, List[ColumnDefinition]]]]
 
 
 def columns_definition(table) -> List[ColumnDefinition]:
@@ -23,16 +23,15 @@ def columns_definition(table) -> List[ColumnDefinition]:
     columns = [
         {
             "name": layer_definition.GetFieldDefn(column_id).name,
-            "data_type": layer_definition.GetFieldDefn(column_id).GetTypeName(),
+            "data_type": layer_definition.GetFieldDefn(column_id).GetTypeName().upper(),
         }
         for column_id in range(field_count)
     ]
 
     geom_column = geometry_column_definition(table)
-    if geom_column:
-        return [geom_column] + columns
+    fid_column = fid_column_definition(table)
 
-    return columns
+    return [fid_column, geom_column] + columns
 
 
 def geometry_column_definition(table) -> ColumnDefinition:
@@ -46,6 +45,12 @@ def geometry_column_definition(table) -> ColumnDefinition:
     ), f"{geom_type} for {table.GetName()} is ot a valid geometry type, geometry type should be one of: {', '.join(VALID_GEOMETRIES)}."
 
     return {"name": table.GetGeometryColumn(), "data_type": geom_type}
+
+
+def fid_column_definition(table) -> ColumnDefinition:
+    name = table.GetFIDColumn()
+    assert name, "A table must have an integer primary key."
+    return {"name": name, "data_type": "INTEGER"}
 
 
 def generate_table_definitions(dataset: DataSource) -> TableDefinition:
@@ -71,7 +76,7 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
 
     result = {
         "geopackage_validator_version": __version__,
-        "projection": projections.pop(),
+        "projection": int(projections.pop()),
         "tables": table_list,
     }
 

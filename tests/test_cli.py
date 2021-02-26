@@ -1,3 +1,5 @@
+import json
+
 from click.testing import CliRunner
 
 from geopackage_validator.cli import cli
@@ -34,9 +36,23 @@ def test_generate_definitions_with_gpkg():
     result = runner.invoke(
         cli, ["generate-definitions", "--gpkg-path", "tests/data/test_allcorrect.gpkg"]
     )
+    expected = {
+        "geopackage_validator_version": "0.5.1",
+        "projection": 28992,
+        "tables": [
+            {
+                "name": "test_allcorrect",
+                "geometry_column": "geom",
+                "columns": [
+                    {"name": "fid", "data_type": "INTEGER"},
+                    {"name": "geom", "data_type": "POLYGON"},
+                ],
+            }
+        ],
+    }
+
     assert result.exit_code == 0
-    assert '"test_allcorrect": {' in result.output
-    assert '"projection": 28992' in result.output
+    assert json.loads(result.output) == expected
 
 
 def test_validate_no_gpkg():

@@ -5,7 +5,7 @@ from geopackage_validator.validations import validator
 from geopackage_validator.generate import generate_table_definitions
 
 
-def prepare_comparison(old_, new_):
+def prepare_comparison(new_, old_):
     new_dict = {item["name"]: item for item in new_}
     old_dict = {item["name"]: item for item in old_}
     missing = old_dict.keys() - new_dict.keys()
@@ -49,6 +49,13 @@ def compare_table_definitions(new_definition, old_definition):
     if added:
         results.append(f"extra table(s): {added}")
 
+    new_projection = new_definition["projection"]
+    old_projection = old_definition.get("projection")
+    if new_projection != old_projection:
+        results.append(
+            f"different projections: {new_projection} changed to {old_projection}"
+        )
+
     for table_name in intersection:
         old_table = old_tables[table_name]
         new_table = new_tables[table_name]
@@ -83,10 +90,6 @@ class TableDefinitionValidator(validator.Validator):
         assert definitions_current is not None
 
         if self.table_definitions is None:
-            return [
-                self.message.format(
-                    difference="Missing '--table-definitions-path' input"
-                )
-            ]
+            return ["Missing '--table-definitions-path' input"]
 
         return compare_table_definitions(definitions_current, self.table_definitions)
