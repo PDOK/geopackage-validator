@@ -14,10 +14,10 @@ ColumnDefinition = Dict[str, str]
 TableDefinition = Dict[str, Dict[str, List[ColumnDefinition]]]
 
 
-def columns_definition(layer) -> List[ColumnDefinition]:
-    layer_definition = layer.GetLayerDefn()
+def columns_definition(table) -> List[ColumnDefinition]:
+    layer_definition = table.GetLayerDefn()
 
-    assert layer_definition, f'Invalid Layer {"" if not layer else layer.GetName()}'
+    assert layer_definition, f'Invalid Layer {"" if not table else table.GetName()}'
 
     field_count = layer_definition.GetFieldCount()
     columns = [
@@ -28,48 +28,54 @@ def columns_definition(layer) -> List[ColumnDefinition]:
         for column_id in range(field_count)
     ]
 
-    geom_column = geometry_column_definition(layer)
+    geom_column = geometry_column_definition(table)
     if geom_column:
         return [geom_column] + columns
 
     return columns
 
 
-def geometry_column_definition(layer) -> ColumnDefinition:
-    geom_type = (
-        ogr.GeometryTypeToName(layer.GetGeomType()).upper().replace(" ", "")
-    )
+def geometry_column_definition(table) -> ColumnDefinition:
+    geom_type = ogr.GeometryTypeToName(table.GetGeomType()).upper().replace(" ", "")
 
     if geom_type == "NONE":
         return {}
 
     assert (
         geom_type in VALID_GEOMETRIES
-    ), f"{geom_type} for {layer.GetName()} is ot a valid geometry type, geometry type should be one of: {', '.join(VALID_GEOMETRIES)}."
+    ), f"{geom_type} for {table.GetName()} is ot a valid geometry type, geometry type should be one of: {', '.join(VALID_GEOMETRIES)}."
 
-    return {"name": layer.GetGeometryColumn(), "data_type": geom_type}
+    return {"name": table.GetGeometryColumn(), "data_type": geom_type}
 
 
 def generate_table_definitions(dataset: DataSource) -> TableDefinition:
-    srs_code = {
-        layer.GetSpatialRef().GetAuthorityCode(None)
-        for layer in dataset
-        if layer.GetSpatialRef()
-    }
-    assert len(srs_code) == 1, "Expected one projection per geopackage."
+    projections = set()
 
-    return {
-        "geopackage_validator_version": __version__,
-        "projection": srs_code.pop(),
-        "tables": [
+    table_list = []
+    for table in dataset:
+        geo_column_name = table.GetGeometryColumn()
+        if geo_column_name == "":
+            continue
+
+        table_list.append(
             {
-                "name": layer.GetName(),
-                "geometry_column": layer.GetGeometryColumn(),
-                "columns": columns_definition(layer),
+                "name": table.GetName(),
+                "geometry_column": geo_column_name,
+                "columns": columns_definition(table),
             }
-            for layer in dataset
-        ],
+        )
+
+        projections.add(table.GetSpatialRef().GetAuthorityCode(None))
+
+    assert len(projections) == 1, "Expected one projection per geopackage."
+
+    result = {
+        "geopackage_validator_version": __version__,
+        "projection": projections.pop(),
+        "tables": table_list,
     }
+
+    return result
 
 
 def generate_definitions_for_path(gpkg_path: str) -> TableDefinition:

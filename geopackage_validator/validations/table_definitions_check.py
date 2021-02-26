@@ -11,12 +11,16 @@ def prepare_comparison(old_, new_):
     missing = old_dict.keys() - new_dict.keys()
     added = new_dict.keys() - old_dict.keys()
     intersection = set(new_dict.keys()).intersection(set(old_dict.keys()))
-    return new_dict, old_dict, ', '.join(missing), ', '.join(added), intersection
+    return new_dict, old_dict, ", ".join(missing), ", ".join(added), intersection
 
 
 def compare_column_definitions(new_columns, old_columns, table_name):
-    assert old_columns is not None, f"table {table_name} in table definition misses columns"
-    new_dict, old_dict, missing, added, intersection = prepare_comparison(new_columns, old_columns)
+    assert (
+        old_columns is not None
+    ), f"table {table_name} in table definition misses columns"
+    new_dict, old_dict, missing, added, intersection = prepare_comparison(
+        new_columns, old_columns
+    )
 
     result = []
     if missing:
@@ -37,7 +41,8 @@ def compare_table_definitions(new_definition, old_definition):
     results = []
 
     new_tables, old_tables, missing, added, intersection = prepare_comparison(
-        new_definition['tables'], old_definition['tables'])
+        new_definition["tables"], old_definition["tables"]
+    )
 
     if missing:
         results.append(f"missing table(s): {missing}")
@@ -50,8 +55,12 @@ def compare_table_definitions(new_definition, old_definition):
         old_geometry = old_table.get("geometry_column")
         new_geometry = old_table.get("geometry_column")
         if old_geometry != new_geometry:
-            results.append(f"{table_name} geometry_column changed from {old_geometry} to {new_geometry}")
-        results += compare_column_definitions(new_table["columns"], old_table.get("columns"), table_name)
+            results.append(
+                f"{table_name} geometry_column changed from {old_geometry} to {new_geometry}"
+            )
+        results += compare_column_definitions(
+            new_table["columns"], old_table.get("columns"), table_name
+        )
 
     return results
 
