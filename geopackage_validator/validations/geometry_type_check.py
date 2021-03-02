@@ -46,7 +46,7 @@ def query_table_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
             table_name=table_name,
             column_name=column_name,
             valid_geometry=geometry_type_name,
-            limit=MAX_VALIDATION_ITERATIONS
+            limit=MAX_VALIDATION_ITERATIONS,
         )
 
         validations = dataset.ExecuteSQL(sql)
@@ -91,7 +91,7 @@ def aggregate(results):
                 "geometry_expected": geometry_expected,
                 "rowid_list": [feature_id],
                 "amount": 1,
-                "desc": "time, example record id"
+                "desc": "time, example record id",
             }
 
     return aggregate
@@ -107,13 +107,7 @@ class GeometryTypeValidator(validator.Validator):
     def check(self) -> Iterable[str]:
         geometries = query_geometry_types(self.dataset)
         aggregate_result = aggregate(geometries)
-        return self.check_geometry_type(aggregate_result)
-
-    @classmethod
-    def check_geometry_type(cls, aggregate_result):
-        assert aggregate_result is not None
-
-        return [cls.message.format(**value) for key, value in aggregate_result.items()]
+        return [self.message.format(**value) for key, value in aggregate_result.items()]
 
 
 class GpkgGeometryTypeNameValidator(validator.Validator):
@@ -147,9 +141,4 @@ class GeometryTypeEqualsGpkgDefinitionValidator(validator.Validator):
     def check(self) -> Iterable[str]:
         table_geometry_types = query_table_geometry_types(self.dataset)
         aggregate_result = aggregate(table_geometry_types)
-        return self.gpkg_geometry_match_table_check(aggregate_result)
-
-    @classmethod
-    def gpkg_geometry_match_table_check(cls, aggregate_result):
-        assert aggregate_result is not None
-        return [cls.message.format(**value) for key, value in aggregate_result.items()]
+        return [self.message.format(**value) for key, value in aggregate_result.items()]
