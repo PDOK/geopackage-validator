@@ -40,10 +40,6 @@ def geometry_column_definition(table) -> ColumnDefinition:
     if geom_type == "NONE":
         return []
 
-    assert (
-        geom_type in VALID_GEOMETRIES
-    ), f"{geom_type} for {table.GetName()} is ot a valid geometry type, geometry type should be one of: {', '.join(VALID_GEOMETRIES)}."
-
     return [{"name": table.GetGeometryColumn(), "data_type": geom_type}]
 
 
