@@ -1,4 +1,4 @@
-FROM osgeo/gdal:ubuntu-small-3.0.4 AS base
+FROM pdok/gdal:0.8.3 AS base
 
 ## In case you need base debian dependencies install them here.
 #RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
@@ -48,7 +48,7 @@ WORKDIR /code
 COPY --from=compile-image "/code/pdok_geopackage_validator.egg-info/" "/code/pdok_geopackage_validator.egg-info/"
 COPY --from=compile-image "/code/geopackage_validator" "/code/geopackage_validator"
 COPY --from=compile-image /code/.venv /code/.venv
-COPY --from=compile-image "/usr/local/lib/python3.6/dist-packages" "/usr/local/lib/python3.6/dist-packages"
+COPY --from=compile-image "/usr/local/lib/python3.8/dist-packages" "/usr/local/lib/python3.8/dist-packages"
 
 # Make sure we use the virtualenv:
 ENV PATH="/code/.venv/bin:$PATH"

@@ -5,7 +5,7 @@ from geopackage_validator.validations import validator
 
 
 def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
-    tables = dataset.ExecuteSQL("SELECT table_name FROM gpkg_contents;")
+    tables = dataset.ExecuteSQL("SELECT table_name FROM gpkg_geometry_columns;")
 
     for (table,) in tables:
         columns = dataset.ExecuteSQL(

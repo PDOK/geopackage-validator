@@ -55,6 +55,7 @@ class SrsValidator(validator.Validator):
                         srs_name=srs_name,
                     )
                 )
+                continue  # prevent duplicate error message for the same srs entry
 
             if srs_id not in ALLOWED_PROJECTIONS_LIST:
                 results.append(
@@ -83,6 +84,6 @@ class SrsEqualValidator(validator.Validator):
         assert srs_list is not None
         srs_set = set(srs_list)
         if len(srs_set) > 1:
-            return [self.message.format(srs=", ".join(srs_set))]
+            return [self.message.format(srs=", ".join([str(x) for x in srs_set]))]
 
         return []
