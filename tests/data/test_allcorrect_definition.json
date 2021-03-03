@@ -1,4 +1,5 @@
 {
+    "geopackage_validator_version": "0.5.2",
     "projection": 28992,
     "tables": [{
         "name": "test_allcorrect",

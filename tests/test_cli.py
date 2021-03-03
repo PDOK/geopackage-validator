@@ -3,6 +3,7 @@ import json
 from click.testing import CliRunner
 
 from geopackage_validator.cli import cli
+from geopackage_validator import __version__
 
 
 def test_show_validations():
@@ -37,7 +38,7 @@ def test_generate_definitions_with_gpkg():
         cli, ["generate-definitions", "--gpkg-path", "tests/data/test_allcorrect.gpkg"]
     )
     expected = {
-        "geopackage_validator_version": "0.5.1",
+        "geopackage_validator_version": __version__,
         "projection": 28992,
         "tables": [
             {
