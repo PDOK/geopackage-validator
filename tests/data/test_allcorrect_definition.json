@@ -1,17 +1,18 @@
 {
+    "geopackage_validator_version": "0.5.2",
     "projection": 28992,
-    "test_allcorrect": {
-        "table_name": "test_allcorrect",
+    "tables": [{
+        "name": "test_allcorrect",
         "geometry_column": "geom",
         "columns": [
             {
-                "column_name": "fid",
+                "name": "fid",
                 "data_type": "INTEGER"
             },
             {
-                "column_name": "geom",
+                "name": "geom",
                 "data_type": "POLYGON"
             }
         ]
-    }
+    }]
 }
