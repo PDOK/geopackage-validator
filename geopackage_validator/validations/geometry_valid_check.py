@@ -1,32 +1,30 @@
 from typing import Iterable, Tuple
-
-from geopackage_validator.constants import MAX_VALIDATION_ITERATIONS
 from geopackage_validator.validations import validator
 
-import re
+SQL_TEMPLATE = """SELECT reason, count(reason) AS count, row_id
+FROM(
+    SELECT
+        CASE INSTR(ST_IsValidReason("{column_name}"), '[')
+            WHEN 0
+                THEN ST_IsValidReason("{column_name}")
+            ELSE substr(ST_IsValidReason("{column_name}"), 0, INSTR(ST_IsValidReason("{column_name}"), '['))
+        END AS reason,
+        cast(rowid AS INTEGER) AS row_id
+    FROM "{table_name}" WHERE ST_IsValid("{column_name}") = 0
+)
+GROUP BY reason;"""
 
-SQL_TEMPLATE = """SELECT 
-    ST_IsValidReason("{column_name}") as reason, 
-    '{table_name}' as table_name, 
-    '{column_name}' as column_name,
-    cast(rowid as INTEGER) as row_id
-from "{table_name}" where ST_IsValid("{column_name}") = 0 LIMIT {limit};"""
 
-
-def geometry_valid_check_query(dataset) -> Iterable[Tuple[str, str, str, int]]:
+def query_geometry_valid(dataset) -> Iterable[Tuple[str, str, str, int]]:
     columns = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns;"
     )
     for table_name, column_name in columns:
         validations = dataset.ExecuteSQL(
-            SQL_TEMPLATE.format(
-                table_name=table_name,
-                column_name=column_name,
-                limit=MAX_VALIDATION_ITERATIONS,
-            )
+            SQL_TEMPLATE.format(table_name=table_name, column_name=column_name)
         )
-        for validation in validations:
-            yield validation
+        for reason, count, row_id in validations:
+            yield table_name, column_name, reason, count, row_id
         dataset.ReleaseResultSet(validations)
 
     dataset.ReleaseResultSet(columns)
@@ -37,39 +35,19 @@ class ValidGeometryValidator(validator.Validator):
 
     code = 5
     level = validator.ValidationLevel.ERROR
-    message = "Found invalid geometry in table: {table}, column {column}, reason: {reason}, {amount} {desc}: {rowid_list}"
+    message = "Found invalid geometry in table: {table_name}, column {column_name}, reason: {reason}, {count} {count_label}, example id {row_id}"
 
     def check(self) -> Iterable[str]:
-        geometry_check_list = geometry_valid_check_query(self.dataset)
-        aggregate = self.aggregate(geometry_check_list)
-        return [self.message.format(**value) for key, value in aggregate.items()]
+        result = query_geometry_valid(self.dataset)
 
-    @staticmethod
-    def aggregate(results):
-        aggregate = {}
-
-        for reason, table, column, rowid in results:
-            reason = re.sub(r"\[.*\]", "", reason)
-            key = (reason, table, column).__hash__()
-
-            if key in aggregate:
-                aggregate[key]["amount"] += 1
-                aggregate[key]["desc"] = "times, example record id's"
-                if aggregate[key]["amount"] <= 5:
-                    aggregate[key]["rowid_list"] += [rowid]
-
-                if aggregate[key]["amount"] <= MAX_VALIDATION_ITERATIONS:
-                    aggregate[key][
-                        "desc"
-                    ] = "times and possibly more, example record id's"
-            else:
-                aggregate[key] = {
-                    "table": table,
-                    "column": column,
-                    "reason": reason,
-                    "rowid_list": [rowid],
-                    "amount": 1,
-                    "desc": "time, example record id",
-                }
-
-        return aggregate
+        return [
+            self.message.format(
+                table_name=table_name,
+                column_name=column_name,
+                reason=reason,
+                count=count,
+                count_label=("time" if count == 1 else "times"),
+                row_id=row_id,
+            )
+            for table_name, column_name, reason, count, row_id in result
+        ]

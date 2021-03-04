@@ -21,39 +21,39 @@ def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
 
             if geom_type not in VALID_GEOMETRIES:
                 c += 1
-                yield layer_name, geom_type, feature_id, None
+                yield layer_name, geom_type, feature_id
 
 
 SQL_TEMPLATE_TABLE_GEOMETRY_TYPES = """SELECT
-    CASE ST_AsText({column_name}) 
-        WHEN 'GEOMETRYCOLLECTION()' 
-            THEN 'GEOMETRYCOLLECTION' 
-        ELSE ST_GEOMETRYTYPE({column_name}) 
+    CASE ST_AsText({column_name})
+        WHEN 'GEOMETRYCOLLECTION()'
+            THEN 'GEOMETRYCOLLECTION'
+        ELSE ST_GEOMETRYTYPE({column_name})
     END AS geom_type
-    , cast(rowid as INTEGER) as row_id
+    , count({column_name}) AS count
+    , cast(rowid AS INTEGER) AS row_id
 FROM {table_name}
-WHERE geom_type != '{valid_geometry}'
-LIMIT {limit};"""
+WHERE geom_type != '{expected_geometry}'
+GROUP BY geom_type;"""
 
 
-def query_table_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
+def query_unexpected_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
     columns = dataset.ExecuteSQL(
         "SELECT table_name, column_name, geometry_type_name FROM gpkg_geometry_columns;"
     )
 
-    for table_name, column_name, geometry_type_name in columns:
+    for table_name, column_name, expected_geometry in columns:
         sql = SQL_TEMPLATE_TABLE_GEOMETRY_TYPES.format(
             table_name=table_name,
             column_name=column_name,
-            valid_geometry=geometry_type_name,
-            limit=MAX_VALIDATION_ITERATIONS,
+            expected_geometry=expected_geometry,
         )
 
         validations = dataset.ExecuteSQL(sql)
 
         if validations is not None:
-            for (geometry_type, row_id) in validations:
-                yield table_name, geometry_type, row_id, geometry_type_name
+            for (geometry_type, count, row_id) in validations:
+                yield table_name, geometry_type, count, row_id, expected_geometry
 
         dataset.ReleaseResultSet(validations)
     dataset.ReleaseResultSet(columns)
@@ -73,7 +73,7 @@ def query_gpkg_metadata_geometry_types(dataset):
 def aggregate(results):
     aggregate = {}
 
-    for layer_name, geom_type, feature_id, geometry_expected in results:
+    for layer_name, geom_type, feature_id in results:
         key = (layer_name, geom_type).__hash__()
 
         if key in aggregate:
@@ -88,7 +88,6 @@ def aggregate(results):
             aggregate[key] = {
                 "layer": layer_name,
                 "geometry": geom_type,
-                "geometry_expected": geometry_expected,
                 "rowid_list": [feature_id],
                 "amount": 1,
                 "desc": "time, example record id",
@@ -136,9 +135,19 @@ class GeometryTypeEqualsGpkgDefinitionValidator(validator.Validator):
 
     code = 15
     level = validator.ValidationLevel.ERROR
-    message = "Error layer: {layer}, found geometry: {geometry} that should be {geometry_expected}, {amount} {desc}: {rowid_list}"
+    message = "Error layer: {table_name}, found geometry: {geometry_type} that should be {expected_geometry}, {count} {count_label}, example id: {row_id}"
 
     def check(self) -> Iterable[str]:
-        table_geometry_types = query_table_geometry_types(self.dataset)
-        aggregate_result = aggregate(table_geometry_types)
-        return [self.message.format(**value) for key, value in aggregate_result.items()]
+        result = query_unexpected_geometry_types(self.dataset)
+
+        return [
+            self.message.format(
+                table_name=table_name,
+                geometry_type=geometry_type,
+                count=count,
+                count_label=("time" if count == 1 else "times"),
+                row_id=row_id,
+                expected_geometry=expected_geometry,
+            )
+            for table_name, geometry_type, count, row_id, expected_geometry in result
+        ]

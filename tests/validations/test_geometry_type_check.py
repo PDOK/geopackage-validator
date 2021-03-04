@@ -4,6 +4,7 @@ from geopackage_validator.validations.geometry_type_check import (
     aggregate,
     GpkgGeometryTypeNameValidator,
     query_gpkg_metadata_geometry_types,
+    GeometryTypeEqualsGpkgDefinitionValidator,
 )
 
 
@@ -15,11 +16,11 @@ def test_valid_geometry_type_aggregate():
 def test_invalid_geometry_type_aggregate():
     results = aggregate(
         [
-            ("table_a", "type_a", 1, None),
-            ("table_a", "type_a", 2, None),
-            ("table_b", "type_a", 1, "type_c"),
-            ("table_b", "type_a", 2, "type_c"),
-            ("table_b", "type_a", 3, "type_c"),
+            ("table_a", "type_a", 1),
+            ("table_a", "type_a", 2),
+            ("table_b", "type_a", 1),
+            ("table_b", "type_a", 2),
+            ("table_b", "type_a", 3),
         ]
     )
 
@@ -33,7 +34,6 @@ def test_invalid_geometry_type_aggregate():
 
     assert results[keys[1]]["layer"] == "table_b"
     assert results[keys[1]]["geometry"] == "type_a"
-    assert results[keys[1]]["geometry_expected"] == "type_c"
     assert len(results[keys[1]]["rowid_list"]) == 3
 
 
@@ -75,15 +75,15 @@ def test_rq14_with_gpkg_geometry_type_invalid_check():
 
 def test_rq15_with_gpkg_geometry_type_equals_gpkg_definition_valid_check():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    result = list(GpkgGeometryTypeNameValidator(dataset).check())
+    result = list(GeometryTypeEqualsGpkgDefinitionValidator(dataset).check())
     assert len(result) == 0
 
 
 def test_rq15_with_gpkg_geometry_type_equals_gpkg_definition_invalid_check():
     dataset = open_dataset("tests/data/test_geometry_type.gpkg")
-    result = list(GpkgGeometryTypeNameValidator(dataset).check())
+    result = list(GeometryTypeEqualsGpkgDefinitionValidator(dataset).check())
     assert len(result) == 1
     assert (
         result[0]
-        == "Found geometry_type_name: COMPOUNDCURVE for table test_geometry_type (from the gpkg_geometry_columns table)."
+        == "Error layer: test_geometry_type, found geometry: GEOMETRYCOLLECTION that should be COMPOUNDCURVE, 1 time, example id: 1"
     )
