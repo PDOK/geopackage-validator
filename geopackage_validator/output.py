@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 from typing import Dict, List
+from geopackage_validator import __version__
 
 import pkg_resources  # part of setuptools
 
@@ -16,11 +17,10 @@ def log_output(
     if validations_executed is None:
         validations_executed = []
 
-    script_version = pkg_resources.get_distribution("pdok_geopackage_validator").version
     print(
         json.dumps(
             {
-                "geopackage_validator_version": script_version,
+                "geopackage_validator_version": __version__,
                 "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S.%f"),
                 "duration_seconds": round(duration_seconds),
                 "geopackage": filename,

@@ -1,58 +1,81 @@
 import logging
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from osgeo import ogr
 from osgeo.ogr import DataSource
 
 from geopackage_validator.gdal_utils import check_gdal_version, check_gdal_installed
+from geopackage_validator.constants import VALID_GEOMETRIES
+from geopackage_validator import __version__
 
 logger = logging.getLogger(__name__)
 
+ColumnDefinition = List[Dict[str, str]]
+TableDefinition = Dict[str, Union[int, Dict[str, ColumnDefinition]]]
 
-TableDefinition = Dict[str, Dict[str, List[Dict[str, str]]]]
+
+def columns_definition(table) -> ColumnDefinition:
+    layer_definition = table.GetLayerDefn()
+
+    assert layer_definition, f'Invalid Layer {"" if not table else table.GetName()}'
+
+    field_count = layer_definition.GetFieldCount()
+    columns = [
+        {
+            "name": layer_definition.GetFieldDefn(column_id).name,
+            "data_type": layer_definition.GetFieldDefn(column_id).GetTypeName().upper(),
+        }
+        for column_id in range(field_count)
+    ]
+
+    geom_column = geometry_column_definition(table)
+    fid_column = fid_column_definition(table)
+
+    return fid_column + geom_column + columns
+
+
+def geometry_column_definition(table) -> ColumnDefinition:
+    geom_type = ogr.GeometryTypeToName(table.GetGeomType()).upper().replace(" ", "")
+
+    if geom_type == "NONE":
+        return []
+
+    return [{"name": table.GetGeometryColumn(), "data_type": geom_type}]
+
+
+def fid_column_definition(table) -> ColumnDefinition:
+    name = table.GetFIDColumn()
+    if not name:
+        return []
+    return [{"name": name, "data_type": "INTEGER"}]
 
 
 def generate_table_definitions(dataset: DataSource) -> TableDefinition:
-    geometry_tables = dataset.ExecuteSQL(
-        "SELECT distinct table_name FROM gpkg_geometry_columns;"
-    )
+    projections = set()
 
-    projection = None
-    geo_column_name = None
-    table_list = {}
-    for table in geometry_tables:
-        columns = dataset.ExecuteSQL(
-            "SELECT column_name, geometry_type_name, srs_id FROM gpkg_geometry_columns where table_name = '{table_name}';".format(
-                table_name=table[0]
-            )
+    table_list = []
+    for table in dataset:
+        geo_column_name = table.GetGeometryColumn()
+        if geo_column_name == "":
+            continue
+
+        table_list.append(
+            {
+                "name": table.GetName(),
+                "geometry_column": geo_column_name,
+                "columns": columns_definition(table),
+            }
         )
 
-        if columns[0][2] and not projection:
-            projection = columns[0][2]
+        projections.add(table.GetSpatialRef().GetAuthorityCode(None))
 
-        if columns[0][0] and not geo_column_name:
-            geo_column_name = columns[0][0]
+    assert len(projections) == 1, "Expected one projection per geopackage."
 
-        info = dataset.ExecuteSQL(
-            "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table[0])
-        )
-
-        column_list = [
-            dict(column_name=item[1], data_type=item[2].split("(")[0]) for item in info
-        ]
-
-        table_list[table[0]] = {
-            "table_name": table[0],
-            "geometry_column": geo_column_name,
-            "columns": column_list,
-        }
-        dataset.ReleaseResultSet(columns)
-        dataset.ReleaseResultSet(info)
-
-    dataset.ReleaseResultSet(geometry_tables)
-
-    result = {"projection": projection}
-    result.update(table_list)
+    result = {
+        "geopackage_validator_version": __version__,
+        "projection": int(projections.pop()),
+        "tables": table_list,
+    }
 
     return result
 
