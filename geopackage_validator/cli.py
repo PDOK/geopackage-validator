@@ -89,7 +89,7 @@ def cli():
     "--exit-on-fail",
     required=False,
     is_flag=True,
-    help="Exit with code 1 when validation success is false."
+    help="Exit with code 1 when validation success is false.",
 )
 @click.option(
     "--s3-endpoint-no-protocol",
