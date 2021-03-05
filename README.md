@@ -143,6 +143,9 @@ Options:
                                   given, validate runs all validations  [env
                                   var: VALIDATIONS]
 
+  --exit-on-fail                  Exit with status 1 when validation success
+                                  is false.
+
   --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
                                   [env var: S3_ENDPOINT_NO_PROTOCOL]
 

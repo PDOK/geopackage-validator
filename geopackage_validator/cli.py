@@ -3,6 +3,7 @@
 # Setup logging before package imports.
 import logging
 from datetime import datetime
+import sys
 import time
 
 import click
@@ -85,6 +86,12 @@ def cli():
     help="Comma-separated list of validations to run (e.g. --validations R1,R2,R3). If validations-path and validations are not given, validate runs all validations",
 )
 @click.option(
+    "--exit-on-fail",
+    required=False,
+    is_flag=True,
+    help="Exit with status 1 when validation success is false."
+)
+@click.option(
     "--s3-endpoint-no-protocol",
     envvar="S3_ENDPOINT_NO_PROTOCOL",
     show_envvar=True,
@@ -120,6 +127,7 @@ def geopackage_validator_command(
     table_definitions_path,
     validations_path,
     validations,
+    exit_on_fail,
     s3_endpoint_no_protocol,
     s3_access_key,
     s3_secret_key,
@@ -162,6 +170,8 @@ def geopackage_validator_command(
         duration_seconds=duration_seconds,
         success=success,
     )
+    if exit_on_fail:
+        sys.exit(1)
 
 
 @cli.command(
