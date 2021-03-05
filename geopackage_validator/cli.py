@@ -170,7 +170,7 @@ def geopackage_validator_command(
         duration_seconds=duration_seconds,
         success=success,
     )
-    if exit_on_fail:
+    if exit_on_fail and not success:
         sys.exit(1)
 
 
