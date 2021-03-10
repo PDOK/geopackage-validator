@@ -16,10 +16,11 @@ from geopackage_validator import gdal_utils
 
 logger = logging.getLogger(__name__)
 
-RQ8 = "RQ8"
 RQ0 = "RQ0"
+RQ3 = "RQ3"
+RQ8 = "RQ8"
 
-DROP_RQ_FROM_ALL = [RQ0]
+DROP_RQ_FROM_ALL = [RQ0, RQ3]
 
 
 def validators_to_use(

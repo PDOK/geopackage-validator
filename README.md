@@ -27,9 +27,10 @@ The current checks are (see also the 'show-validations' command):
 
 | Validation code | Description                                                  |
 | :-------------: | ------------------------------------------------------------ |
+|       RQ0       | _LEGACY:_ * Geopackage must conform to table names in the given JSON definitions. |
 |       RQ1       | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
 |       RQ2       | Layers must have at least one feature.                       |
-|       RQ3       | Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
+|       RQ3       | _LEGACY:_ * Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
 |       RQ4       | The geopackage should have no views defined.                 |
 |       RQ5       | Geometry should be valid.                                    |
 |       RQ6       | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
@@ -44,6 +45,8 @@ The current checks are (see also the 'show-validations' command):
 |       RQ15      | All table geometries must match the geometry_type_name from the gpkg_geometry_columns table. |
 |       RC1       | It is recommended to name all GEOMETRY type columns 'geom'.  |
 |       RC2       | It is recommended to give all GEOMETRY type columns the same name. |
+
+\* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
 
 ## Installation
 
