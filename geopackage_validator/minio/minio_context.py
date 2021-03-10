@@ -11,6 +11,7 @@ def minio_resource(
     s3_secret_key: str,
     s3_bucket: str,
     s3_key: str,
+    secure: bool = True,
     minio=Minio,
 ) -> str:
     assert s3_endpoint_no_protocol is not None, "S3 endpoint has to be given"
@@ -29,7 +30,7 @@ def minio_resource(
             s3_endpoint_no_protocol,
             access_key=s3_access_key,
             secret_key=s3_secret_key,
-            secure=True,
+            secure=secure,
         )
 
         if not minio_client.bucket_exists(s3_bucket):

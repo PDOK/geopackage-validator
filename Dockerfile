@@ -33,7 +33,7 @@ RUN pipenv sync --dev
 # pipenv check fails due to a github connection error. Pipenv check scans for python
 # vulnerabilities amongst other things. We might want to debug and fix this:
 # RUN PIPENV_PYUP_API_KEY="" pipenv check &&
-#RUN pipenv run pytest
+RUN pipenv run pytest
 
 # Cleanup test packages. We want to use pipenv uninstall --all-dev but that command is
 # broken. See: https://github.com/pypa/pipenv/issues/3722

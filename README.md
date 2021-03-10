@@ -146,8 +146,8 @@ Options:
                                   given, validate runs all validations  [env
                                   var: VALIDATIONS]
 
-  --exit-on-fail                  Exit with code 1 when validation success
-                                  is false.
+  --exit-on-fail                  Exit with code 1 when validation success is
+                                  false.
 
   --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
                                   [env var: S3_ENDPOINT_NO_PROTOCOL]
@@ -163,6 +163,9 @@ Options:
 
   --s3-key TEXT                   Key where the geopackage is in the bucket
                                   [env var: S3_KEY]
+
+  --s3-secure BOOLEAN             Use a secure TLS connection for S3.  [env
+                                  var: S3_SECURE]
 
   -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
                                   DEBUG
@@ -234,6 +237,9 @@ Options:
 
   --s3-key TEXT                   Key where the geopackage is in the bucket
                                   [env var: S3_KEY]
+
+  --s3-secure BOOLEAN             Use a secure TLS connection for S3.  [env
+                                  var: S3_SECURE]
 
   -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
                                   DEBUG
