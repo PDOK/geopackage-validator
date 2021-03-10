@@ -37,7 +37,7 @@ def compare_column_definitions(new_columns, old_columns, table_name):
     return result + wrong_types
 
 
-def compare_table_definitions(new_definition, old_definition):
+def compare_table_definitions(new_definition, old_definition, compare_columns=True):
     results = []
 
     new_tables, old_tables, missing, added, intersection = prepare_comparison(
@@ -65,9 +65,10 @@ def compare_table_definitions(new_definition, old_definition):
             results.append(
                 f"{table_name} geometry_column changed from {old_geometry} to {new_geometry}"
             )
-        results += compare_column_definitions(
-            new_table["columns"], old_table.get("columns"), table_name
-        )
+        if compare_columns:
+            results += compare_column_definitions(
+                new_table["columns"], old_table.get("columns"), table_name
+            )
 
     return results
 
@@ -93,3 +94,28 @@ class TableDefinitionValidator(validator.Validator):
             return ["Missing '--table-definitions-path' input"]
 
         return compare_table_definitions(definitions_current, self.table_definitions)
+
+
+class TableDefinitionValidatorV0(validator.Validator):
+    """Geopackage must conform to table names in the given JSON definitions."""
+
+    code = 0
+    level = validator.ValidationLevel.ERROR
+
+    def __init__(self, dataset, **kwargs):
+        super().__init__(dataset)
+        self.table_definitions = kwargs.get("table_definitions")
+
+    def check(self) -> Iterable[str]:
+        current_definitions = generate_table_definitions(self.dataset)
+        return self.check_table_definitions(current_definitions)
+
+    def check_table_definitions(self, definitions_current: TableDefinition):
+        assert definitions_current is not None
+
+        if self.table_definitions is None:
+            return ["Missing '--table-definitions-path' input"]
+
+        return compare_table_definitions(
+            definitions_current, self.table_definitions, compare_columns=False
+        )
