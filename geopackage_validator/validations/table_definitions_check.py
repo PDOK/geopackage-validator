@@ -97,7 +97,7 @@ class TableDefinitionValidator(validator.Validator):
 
 
 class TableDefinitionValidatorV0(validator.Validator):
-    """Geopackage must conform to given JSON definitions."""
+    """Geopackage must conform to table names in the given JSON definitions."""
 
     code = 0
     level = validator.ValidationLevel.ERROR
