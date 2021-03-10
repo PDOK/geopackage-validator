@@ -20,7 +20,6 @@ def test_determine_validations_to_use_none():
     assert validations == [
         "RQ1",
         "RQ2",
-        "RQ3",
         "RQ4",
         "RQ5",
         "RQ6",
