@@ -29,7 +29,7 @@ def minio_resource(
             s3_endpoint_no_protocol,
             access_key=s3_access_key,
             secret_key=s3_secret_key,
-            secure=False,
+            secure=True,
         )
 
         if not minio_client.bucket_exists(s3_bucket):
