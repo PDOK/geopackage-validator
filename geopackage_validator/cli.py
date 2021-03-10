@@ -81,7 +81,7 @@ def cli():
     "--validations",
     show_envvar=True,
     required=False,
-    default="ALL",
+    default="",
     envvar="VALIDATIONS",
     help="Comma-separated list of validations to run (e.g. --validations R1,R2,R3). If validations-path and validations are not given, validate runs all validations",
 )
