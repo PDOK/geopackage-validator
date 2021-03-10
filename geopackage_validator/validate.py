@@ -34,7 +34,7 @@ def validators_to_use(
                 v
                 for v in validator_classes
                 if v.validation_code != RQ8
-                   and v.validation_code not in DROP_LEGACY_RQ_FROM_ALL
+                and v.validation_code not in DROP_LEGACY_RQ_FROM_ALL
             ]
         else:
             return validator_classes
