@@ -20,7 +20,8 @@ RQ0 = "RQ0"
 RQ3 = "RQ3"
 RQ8 = "RQ8"
 
-DROP_RQ_FROM_ALL = [RQ0, RQ3]
+# Drop legacy requirements
+DROP_LEGACY_RQ_FROM_ALL = [RQ0, RQ3]
 
 
 def validators_to_use(
@@ -33,7 +34,7 @@ def validators_to_use(
                 v
                 for v in validator_classes
                 if v.validation_code != RQ8
-                and v.validation_code not in DROP_RQ_FROM_ALL
+                   and v.validation_code not in DROP_LEGACY_RQ_FROM_ALL
             ]
         else:
             return validator_classes
