@@ -126,7 +126,7 @@ def cli():
     envvar="S3_SECURE",
     show_envvar=True,
     type=click.types.BoolParamType(),
-    default=True,
+    default="true",
     help="Use a secure TLS connection for S3.",
 )
 @click_log.simple_verbosity_option(logger)
@@ -243,7 +243,7 @@ def geopackage_validator_command(
     envvar="S3_SECURE",
     show_envvar=True,
     type=click.types.BoolParamType(),
-    default=True,
+    default="true",
     help="Use a secure TLS connection for S3.",
 )
 @click_log.simple_verbosity_option(logger)
