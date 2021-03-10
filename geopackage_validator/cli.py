@@ -121,6 +121,14 @@ def cli():
     show_envvar=True,
     help="Key where the geopackage is in the bucket",
 )
+@click.option(
+    "--s3-secure",
+    envvar="S3_SECURE",
+    show_envvar=True,
+    type=click.types.BoolParamType(),
+    default=True,
+    help="Use a secure TLS connection for S3.",
+)
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command(
     gpkg_path,
@@ -133,6 +141,7 @@ def geopackage_validator_command(
     s3_secret_key,
     s3_bucket,
     s3_key,
+    s3_secure,
 ):
     start_time = datetime.now()
     duration_start = time.monotonic()
@@ -149,7 +158,12 @@ def geopackage_validator_command(
     else:
         try:
             with minio_resource(
-                s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
+                s3_endpoint_no_protocol,
+                s3_access_key,
+                s3_secret_key,
+                s3_bucket,
+                s3_key,
+                s3_secure,
             ) as localfilename:
                 filename = s3_key
                 results, validations_executed, success = validate(
@@ -224,9 +238,23 @@ def geopackage_validator_command(
     show_envvar=True,
     help="Key where the geopackage is in the bucket",
 )
+@click.option(
+    "--s3-secure",
+    envvar="S3_SECURE",
+    show_envvar=True,
+    type=click.types.BoolParamType(),
+    default=True,
+    help="Use a secure TLS connection for S3.",
+)
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_generate_table_definitions(
-    gpkg_path, s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
+    gpkg_path,
+    s3_endpoint_no_protocol,
+    s3_access_key,
+    s3_secret_key,
+    s3_bucket,
+    s3_key,
+    s3_secure,
 ):
     if gpkg_path is None and s3_endpoint_no_protocol is None:
         logger.error("Give --gpkg-path or s3 location")
@@ -237,7 +265,12 @@ def geopackage_validator_command_generate_table_definitions(
             definitionlist = generate_definitions_for_path(gpkg_path)
         else:
             with minio_resource(
-                s3_endpoint_no_protocol, s3_access_key, s3_secret_key, s3_bucket, s3_key
+                s3_endpoint_no_protocol,
+                s3_access_key,
+                s3_secret_key,
+                s3_bucket,
+                s3_key,
+                s3_secure,
             ) as localfilename:
                 definitionlist = generate_definitions_for_path(localfilename)
         print(json.dumps(definitionlist, indent=4))
