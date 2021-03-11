@@ -174,7 +174,7 @@ def geopackage_validator_command(
                 )
         except (AssertionError, IOError) as e:
             logger.error(str(e))
-            return
+            sys.exit(1)
     duration_seconds = time.monotonic() - duration_start
     log_output(
         filename=filename,
