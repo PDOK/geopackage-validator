@@ -121,7 +121,9 @@ def validate(
 
 def get_validation_descriptions():
     validation_classes = get_validator_classes()
-    return OrderedDict((klass.validation_code, klass.__doc__) for klass in validation_classes)
+    return OrderedDict(
+        (klass.validation_code, klass.__doc__) for klass in validation_classes
+    )
 
 
 def get_validation_codes(validators):
