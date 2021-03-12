@@ -1,5 +1,5 @@
 {
-    "geopackage_validator_version": "0.5.9",
+    "geopackage_validator_version": "0.5.8",
     "projection": 28992,
     "tables": [{
         "name": "test_allcorrect",
@@ -7,11 +7,11 @@
         "columns": [
             {
                 "name": "fid",
-                "type": "INTEGER"
+                "data_type": "INTEGER"
             },
             {
                 "name": "geom",
-                "type": "POLYGON"
+                "data_type": "POLYGON"
             }
         ]
     }]
