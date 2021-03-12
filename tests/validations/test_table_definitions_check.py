@@ -43,8 +43,8 @@ def test_table_definitions_check_incorrect_geometry():
                 "name": "test_allcorrect",
                 "geometry_column": "geom",
                 "columns": [
-                    {"name": "fid", "data_type": "INTEGER"},
-                    {"name": "geom", "data_type": "POINT"},
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POINT"},
                 ],
             }
         ],
@@ -69,8 +69,8 @@ def test_table_definitions_check_incorrect_projection():
                 "name": "test_allcorrect",
                 "geometry_column": "geom",
                 "columns": [
-                    {"name": "fid", "data_type": "INTEGER"},
-                    {"name": "geom", "data_type": "POLYGON"},
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
                 ],
             }
         ],
@@ -96,8 +96,8 @@ def test_table_definitions_check_incorrect_column_name():
                 "name": "test_allcorrect",
                 "geometry_column": "geometry",
                 "columns": [
-                    {"name": "id", "data_type": "INTEGER"},  # name should be fid
-                    {"name": "geom", "data_type": "POLYGON"},
+                    {"name": "id", "type": "INTEGER"},  # name should be fid
+                    {"name": "geom", "type": "POLYGON"},
                 ],
             }
         ],
@@ -122,8 +122,8 @@ def test_table_definitions_check_table_changed():
                 "name": "test_different_table",
                 "geometry_column": "geometry",
                 "columns": [
-                    {"name": "fid", "data_type": "INTEGER"},
-                    {"name": "geom", "data_type": "POLYGON"},
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
                 ],
             }
         ],
@@ -148,8 +148,8 @@ def test_legacy_table_definitions_check_table_changed():
                 "name": "test_different_table",
                 "geometry_column": "geometry",
                 "columns": [
-                    {"name": "fid", "data_type": "INTEGER"},
-                    {"name": "geom", "data_type": "POLYGON"},
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
                 ],
             }
         ],
