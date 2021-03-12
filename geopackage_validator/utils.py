@@ -1,4 +1,7 @@
 import sys
+from pathlib import Path
+import json
+import yaml
 from typing import Callable
 
 from osgeo import ogr
@@ -50,3 +53,12 @@ def check_gdal_installed():
         sys.exit(
             "ERROR: cannot find GDAL/OGR modules, follow the instructions in the README to install these."
         )
+
+
+def load_config(file_path):
+    path = Path(file_path)
+    assert path.exists()
+    with path.open() as file_handler:
+        if path.suffix in (".yaml", ".yml"):
+            return yaml.load(file_handler, Loader=yaml.SafeLoader)
+        return json.load(file_handler)

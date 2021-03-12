@@ -25,6 +25,7 @@ name = "pypi"
 "gdal" = "==3.0.4"
 "minio" = "*"
 "deepdiff" = "*"
+"pyyaml" = "*"
 
 [requires]
 python_version = "3"

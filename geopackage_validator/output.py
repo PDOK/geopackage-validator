@@ -1,9 +1,26 @@
 import json
+import yaml
+from collections import OrderedDict
 from datetime import datetime
 from typing import Dict, List
+from collections import OrderedDict
+
 from geopackage_validator import __version__
 
-import pkg_resources  # part of setuptools
+
+def represent_ordereddict(dumper, data):
+    value = []
+
+    for item_key, item_value in data.items():
+        node_key = dumper.represent_data(item_key)
+        node_value = dumper.represent_data(item_value)
+
+        value.append((node_key, node_value))
+
+    return yaml.nodes.MappingNode(u"tag:yaml.org,2002:map", value)
+
+
+yaml.add_representer(OrderedDict, represent_ordereddict)
 
 
 def log_output(
@@ -13,21 +30,30 @@ def log_output(
     validations_executed: List[str] = None,
     start_time: datetime = datetime.now(),
     duration_seconds: float = 0,
+    as_yaml: bool = False,
 ) -> None:
     if validations_executed is None:
         validations_executed = []
 
-    print(
-        json.dumps(
-            {
-                "geopackage_validator_version": __version__,
-                "start_time": start_time.strftime("%Y-%m-%dT%H:%M:%S.%f"),
-                "duration_seconds": round(duration_seconds),
-                "geopackage": filename,
-                "success": success,
-                "validations_executed": validations_executed,
-                "results": results,
-            },
-            indent=4,
-        )
+    print_output(
+        OrderedDict(
+            [
+                ("geopackage_validator_version", __version__),
+                ("start_time", start_time.strftime("%Y-%m-%dT%H:%M:%S.%f")),
+                ("duration_seconds", round(duration_seconds)),
+                ("geopackage", filename),
+                ("success", success),
+                ("validations_executed", validations_executed),
+                ("results", results),
+            ]
+        ),
+        as_yaml,
     )
+
+
+def print_output(python_object, as_yaml, yaml_indent=2):
+    if as_yaml:
+        content = yaml.dump(python_object, indent=yaml_indent)
+    else:
+        content = json.dumps(python_object, indent=4)
+    print(content)
