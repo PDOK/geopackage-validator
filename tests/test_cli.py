@@ -45,8 +45,8 @@ def test_generate_definitions_with_gpkg():
                 "name": "test_allcorrect",
                 "geometry_column": "geom",
                 "columns": [
-                    {"name": "fid", "data_type": "INTEGER"},
-                    {"name": "geom", "data_type": "POLYGON"},
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
                 ],
             }
         ],
@@ -106,6 +106,22 @@ def test_validate_with_rq8_by_setting_definitions_path():
             "tests/data/test_allcorrect.gpkg",
             "--table-definitions-path",
             "tests/data/test_allcorrect_definition.json",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "RQ8" in result.output
+
+
+def test_validate_with_rq8_with_old_definition_by_setting_definitions_path():
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "validate",
+            "--gpkg-path",
+            "tests/data/test_allcorrect.gpkg",
+            "--table-definitions-path",
+            "tests/data/test_allcorrect_old_definition.json",
         ],
     )
     assert result.exit_code == 0

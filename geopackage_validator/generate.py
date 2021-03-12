@@ -23,7 +23,7 @@ def columns_definition(table) -> ColumnDefinition:
     columns = [
         {
             "name": layer_definition.GetFieldDefn(column_id).name,
-            "data_type": layer_definition.GetFieldDefn(column_id).GetTypeName().upper(),
+            "type": layer_definition.GetFieldDefn(column_id).GetTypeName().upper(),
         }
         for column_id in range(field_count)
     ]
@@ -40,14 +40,14 @@ def geometry_column_definition(table) -> ColumnDefinition:
     if geom_type == "NONE":
         return []
 
-    return [{"name": table.GetGeometryColumn(), "data_type": geom_type}]
+    return [{"name": table.GetGeometryColumn(), "type": geom_type}]
 
 
 def fid_column_definition(table) -> ColumnDefinition:
     name = table.GetFIDColumn()
     if not name:
         return []
-    return [{"name": name, "data_type": "INTEGER"}]
+    return [{"name": name, "type": "INTEGER"}]
 
 
 def generate_table_definitions(dataset: DataSource) -> TableDefinition:
