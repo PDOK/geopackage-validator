@@ -1,6 +1,8 @@
 from typing import Iterable, Tuple
 
 from geopackage_validator.validations import validator
+from geopackage_validator import utils
+
 
 DIMENSION_QUERY = """
 SELECT DISTINCT
@@ -16,11 +18,9 @@ ELEVATION_COORDINATE_NAME = "elevation (Z)"
 
 
 def query_dimensions(dataset) -> Iterable[Tuple[str, str]]:
-    columns = dataset.ExecuteSQL(
-        "SELECT table_name, column_name FROM gpkg_geometry_columns;"
-    )
+    tables = utils.dataset_geometry_tables(dataset)
 
-    for table_name, column_name in columns:
+    for table_name, column_name, _ in tables:
         validations = dataset.ExecuteSQL(
             DIMENSION_QUERY.format(table_name=table_name, geom_column_name=column_name)
         )
@@ -38,7 +38,6 @@ def query_dimensions(dataset) -> Iterable[Tuple[str, str]]:
                 yield table_name, ELEVATION_COORDINATE_NAME
 
         dataset.ReleaseResultSet(validations)
-    dataset.ReleaseResultSet(columns)
 
 
 class GeometryDimensionValidator(validator.Validator):

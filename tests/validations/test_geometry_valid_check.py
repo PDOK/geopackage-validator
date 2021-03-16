@@ -1,4 +1,4 @@
-from geopackage_validator.gdal_utils import open_dataset
+from geopackage_validator.utils import open_dataset
 from geopackage_validator.validations.geometry_valid_check import (
     ValidGeometryValidator,
     query_geometry_valid,

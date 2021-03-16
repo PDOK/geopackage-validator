@@ -1,0 +1,19 @@
+validations:
+#  - RQ0  # Deprecated
+  - RQ1
+  - RQ2
+  - RQ3  # Deprecated
+#  - RQ4
+#  - RQ5
+#  - RQ6
+#  - RQ7
+#  - RQ8
+#  - RQ9
+#  - RQ10
+#  - RQ11
+#  - RQ12
+#  - RQ13
+#  - RQ14
+#  - RQ15
+#  - RC1
+#  - RC2
