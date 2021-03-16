@@ -19,7 +19,7 @@ def test_show_validations():
 def test_generate_definitions_no_gpkg():
     runner = CliRunner()
     result = runner.invoke(cli, ["generate-definitions"])
-    assert result.exit_code == 0
+    assert result.exit_code == 1
     assert "Give --gpkg-path or s3 location" in result.output
 
 
@@ -28,7 +28,7 @@ def test_generate_definitions_error_s3():
     result = runner.invoke(
         cli, ["generate-definitions", "--s3-endpoint-no-protocol", "s3host"]
     )
-    assert result.exit_code == 0
+    assert result.exit_code == 1
     assert "S3 access key has to be given" in result.output
 
 
@@ -145,14 +145,14 @@ def test_generate_definitions_with_gpkg_yaml_output():
 def test_validate_no_gpkg():
     runner = CliRunner()
     result = runner.invoke(cli, ["validate"])
-    assert result.exit_code == 0
+    assert result.exit_code == 1
     assert "Give --gpkg-path or s3 location" in result.output
 
 
 def test_validate_error_s3():
     runner = CliRunner()
     result = runner.invoke(cli, ["validate", "--s3-endpoint-no-protocol", "s3host"])
-    assert result.exit_code == 0
+    assert result.exit_code == 1
     assert "S3 access key has to be given" in result.output
 
 

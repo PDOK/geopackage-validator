@@ -151,7 +151,7 @@ def geopackage_validator_command(
 
     if gpkg_path is None and s3_endpoint_no_protocol is None:
         logger.error("Give --gpkg-path or s3 location")
-        return
+        sys.exit(1)
 
     if gpkg_path is not None:
         filename = gpkg_path
@@ -177,7 +177,7 @@ def geopackage_validator_command(
                 )
         except (AssertionError, IOError) as e:
             logger.error(str(e))
-            return
+            sys.exit(1)
     duration_seconds = time.monotonic() - duration_start
     log_output(
         filename=filename,
@@ -266,7 +266,7 @@ def geopackage_validator_command_generate_table_definitions(
 ):
     if gpkg_path is None and s3_endpoint_no_protocol is None:
         logger.error("Give --gpkg-path or s3 location")
-        return
+        sys.exit(1)
 
     try:
         if gpkg_path is not None:
@@ -284,6 +284,7 @@ def geopackage_validator_command_generate_table_definitions(
         print_output(definitionlist, yaml)
     except Exception:
         logger.exception("Error while generating table definitions")
+        sys.exit(1)
 
 
 @cli.command(
@@ -300,6 +301,7 @@ def geopackage_validator_command_show_validations(yaml):
         print_output(validation_codes, yaml, yaml_indent=5)
     except Exception:
         logger.exception("Error while listing validations")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
