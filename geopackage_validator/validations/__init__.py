@@ -23,6 +23,9 @@ from geopackage_validator.validations.geom_column_check import (
     GeomColumnNameValidator,
     GeomColumnNameEqualValidator,
 )
+from geopackage_validator.validations.geometry_dimension_check import (
+    GeometryDimensionValidator,
+)
 
 __all__ = [
     # Requirements
@@ -45,4 +48,5 @@ __all__ = [
     # Recommendations
     "GeomColumnNameValidator",
     "GeomColumnNameEqualValidator",
+    "GeometryDimensionValidator",
 ]
