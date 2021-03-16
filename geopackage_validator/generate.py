@@ -42,7 +42,10 @@ def fid_column_definition(table) -> ColumnDefinition:
 
 def generate_table_definitions(dataset: DataSource) -> TableDefinition:
     projections = set()
-    table_geometry_types = dict(utils.dataset_geometry_types(dataset))
+    table_geometry_types = {
+        table_name: geometry_type_name
+        for table_name, _, geometry_type_name in utils.dataset_geometry_tables(dataset)
+    }
 
     table_list = []
     for table in dataset:

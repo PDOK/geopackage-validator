@@ -1,19 +1,7 @@
 from typing import Iterable, Tuple
-from functools import lru_cache
 
 from geopackage_validator.validations import validator
-
-
-@lru_cache(None)
-def query_geom_columnname(dataset) -> Iterable[Tuple[str, str]]:
-    column_info_list = dataset.ExecuteSQL(
-        "SELECT table_name, column_name FROM gpkg_geometry_columns;"
-    )
-
-    for table_name, column_name in column_info_list:
-        yield table_name, column_name
-
-    dataset.ReleaseResultSet(column_info_list)
+from geopackage_validator import utils
 
 
 class GeomColumnNameValidator(validator.Validator):
@@ -24,15 +12,15 @@ class GeomColumnNameValidator(validator.Validator):
     message = "Found in table: {table_name}, column: {column_name}"
 
     def check(self) -> Iterable[str]:
-        columns = query_geom_columnname(self.dataset)
+        columns = utils.dataset_geometry_tables(self.dataset)
         return self.geom_columnname_check(columns)
 
     @classmethod
-    def geom_columnname_check(cls, columns: Iterable[Tuple[str, str]]):
-        assert columns is not None
+    def geom_columnname_check(cls, columns: Iterable[Tuple[str]]):
+        print(columns)
         return [
             cls.message.format(column_name=column_name, table_name=table_name)
-            for table_name, column_name in columns
+            for table_name, column_name, _ in columns
             if column_name != "geom"
         ]
 
@@ -45,13 +33,13 @@ class GeomColumnNameEqualValidator(validator.Validator):
     message = "Found column names are unequal: {column_names}"
 
     def check(self) -> Iterable[str]:
-        columns = query_geom_columnname(self.dataset)
+        columns = utils.dataset_geometry_tables(self.dataset)
         return self.geom_equal_columnname_check(columns)
 
     @classmethod
-    def geom_equal_columnname_check(cls, columns: Iterable[Tuple[str, str]]):
-        assert columns is not None
-        unique_column_names = {column_name for _, column_name in columns}
+    def geom_equal_columnname_check(cls, columns: Iterable[Tuple[str]]):
+        print(columns)
+        unique_column_names = {column_name for _, column_name, _ in columns}
 
         if len(unique_column_names) > 1:
             return [cls.message.format(column_names=", ".join(unique_column_names))]

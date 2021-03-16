@@ -2,14 +2,13 @@ from typing import Iterable, Tuple, List
 
 from geopackage_validator.validations import validator
 
+from geopackage_validator import utils
+
 
 def query_feature_id(dataset) -> Iterable[Tuple[str, int]]:
-    tables = dataset.ExecuteSQL("SELECT table_name FROM gpkg_geometry_columns;")
-    tablelist = [table for (table,) in tables]
+    tables = utils.dataset_geometry_tables(dataset)
 
-    dataset.ReleaseResultSet(tables)
-
-    for table in tablelist:
+    for table, _, _ in tables:
         validations = dataset.ExecuteSQL(
             "SELECT '{table_name}' as table_name, count(*) as pk_present FROM pragma_table_info('{table_name}') where pk > 0".format(
                 table_name=table

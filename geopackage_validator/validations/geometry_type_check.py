@@ -39,11 +39,9 @@ GROUP BY geom_type;"""
 
 
 def query_unexpected_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
-    columns = dataset.ExecuteSQL(
-        "SELECT table_name, column_name, geometry_type_name FROM gpkg_geometry_columns;"
-    )
+    geometry_types = utils.dataset_geometry_tables(dataset)
 
-    for table_name, column_name, expected_geometry in columns:
+    for table_name, column_name, expected_geometry in geometry_types:
         sql = SQL_TEMPLATE_TABLE_GEOMETRY_TYPES.format(
             table_name=table_name,
             column_name=column_name,
@@ -57,7 +55,6 @@ def query_unexpected_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
                 yield table_name, geometry_type, count, row_id, expected_geometry
 
         dataset.ReleaseResultSet(validations)
-    dataset.ReleaseResultSet(columns)
 
 
 def aggregate(results):
@@ -107,7 +104,7 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
     message = "Found geometry_type_name: {geometry_type} for table {table} (from the gpkg_geometry_columns table)."
 
     def check(self) -> Iterable[str]:
-        geometry_types = utils.dataset_geometry_types(self.dataset)
+        geometry_types = utils.dataset_geometry_tables(self.dataset)
         return self.gpkg_geometry_valid_check(geometry_types)
 
     @classmethod
@@ -115,7 +112,7 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
         assert geometry_type_names is not None
         return [
             cls.message.format(table=table, geometry_type=geometry_type)
-            for table, geometry_type in geometry_type_names
+            for table, _, geometry_type in geometry_type_names
             if geometry_type not in VALID_GEOMETRIES
         ]
 

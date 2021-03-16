@@ -59,16 +59,16 @@ def check_gdal_installed():
 
 
 @lru_cache(None)
-def dataset_geometry_types(dataset):
+def dataset_geometry_tables(dataset):
     """
     Generate a list of geometry type names from the gpkg_geometry_columns table.
     """
     geometry_type_names_result = dataset.ExecuteSQL(
-        "SELECT table_name, geometry_type_name FROM gpkg_geometry_columns;"
+        "SELECT table_name, column_name, geometry_type_name FROM gpkg_geometry_columns;"
     )
     geometry_type_names = [
-        (table_name, geometry_type_name)
-        for table_name, geometry_type_name in geometry_type_names_result
+        (table_name, column_name, geometry_type_name)
+        for table_name, column_name, geometry_type_name in geometry_type_names_result
     ]
     dataset.ReleaseResultSet(geometry_type_names_result)
     return geometry_type_names
