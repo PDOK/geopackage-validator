@@ -17,7 +17,6 @@ class GeomColumnNameValidator(validator.Validator):
 
     @classmethod
     def geom_columnname_check(cls, columns: Iterable[Tuple[str]]):
-        print(columns)
         return [
             cls.message.format(column_name=column_name, table_name=table_name)
             for table_name, column_name, _ in columns
