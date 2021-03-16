@@ -1,9 +1,9 @@
 import json
-import yaml
-from collections import OrderedDict
 from datetime import datetime
 from typing import Dict, List
 from collections import OrderedDict
+
+import yaml
 
 from geopackage_validator import __version__
 

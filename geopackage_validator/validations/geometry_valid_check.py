@@ -1,5 +1,7 @@
 from typing import Iterable, Tuple
 from geopackage_validator.validations import validator
+from geopackage_validator import utils
+
 
 SQL_TEMPLATE = """SELECT reason, count(reason) AS count, row_id
 FROM(
@@ -16,18 +18,15 @@ GROUP BY reason;"""
 
 
 def query_geometry_valid(dataset) -> Iterable[Tuple[str, str, str, int]]:
-    columns = dataset.ExecuteSQL(
-        "SELECT table_name, column_name FROM gpkg_geometry_columns;"
-    )
-    for table_name, column_name in columns:
+    columns = utils.dataset_geometry_tables(dataset)
+
+    for table_name, column_name, _ in columns:
         validations = dataset.ExecuteSQL(
             SQL_TEMPLATE.format(table_name=table_name, column_name=column_name)
         )
         for reason, count, row_id in validations:
             yield table_name, column_name, reason, count, row_id
         dataset.ReleaseResultSet(validations)
-
-    dataset.ReleaseResultSet(columns)
 
 
 class ValidGeometryValidator(validator.Validator):
