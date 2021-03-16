@@ -39,7 +39,7 @@ The current checks are (see also the 'show-validations' command):
 |       RQ9       | All geometry tables must have an rtree index.                |
 |       RQ10      | All geometry table rtree indexes must be valid.              |
 |       RQ11      | OGR indexed feature counts must be up to date.               |
-|       RQ12      | Only the following ESPG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409. |
+|       RQ12      | Only the following EPSG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409. |
 |       RQ13      | It is required to give all GEOMETRY features the same default spatial reference system. |
 |       RQ14      | The geometry_type_name from the gpkg_geometry_columns table must be one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON. |
 |       RQ15      | All table geometries must match the geometry_type_name from the gpkg_geometry_columns table. |
