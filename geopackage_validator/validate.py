@@ -1,6 +1,5 @@
-import json
+from collections import OrderedDict
 import logging
-from pathlib import Path
 import sys
 import traceback
 
@@ -11,7 +10,7 @@ from geopackage_validator.validations.validator import (
     ValidationLevel,
     format_result,
 )
-from geopackage_validator import gdal_utils
+from geopackage_validator import utils
 
 
 logger = logging.getLogger(__name__)
@@ -42,9 +41,8 @@ def validators_to_use(
     codes = []
 
     if validations_path is not None:
-        validations_from_file = Path(validations_path).read_text()
         try:
-            codes += json.loads(validations_from_file)["validations"]
+            codes += utils.load_config(validations_path)["validations"]
         except KeyError:
             raise Exception("Validation path file does not contain any validations")
 
@@ -59,11 +57,11 @@ def validate(
     gpkg_path, table_definitions_path=None, validations_path=None, validations=""
 ):
     """Starts the geopackage validations."""
-    gdal_utils.check_gdal_installed()
-    gdal_utils.check_gdal_version()
+    utils.check_gdal_installed()
+    utils.check_gdal_version()
 
     # Explicit import here
-    from geopackage_validator.gdal_utils import init_gdal
+    from geopackage_validator.utils import init_gdal
 
     results = []
 
@@ -79,7 +77,7 @@ def validate(
 
     init_gdal(gdal_error_handler)
 
-    dataset = gdal_utils.open_dataset(gpkg_path)
+    dataset = utils.open_dataset(gpkg_path)
 
     if dataset is None:
         return results, None, False
@@ -123,7 +121,9 @@ def validate(
 
 def get_validation_descriptions():
     validation_classes = get_validator_classes()
-    return {klass.validation_code: klass.__doc__ for klass in validation_classes}
+    return OrderedDict(
+        (klass.validation_code, klass.__doc__) for klass in validation_classes
+    )
 
 
 def get_validation_codes(validators):
@@ -140,6 +140,4 @@ def get_validator_classes():
 
 
 def load_table_definitions(table_definitions_path) -> TableDefinition:
-    path = Path(table_definitions_path)
-    assert path.exists()
-    return json.loads(path.read_text())
+    return utils.load_config(table_definitions_path)

@@ -1,11 +1,11 @@
 import logging
 from typing import Dict, List, Union
+from collections import OrderedDict
 
 from osgeo import ogr
 from osgeo.ogr import DataSource
 
-from geopackage_validator.gdal_utils import check_gdal_version, check_gdal_installed
-from geopackage_validator.constants import VALID_GEOMETRIES
+from geopackage_validator.utils import check_gdal_version, check_gdal_installed
 from geopackage_validator import __version__
 
 logger = logging.getLogger(__name__)
@@ -60,22 +60,26 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
             continue
 
         table_list.append(
-            {
-                "name": table.GetName(),
-                "geometry_column": geo_column_name,
-                "columns": columns_definition(table),
-            }
+            OrderedDict(
+                [
+                    ("name", table.GetName()),
+                    ("geometry_column", geo_column_name),
+                    ("columns", columns_definition(table)),
+                ]
+            )
         )
 
         projections.add(table.GetSpatialRef().GetAuthorityCode(None))
 
     assert len(projections) == 1, "Expected one projection per geopackage."
 
-    result = {
-        "geopackage_validator_version": __version__,
-        "projection": int(projections.pop()),
-        "tables": table_list,
-    }
+    result = OrderedDict(
+        [
+            ("geopackage_validator_version", __version__),
+            ("projection", int(projections.pop())),
+            ("tables", table_list),
+        ]
+    )
 
     return result
 

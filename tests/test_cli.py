@@ -56,6 +56,36 @@ def test_generate_definitions_with_gpkg():
     assert json.loads(result.output) == expected
 
 
+EXPECTED_VALIDATION_YAML = """geopackage_validator_version: {version}
+projection: 28992
+tables:
+- name: test_allcorrect
+  geometry_column: geom
+  columns:
+  - name: fid
+    type: INTEGER
+  - name: geom
+    type: POLYGON"""
+
+
+def test_generate_definitions_with_gpkg_yaml_output():
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "generate-definitions",
+            "--gpkg-path",
+            "tests/data/test_allcorrect.gpkg",
+            "--yaml",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert result.output.strip("\n") == EXPECTED_VALIDATION_YAML.format(
+        version=__version__
+    )
+
+
 def test_validate_no_gpkg():
     runner = CliRunner()
     result = runner.invoke(cli, ["validate"])
@@ -96,7 +126,23 @@ def test_validate_with_rq8_missing_definitions_path():
     assert "Missing '--table-definitions-path' input" in result.output
 
 
-def test_validate_with_rq8_by_setting_definitions_path():
+def test_validate_with_rq8_with_yaml_definitions_path():
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "validate",
+            "--gpkg-path",
+            "tests/data/test_allcorrect.gpkg",
+            "--table-definitions-path",
+            "tests/data/test_allcorrect_definition.yml",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "RQ8" in result.output
+
+
+def test_validate_with_rq8_with_json_definitions_path():
     runner = CliRunner()
     result = runner.invoke(
         cli,
@@ -112,7 +158,7 @@ def test_validate_with_rq8_by_setting_definitions_path():
     assert "RQ8" in result.output
 
 
-def test_validate_with_rq8_with_old_definition_by_setting_definitions_path():
+def test_validate_with_rq8_with_old_definitions_path():
     runner = CliRunner()
     result = runner.invoke(
         cli,
