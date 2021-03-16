@@ -2,6 +2,7 @@ from typing import Iterable, Tuple
 
 from geopackage_validator.constants import VALID_GEOMETRIES, MAX_VALIDATION_ITERATIONS
 from geopackage_validator.validations import validator
+from geopackage_validator import gdal_utils
 
 
 def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
@@ -59,17 +60,6 @@ def query_unexpected_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
     dataset.ReleaseResultSet(columns)
 
 
-def query_gpkg_metadata_geometry_types(dataset):
-    geometry_type_names = dataset.ExecuteSQL(
-        "SELECT table_name, geometry_type_name FROM gpkg_geometry_columns;"
-    )
-
-    for table_name, geometry_type_name in geometry_type_names:
-        yield table_name, geometry_type_name
-
-    dataset.ReleaseResultSet(geometry_type_names)
-
-
 def aggregate(results):
     aggregate = {}
 
@@ -117,7 +107,7 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
     message = "Found geometry_type_name: {geometry_type} for table {table} (from the gpkg_geometry_columns table)."
 
     def check(self) -> Iterable[str]:
-        geometry_types = query_gpkg_metadata_geometry_types(self.dataset)
+        geometry_types = gdal_utils.dataset_geometry_types(self.dataset)
         return self.gpkg_geometry_valid_check(geometry_types)
 
     @classmethod

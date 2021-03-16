@@ -1,9 +1,8 @@
-from geopackage_validator.gdal_utils import open_dataset
+from geopackage_validator.gdal_utils import open_dataset, dataset_geometry_types
 from geopackage_validator.validations.geometry_type_check import (
     query_geometry_types,
     aggregate,
     GpkgGeometryTypeNameValidator,
-    query_gpkg_metadata_geometry_types,
     GeometryTypeEqualsGpkgDefinitionValidator,
 )
 
@@ -53,7 +52,7 @@ def test_rq3_with_gpkg_allcorrect():
 
 def test_rq14_with_gpkg_geometry_type_valid_check():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
-    geometry_type_names = query_gpkg_metadata_geometry_types(dataset)
+    geometry_type_names = dataset_geometry_types(dataset)
     result = GpkgGeometryTypeNameValidator(dataset).gpkg_geometry_valid_check(
         geometry_type_names
     )
@@ -62,7 +61,7 @@ def test_rq14_with_gpkg_geometry_type_valid_check():
 
 def test_rq14_with_gpkg_geometry_type_invalid_check():
     dataset = open_dataset("tests/data/test_geometry_type.gpkg")
-    geometry_type_names = query_gpkg_metadata_geometry_types(dataset)
+    geometry_type_names = dataset_geometry_types(dataset)
     result = GpkgGeometryTypeNameValidator(dataset).gpkg_geometry_valid_check(
         geometry_type_names
     )

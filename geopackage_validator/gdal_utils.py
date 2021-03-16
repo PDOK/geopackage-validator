@@ -1,4 +1,5 @@
 import sys
+from functools import lru_cache
 from typing import Callable
 
 from osgeo import ogr
@@ -50,3 +51,19 @@ def check_gdal_installed():
         sys.exit(
             "ERROR: cannot find GDAL/OGR modules, follow the instructions in the README to install these."
         )
+
+
+@lru_cache(None)
+def dataset_geometry_types(dataset):
+    """
+    Generate a list of geometry type names from the gpkg_geometry_columns table.
+    """
+    geometry_type_names_result = dataset.ExecuteSQL(
+        "SELECT table_name, geometry_type_name FROM gpkg_geometry_columns;"
+    )
+    geometry_type_names = [
+        (table_name, geometry_type_name)
+        for table_name, geometry_type_name in geometry_type_names_result
+    ]
+    dataset.ReleaseResultSet(geometry_type_names_result)
+    return geometry_type_names

@@ -56,6 +56,62 @@ def test_generate_definitions_with_gpkg():
     assert json.loads(result.output) == expected
 
 
+def test_generate_definitions_with_ndimension_geometries():
+    runner = CliRunner()
+    result = runner.invoke(
+        cli, ["generate-definitions", "--gpkg-path", "tests/data/test_dimensions.gpkg"]
+    )
+    expected = {
+        "geopackage_validator_version": __version__,
+        "projection": 28992,
+        "tables": [
+            {
+                "name": "test_dimensions",
+                "geometry_column": "geom",
+                "columns": [
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
+                ],
+            },
+            {
+                "name": "test_dimensions3",
+                "geometry_column": "geom",
+                "columns": [
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
+                ],
+            },
+            {
+                "name": "test_dimensions4",
+                "geometry_column": "geom",
+                "columns": [
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
+                ],
+            },
+            {
+                "name": "test_dimensions4_correct",
+                "geometry_column": "geom",
+                "columns": [
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
+                ],
+            },
+            {
+                "name": "test_dimensions3_correct",
+                "geometry_column": "geom",
+                "columns": [
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
+                ],
+            },
+        ],
+    }
+
+    assert result.exit_code == 0
+    assert json.loads(result.output) == expected
+
+
 def test_validate_no_gpkg():
     runner = CliRunner()
     result = runner.invoke(cli, ["validate"])
