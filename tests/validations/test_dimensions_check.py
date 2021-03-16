@@ -3,7 +3,6 @@ from geopackage_validator.validations.geometry_dimension_check import query_dime
 
 
 def test_with_gpkg():
-    # test_dimensions.gpkg has 4 tables,
     expected = [
         ("test_dimensions", "more than two dimensions."),
         ("test_dimensions3", "more than two dimensions."),
