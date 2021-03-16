@@ -9,9 +9,11 @@ from geopackage_validator import __version__
 
 
 def represent_ordereddict(dumper, data):
-"""
-Represent method for pyyaml. 
-Shamelessly copied from the python3 part of this answer: https://stackoverflow.com/questions/16782112/can-pyyaml-dump-dict-items-in-non-alphabetical-order#answer-16782282"""
+    """
+    Represent method for pyyaml.
+    Shamelessly copied from the python3 part of this answer:
+     https://stackoverflow.com/questions/16782112/can-pyyaml-dump-dict-items-in-non-alphabetical-order#answer-16782282
+    """
     value = []
 
     for item_key, item_value in data.items():

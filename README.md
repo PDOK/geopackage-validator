@@ -27,7 +27,7 @@ The current checks are (see also the 'show-validations' command):
 
 | Validation code | Description                                                  |
 | :-------------: | ------------------------------------------------------------ |
-|       RQ0       | _LEGACY:_ * Geopackage must conform to table names in the given  JSON or YAML definitions. |
+|       RQ0       | _LEGACY:_ * Geopackage must conform to table names in the given JSON or YAML definitions. |
 |       RQ1       | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
 |       RQ2       | Layers must have at least one feature.                       |
 |       RQ3       | _LEGACY:_ * Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
@@ -35,7 +35,7 @@ The current checks are (see also the 'show-validations' command):
 |       RQ5       | Geometry should be valid.                                    |
 |       RQ6       | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
 |       RQ7       | Tables should have a feature id column with unique index.    |
-|       RQ8       | Geopackage must conform to given  JSON or YAML definitions.           |
+|       RQ8       | Geopackage must conform to given JSON or YAML definitions.           |
 |       RQ9       | All geometry tables must have an rtree index.                |
 |       RQ10      | All geometry table rtree indexes must be valid.              |
 |       RQ11      | OGR indexed feature counts must be up to date.               |
@@ -210,7 +210,7 @@ Options:
 
 ### Generate table definitions
 
-Generate Geopackage table definition  JSON or YAML from given local or s3 package. This command generates a definition that describes the Geopackage layout, in  JSON or YAML format. This output, when saved in a file, can be used in the validation step to validate a Geopackage against these table definitions.
+Generate Geopackage table definition JSON or YAML from given local or s3 package. This command generates a definition that describes the Geopackage layout, in JSON or YAML format. This output, when saved in a file, can be used in the validation step to validate a Geopackage against these table definitions.
 
 ```bash
 Usage: geopackage-validator generate-definitions [OPTIONS]
