@@ -2,12 +2,13 @@ from typing import Iterable, Tuple, List
 
 from geopackage_validator.constants import SNAKE_CASE_REGEX
 from geopackage_validator.validations import validator
+from geopackage_validator import utils
 
 
 def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
-    tables = dataset.ExecuteSQL("SELECT table_name FROM gpkg_geometry_columns;")
+    tables = utils.dataset_geometry_tables(dataset)
 
-    for (table,) in tables:
+    for table, _, _ in tables:
         columns = dataset.ExecuteSQL(
             "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table)
         )
@@ -16,7 +17,6 @@ def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
             yield table, column
 
         dataset.ReleaseResultSet(columns)
-    dataset.ReleaseResultSet(tables)
 
 
 class ColumnNameValidator(validator.Validator):

@@ -34,14 +34,25 @@ def test_determine_validations_to_use_none():
         "RQ16",
         "RC1",
         "RC2",
+        "RC3",
     ]
 
 
-def test_determine_validations_to_use_file():
+def test_determine_validations_to_use_json_file():
     validations = get_validation_codes(
         validators_to_use(
             validation_codes="",
             validations_path="tests/data/validationsets/example-validation-set.json",
+        )
+    )
+    assert validations == ["RQ1", "RQ2", "RQ3"]
+
+
+def test_determine_validations_to_use_yaml_file():
+    validations = get_validation_codes(
+        validators_to_use(
+            validation_codes="",
+            validations_path="tests/data/validationsets/example-validation-set.yaml",
         )
     )
     assert validations == ["RQ1", "RQ2", "RQ3"]

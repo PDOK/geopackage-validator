@@ -1,0 +1,10 @@
+geopackage_validator_version: 0.5.9
+projection: 28992,
+tables:
+  - name: test_allcorrect
+    geometry_column: geom
+    columns:
+      - name: fid
+        type: INTEGER
+      - name: geom
+        type: POLYGON
