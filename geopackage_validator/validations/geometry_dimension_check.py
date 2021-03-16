@@ -13,8 +13,9 @@ SELECT DISTINCT
 FROM {table_name} where st_ndims({geom_column_name}) > 2;
 """
 
-MEASUREMENT_COORDINATE_NAME = "measurement (M)"
-ELEVATION_COORDINATE_NAME = "elevation (Z)"
+MEASUREMENT_COORDINATE_MESSAGE = "a measurement (M) dimension that are all 0."
+ELEVATION_COORDINATE_MESSAGE = "an elevation (Z) dimension that are all 0."
+MULTI_DIMENSION_MESSAGE = "more than two dimensions."
 
 
 def query_dimensions(dataset) -> Iterable[Tuple[str, str]]:
@@ -30,28 +31,28 @@ def query_dimensions(dataset) -> Iterable[Tuple[str, str]]:
             four_dimensions = all(ndims == 4 for z, m, ndims in validation_list)
             m_coordinates_all_0 = all(m for z, m, ndims in validation_list)
             z_coordinates_all_0 = all(z for z, m, ndims in validation_list)
+            if len(validation_list):
+                yield table_name, MULTI_DIMENSION_MESSAGE
             if four_dimensions and m_coordinates_all_0:
-                yield table_name, MEASUREMENT_COORDINATE_NAME
+                yield table_name, MEASUREMENT_COORDINATE_MESSAGE
             if z_coordinates_all_0:
                 if not m_coordinates_all_0 and four_dimensions:
                     continue
-                yield table_name, ELEVATION_COORDINATE_NAME
+                yield table_name, ELEVATION_COORDINATE_MESSAGE
 
         dataset.ReleaseResultSet(validations)
 
 
 class GeometryDimensionValidator(validator.Validator):
-    """It is recommended that multidimensional geometry coordinates (elevation and measurement) contain values."""
+    """It is recommended only to use multidimensional geometry coordinates (elevation and measurement) when necessary."""
 
     code = 3
     level = validator.ValidationLevel.RECCOMENDATION
-    message = (
-        "Table: {table}, has features with a {dimension_name} dimension that are all 0."
-    )
+    message = "Table: {table}, has features with {message}"
 
     def check(self) -> Iterable[str]:
         query_result = query_dimensions(self.dataset)
         return [
-            self.message.format(table=table_name, dimension_name=dimension_name)
-            for table_name, dimension_name in query_result
+            self.message.format(table=table_name, message=message)
+            for table_name, message in query_result
         ]
