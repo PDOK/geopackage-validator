@@ -1,10 +1,11 @@
 import logging
 from typing import Dict, List, Union
+from collections import OrderedDict
 
 from osgeo import ogr
 from osgeo.ogr import DataSource
 
-from geopackage_validator import gdal_utils
+from geopackage_validator import utils
 from geopackage_validator import __version__
 
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ def fid_column_definition(table) -> ColumnDefinition:
 
 def generate_table_definitions(dataset: DataSource) -> TableDefinition:
     projections = set()
-    table_geometry_types = dict(gdal_utils.dataset_geometry_types(dataset))
+    table_geometry_types = dict(utils.dataset_geometry_types(dataset))
 
     table_list = []
     for table in dataset:
@@ -55,30 +56,34 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
             "type": table_geometry_types[table_name],
         }
         table_list.append(
-            {
-                "name": table_name,
-                "geometry_column": geo_column_name,
-                "columns": columns_definition(table, geometry_column),
-            }
+            OrderedDict(
+                [
+                    ("name", table_name),
+                    ("geometry_column", geo_column_name),
+                    ("columns", columns_definition(table, geometry_column)),
+                ]
+            )
         )
 
         projections.add(table.GetSpatialRef().GetAuthorityCode(None))
 
     assert len(projections) == 1, "Expected one projection per geopackage."
 
-    result = {
-        "geopackage_validator_version": __version__,
-        "projection": int(projections.pop()),
-        "tables": table_list,
-    }
+    result = OrderedDict(
+        [
+            ("geopackage_validator_version", __version__),
+            ("projection", int(projections.pop())),
+            ("tables", table_list),
+        ]
+    )
 
     return result
 
 
 def generate_definitions_for_path(gpkg_path: str) -> TableDefinition:
     """Starts the geopackage validation."""
-    gdal_utils.check_gdal_installed()
-    gdal_utils.check_gdal_version()
+    utils.check_gdal_installed()
+    utils.check_gdal_version()
 
     # Explicit import here
 

@@ -1,4 +1,4 @@
-from geopackage_validator.gdal_utils import open_dataset, dataset_geometry_types
+from geopackage_validator.utils import open_dataset, dataset_geometry_types
 from geopackage_validator.validations.geometry_type_check import (
     query_geometry_types,
     aggregate,

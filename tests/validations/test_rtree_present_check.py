@@ -1,4 +1,4 @@
-from geopackage_validator.gdal_utils import open_dataset
+from geopackage_validator.utils import open_dataset
 from geopackage_validator.validations.rtree_present_check import (
     RTreeExistsValidator,
     query_rtree_presence,

@@ -15,9 +15,8 @@ click_log.basic_config(logger)
 
 from geopackage_validator.generate import generate_definitions_for_path
 from geopackage_validator.minio.minio_context import minio_resource
-from geopackage_validator.output import log_output
+from geopackage_validator.output import log_output, print_output
 from geopackage_validator.validate import validate, get_validation_descriptions
-import json
 
 
 @click.group()
@@ -51,7 +50,7 @@ def cli():
     show_envvar=True,
     required=False,
     default=None,
-    help="Path pointing to the table-definitions JSON file (generate this file by calling the generate-definitions command)",
+    help="Path pointing to the table-definitions  JSON or YAML file (generate this file by calling the generate-definitions command)",
     type=click.types.Path(
         exists=True,
         file_okay=True,
@@ -90,6 +89,9 @@ def cli():
     required=False,
     is_flag=True,
     help="Exit with code 1 when validation success is false.",
+)
+@click.option(
+    "--yaml", required=False, is_flag=True, help="Output yaml.",
 )
 @click.option(
     "--s3-endpoint-no-protocol",
@@ -136,6 +138,7 @@ def geopackage_validator_command(
     validations_path,
     validations,
     exit_on_fail,
+    yaml,
     s3_endpoint_no_protocol,
     s3_access_key,
     s3_secret_key,
@@ -183,6 +186,7 @@ def geopackage_validator_command(
         start_time=start_time,
         duration_seconds=duration_seconds,
         success=success,
+        as_yaml=yaml,
     )
     if exit_on_fail and not success:
         sys.exit(1)
@@ -190,7 +194,7 @@ def geopackage_validator_command(
 
 @cli.command(
     name="generate-definitions",
-    help="Generate Geopackage table definition JSON from given local or s3 package. Use the generated definition JSON in the validation step by providing the table definitions with the --table-definitions-path parameter.",
+    help="Generate Geopackage table definition  JSON or YAML from given local or s3 package. Use the generated definition  JSON or YAML in the validation step by providing the table definitions with the --table-definitions-path parameter.",
 )
 @click.option(
     "--gpkg-path",
@@ -207,6 +211,9 @@ def geopackage_validator_command(
         writable=False,
         allow_dash=False,
     ),
+)
+@click.option(
+    "--yaml", required=False, is_flag=True, help="Output yaml",
 )
 @click.option(
     "--s3-endpoint-no-protocol",
@@ -249,6 +256,7 @@ def geopackage_validator_command(
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_generate_table_definitions(
     gpkg_path,
+    yaml,
     s3_endpoint_no_protocol,
     s3_access_key,
     s3_secret_key,
@@ -273,8 +281,8 @@ def geopackage_validator_command_generate_table_definitions(
                 s3_secure,
             ) as localfilename:
                 definitionlist = generate_definitions_for_path(localfilename)
-        print(json.dumps(definitionlist, indent=4))
-    except:
+        print_output(definitionlist, yaml)
+    except Exception:
         logger.exception("Error while generating table definitions")
 
 
@@ -282,11 +290,14 @@ def geopackage_validator_command_generate_table_definitions(
     name="show-validations",
     help="Show all the possible validations that can be executed in the validate command.",
 )
+@click.option(
+    "--yaml", required=False, is_flag=True, help="Output yaml",
+)
 @click_log.simple_verbosity_option(logger)
-def geopackage_validator_command_show_validations():
+def geopackage_validator_command_show_validations(yaml):
     try:
         validation_codes = get_validation_descriptions()
-        print(json.dumps(validation_codes, indent=4, sort_keys=True))
+        print_output(validation_codes, yaml, yaml_indent=5)
     except Exception:
         logger.exception("Error while listing validations")
 

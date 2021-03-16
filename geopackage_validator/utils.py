@@ -1,5 +1,10 @@
 import sys
 from functools import lru_cache
+
+from pathlib import Path
+import json
+import yaml
+
 from typing import Callable
 
 from osgeo import ogr
@@ -67,3 +72,12 @@ def dataset_geometry_types(dataset):
     ]
     dataset.ReleaseResultSet(geometry_type_names_result)
     return geometry_type_names
+
+
+def load_config(file_path):
+    path = Path(file_path)
+    assert path.exists()
+    with path.open() as file_handler:
+        if path.suffix in (".yaml", ".yml"):
+            return yaml.load(file_handler, Loader=yaml.SafeLoader)
+        return json.load(file_handler)
