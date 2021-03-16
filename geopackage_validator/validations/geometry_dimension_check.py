@@ -44,7 +44,7 @@ def query_dimensions(dataset) -> Iterable[Tuple[str, str]]:
 
 
 class GeometryDimensionValidator(validator.Validator):
-    """It is recommended only to use multidimensional geometry coordinates (elevation and measurement) when necessary."""
+    """It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary."""
 
     code = 3
     level = validator.ValidationLevel.RECCOMENDATION
