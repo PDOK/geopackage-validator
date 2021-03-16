@@ -2,7 +2,7 @@ from typing import Iterable, Tuple
 
 from geopackage_validator.constants import VALID_GEOMETRIES, MAX_VALIDATION_ITERATIONS
 from geopackage_validator.validations import validator
-from geopackage_validator import gdal_utils
+from geopackage_validator import utils
 
 
 def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
@@ -107,7 +107,7 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
     message = "Found geometry_type_name: {geometry_type} for table {table} (from the gpkg_geometry_columns table)."
 
     def check(self) -> Iterable[str]:
-        geometry_types = gdal_utils.dataset_geometry_types(self.dataset)
+        geometry_types = utils.dataset_geometry_types(self.dataset)
         return self.gpkg_geometry_valid_check(geometry_types)
 
     @classmethod
