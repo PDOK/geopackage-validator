@@ -6,14 +6,14 @@ from geopackage_validator import utils
 
 
 def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
-    for layer in dataset:
-        if not layer.GetGeometryColumn():
+    for table in dataset:
+        if not table.GetGeometryColumn():
             continue
 
-        layer_name = layer.GetName()
+        table_name = table.GetName()
 
         c = 0
-        for feature in layer:
+        for feature in table:
             if c >= MAX_VALIDATION_ITERATIONS:
                 break
 
@@ -22,7 +22,7 @@ def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
 
             if geom_type not in VALID_GEOMETRIES:
                 c += 1
-                yield layer_name, geom_type, feature_id
+                yield table_name, geom_type, feature_id
 
 
 SQL_TEMPLATE_TABLE_GEOMETRY_TYPES = """SELECT
@@ -60,8 +60,8 @@ def query_unexpected_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
 def aggregate(results):
     aggregate = {}
 
-    for layer_name, geom_type, feature_id in results:
-        key = (layer_name, geom_type).__hash__()
+    for table_name, geom_type, feature_id in results:
+        key = (table_name, geom_type).__hash__()
 
         if key in aggregate:
             aggregate[key]["amount"] += 1
@@ -73,7 +73,7 @@ def aggregate(results):
                 aggregate[key]["desc"] = "times and possibly more, example record id's"
         else:
             aggregate[key] = {
-                "layer": layer_name,
+                "table": table_name,
                 "geometry": geom_type,
                 "rowid_list": [feature_id],
                 "amount": 1,
@@ -84,11 +84,11 @@ def aggregate(results):
 
 
 class GeometryTypeValidator(validator.Validator):
-    """Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON)."""
+    """Table features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON)."""
 
     code = 3
     level = validator.ValidationLevel.ERROR
-    message = "Error layer: {layer}, found geometry: {geometry}, {amount} {desc}: {rowid_list}"
+    message = "Error table: {table}, found geometry: {geometry}, {amount} {desc}: {rowid_list}"
 
     def check(self) -> Iterable[str]:
         geometries = query_geometry_types(self.dataset)
@@ -122,7 +122,7 @@ class GeometryTypeEqualsGpkgDefinitionValidator(validator.Validator):
 
     code = 15
     level = validator.ValidationLevel.ERROR
-    message = "Error layer: {table_name}, found geometry: {geometry_type} that should be {expected_geometry}, {count} {count_label}, example id: {row_id}"
+    message = "Error table: {table_name}, found geometry: {geometry_type} that should be {expected_geometry}, {count} {count_label}, example id: {row_id}"
 
     def check(self) -> Iterable[str]:
         result = query_unexpected_geometry_types(self.dataset)

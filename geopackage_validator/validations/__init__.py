@@ -9,13 +9,13 @@ from geopackage_validator.validations.geometry_type_check import (
 from geopackage_validator.validations.geometry_valid_check import ValidGeometryValidator
 from geopackage_validator.validations.layerfeature_check import (
     OGRIndexValidator,
-    NonEmptyLayerValidator,
+    NonEmptyTableValidator,
 )
 from geopackage_validator.validations.table_definitions_check import (
     TableDefinitionValidator,
     TableDefinitionValidatorV0,
 )
-from geopackage_validator.validations.layername_check import LayerNameValidator
+from geopackage_validator.validations.layername_check import TableNameValidator
 from geopackage_validator.validations.rtree_present_check import RTreeExistsValidator
 from geopackage_validator.validations.rtree_valid_check import ValidRtreeValidator
 from geopackage_validator.validations.srs_check import SrsValidator, SrsEqualValidator
@@ -38,8 +38,8 @@ __all__ = [
     "GeometryTypeValidator",
     "ValidGeometryValidator",
     "OGRIndexValidator",
-    "NonEmptyLayerValidator",
-    "LayerNameValidator",
+    "NonEmptyTableValidator",
+    "TableNameValidator",
     "RTreeExistsValidator",
     "ValidRtreeValidator",
     "TableDefinitionValidator",

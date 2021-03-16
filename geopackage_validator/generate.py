@@ -17,7 +17,7 @@ TableDefinition = Dict[str, Union[int, Dict[str, ColumnDefinition]]]
 def columns_definition(table, geometry_column) -> ColumnDefinition:
     layer_definition = table.GetLayerDefn()
 
-    assert layer_definition, f'Invalid Layer {"" if not table else table.GetName()}'
+    assert layer_definition, f'Invalid Table {"" if not table else table.GetName()}'
 
     field_count = layer_definition.GetFieldCount()
     columns = [

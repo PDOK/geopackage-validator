@@ -28,9 +28,9 @@ The current checks are (see also the 'show-validations' command):
 | Validation code | Description                                                  |
 | :-------------: | ------------------------------------------------------------ |
 |       RQ0       | _LEGACY:_ * Geopackage must conform to table names in the given JSON or YAML definitions. |
-|       RQ1       | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
-|       RQ2       | Layers must have at least one feature.                       |
-|       RQ3       | _LEGACY:_ * Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
+|       RQ1       | Table names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |
+|       RQ2       | Tables must have at least one feature.                       |
+|       RQ3       | _LEGACY:_ * Table features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON). |
 |       RQ4       | The geopackage should have no views defined.                 |
 |       RQ5       | Geometry should be valid.                                    |
 |       RQ6       | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores. |

@@ -27,11 +27,11 @@ def test_invalid_geometry_type_aggregate():
 
     keys = list(results.keys())
 
-    assert results[keys[0]]["layer"] == "table_a"
+    assert results[keys[0]]["table"] == "table_a"
     assert results[keys[0]]["geometry"] == "type_a"
     assert len(results[keys[0]]["rowid_list"]) == 2
 
-    assert results[keys[1]]["layer"] == "table_b"
+    assert results[keys[1]]["table"] == "table_b"
     assert results[keys[1]]["geometry"] == "type_a"
     assert len(results[keys[1]]["rowid_list"]) == 3
 
@@ -84,5 +84,5 @@ def test_rq15_with_gpkg_geometry_type_equals_gpkg_definition_invalid_check():
     assert len(result) == 1
     assert (
         result[0]
-        == "Error layer: test_geometry_type, found geometry: GEOMETRYCOLLECTION that should be COMPOUNDCURVE, 1 time, example id: 1"
+        == "Error table: test_geometry_type, found geometry: GEOMETRYCOLLECTION that should be COMPOUNDCURVE, 1 time, example id: 1"
     )

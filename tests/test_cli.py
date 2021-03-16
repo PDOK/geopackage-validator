@@ -11,7 +11,7 @@ def test_show_validations():
     result = runner.invoke(cli, ["show-validations"])
     assert result.exit_code == 0
     assert (
-        'RQ1": "Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores."'
+        'RQ1": "Table names must start with a letter, and valid characters are lowercase a-z, numbers or underscores."'
         in result.output
     )
 

@@ -30,11 +30,11 @@ class PolygonWindingOrderValidator(validator.Validator):
 
     code = 16
     level = validator.ValidationLevel.ERROR
-    message = "Error layer: {layer}, example id: {row_id}, has {count} features that do not have a counter-clockwise exterior ring and/or a clockwise interior ring."
+    message = "Error table: {table}, example id: {row_id}, has {count} features that do not have a counter-clockwise exterior ring and/or a clockwise interior ring."
 
     def check(self) -> Iterable[str]:
         result = query_ccw(self.dataset)
         return [
-            self.message.format(layer=layer_name, row_id=row_id, count=count)
-            for layer_name, row_id, count in result
+            self.message.format(table=table_name, row_id=row_id, count=count)
+            for table_name, row_id, count in result
         ]
