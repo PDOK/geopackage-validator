@@ -29,14 +29,11 @@ def validators_to_use(
     validator_classes = get_validator_classes()
     if validation_codes == "ALL" or (validations_path is None and not validation_codes):
         if not is_rq8_requested:
-            return [
-                v
-                for v in validator_classes
-                if v.validation_code != RQ8
-                and v.validation_code not in DROP_LEGACY_RQ_FROM_ALL
-            ]
+            rq_drop_list = DROP_LEGACY_RQ_FROM_ALL + [RQ8]
         else:
-            return validator_classes
+            rq_drop_list = DROP_LEGACY_RQ_FROM_ALL
+
+        return [v for v in validator_classes if v.validation_code not in rq_drop_list]
 
     codes = []
 
@@ -92,26 +89,27 @@ def validate(
     validation_results = []
     success = True
 
-    try:
-        for validator in validators:
+    for validator in validators:
+        try:
             result = validator(dataset, table_definitions=table_definitions).validate()
 
             if result is not None:
                 validation_results.append(result)
                 success = success and validator.level == ValidationLevel.RECCOMENDATION
-    except Exception:
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        trace = [
-            t.strip("\n")
-            for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
-        ]
-        output = format_result(
-            validation_code="ERROR",
-            validation_description="No unexpected errors must occur.",
-            level=ValidationLevel.UNKNOWN,
-            trace=trace,
-        )
-        return [output] + results, None, False
+        except Exception:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            trace = [
+                t.strip("\n")
+                for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
+            ]
+            output = format_result(
+                validation_code="ERROR",
+                validation_description="No unexpected errors must occur.",
+                level=ValidationLevel.UNKNOWN,
+                trace=trace,
+            )
+            validation_results.append([output])
+            success = False
 
     # results has values when a gdal error is thrown:
     success = success and not results
