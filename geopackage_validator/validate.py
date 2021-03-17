@@ -29,14 +29,11 @@ def validators_to_use(
     validator_classes = get_validator_classes()
     if validation_codes == "ALL" or (validations_path is None and not validation_codes):
         if not is_rq8_requested:
-            return [
-                v
-                for v in validator_classes
-                if v.validation_code != RQ8
-                and v.validation_code not in DROP_LEGACY_RQ_FROM_ALL
-            ]
+            rq_drop_list = DROP_LEGACY_RQ_FROM_ALL + [RQ8]
         else:
-            return validator_classes
+            rq_drop_list = DROP_LEGACY_RQ_FROM_ALL
+
+        return [v for v in validator_classes if v.validation_code not in rq_drop_list]
 
     codes = []
 
