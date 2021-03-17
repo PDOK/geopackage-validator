@@ -45,7 +45,7 @@ The current checks are (see also the 'show-validations' command):
 |       RQ15      | All table geometries must match the geometry_type_name from the gpkg_geometry_columns table. |
 |       RC1       | It is recommended to name all GEOMETRY type columns 'geom'.  |
 |       RC2       | It is recommended to give all GEOMETRY type columns the same name. |
-|       RC3       | It is recommended that multidimensional geometry coordinates (elevation and measurement) contain values. |
+|       RC3       | It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary. |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
 
