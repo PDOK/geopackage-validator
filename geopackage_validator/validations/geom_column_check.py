@@ -37,7 +37,6 @@ class GeomColumnNameEqualValidator(validator.Validator):
 
     @classmethod
     def geom_equal_columnname_check(cls, columns: Iterable[Tuple[str]]):
-        print(columns)
         unique_column_names = {column_name for _, column_name, _ in columns}
 
         if len(unique_column_names) > 1:
