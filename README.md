@@ -46,7 +46,7 @@ The current checks are (see also the 'show-validations' command):
 |       RQ16      | All (MULTI)POLYGON geometries should have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings. |
 |       RC1       | It is recommended to name all GEOMETRY type columns 'geom'.  |
 |       RC2       | It is recommended to give all GEOMETRY type columns the same name. |
-|       RC3       | It is recommended that multidimensional geometry coordinates (elevation and measurement) contain values. |
+|       RC3       | It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary. |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
 
