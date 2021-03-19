@@ -242,14 +242,14 @@ This is to give an indication of the performance and by no means a guarantee.
 
 ## Local development
 
-We advise using docker-compose for local development.  
+We advise using docker-compose for local development. This setup gives you the most recent version of gdal available. And allows live editing and testing code. 
 First build the local image with your machines user id and group id: 
 
 ```bash
 docker-compose build --build-arg uid=`id -u` --build-arg gid=`id -g`
 ```
 
-### usage
+### Usage
 
 There will be a script you can run like this:
 
@@ -259,6 +259,14 @@ docker-compose run --rm validator geopackage-validator
 
 This command has direct access to the files found in this directory. In case you want
 to point the docker-compose to other files, you can add or edit the volumes in the `docker-compose.yaml`
+
+### Python console
+
+Ipython is available in the docker: 
+
+```bash
+docker-compose run --rm validator ipython
+```
 
 ### Code style
 
