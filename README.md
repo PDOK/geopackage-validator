@@ -293,17 +293,4 @@ docker-compose run --rm --cov=geopackage_validator  --cov-report html
 
 ### Releasing
 
-Release in github by creating and pushing a new tag to master and create a new release in github.  
-
-
-
-## Install pyenv
-
-We can install pyenv by running the following commands:
-
-```bash
-sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev
-curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-```
-
-Also make sure to put pyenv in your `.bashrc` or `.zshrc` as instructed by the previous commands.
+Release in github by bumping the `__version__` in [`geopackage_validator.constants.py`](geopackage_validator/constants.py) and by creating and pushing a new tag to master and create a new release in github.  
