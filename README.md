@@ -242,7 +242,7 @@ This is to give an indication of the performance and by no means a guarantee.
 
 ## Local development
 
-We advise using docker-compose for local development. This setup gives you the most recent version of gdal available. And allows live editing and testing code. 
+We advise using docker-compose for local development. This allows live editing and testing code with the correct gdal/ogr version with spatialite 5.0.0. 
 First build the local image with your machines user id and group id: 
 
 ```bash
