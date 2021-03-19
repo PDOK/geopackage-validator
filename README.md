@@ -242,83 +242,23 @@ This is to give an indication of the performance and by no means a guarantee.
 
 ## Local development
 
-### From geopackage-validator version > 0.6.0
-
-Since we use the latest gdal version available. We have changed our local development by using docker-compose.
-This docker-compose uses a local docker-image and is not based on the image that is build for production.  
-
+We advise using docker-compose for local development.  
 First build the local image with your machines user id and group id: 
 
 ```bash
 docker-compose build --build-arg uid=`id -u` --build-arg gid=`id -g`
 ```
 
+### usage
 
-Next you can run all available commands:  
+There will be a script you can run like this:
 
 ```bash
 docker-compose run --rm validator geopackage-validator
 ```
 
-Run black to force codestyle: 
-
-```bash
-docker-compose run --rm validator black .
-```
-
-And pytests to run tests:  
-
-```bash
-docker-compose run --rm validator pytest
-```
-
-
-### Pipenv installation
-
-We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
-around pip and virtualenv. Install that first with `pip install pipenv`.
-
-Install the GDAL native library version 3.0.4 and development headers:
-
-```bash
-sudo apt-get update
-sudo apt-get install gdal-bin libgdal-dev -y
-```
-
-Make sure you have GDAL version 3.0.4:
-
-```bash
-$ gdalinfo --version
-GDAL 3.2.1, released 2020/01/28
-```
-
-Then install the dependencies of this project:
-
-```bash
-export CPLUS_INCLUDE_PATH=/usr/include/gdal
-export C_INCLUDE_PATH=/usr/include/gdal
-PIPENV_VENV_IN_PROJECT=1 pipenv install --python 3.8 --dev
-```
-
-In case you do not have python 3.8 on your machine, install python using
-[pyenv](https://github.com/pyenv/pyenv) and try the previous command again.
-See install pyenv below for instructions.
-
-If you need a new dependency (like `requests`), add it in `setup.py` in
-`install_requires`. Afterwards, run install again to actually install your
-dependency:
-
-```bash
-pipenv install --dev
-```
-
-### Pipenv usage
-
-There will be a script you can run like this:
-
-```bash
-pipenv run geopackage-validator
-```
+This command has direct access to the files found in this directory. In case you want
+to point the docker-compose to other files, you can add or edit the volumes in the `docker-compose.yaml`
 
 ### Code style
 
@@ -326,7 +266,7 @@ In order to get nicely formatted python files without having to spend manual
 work on it, run the following command periodically:
 
 ```bash
-pipenv run black geopackage_validator
+docker-compose run --rm validator black .
 ```
 
 ### Tests
@@ -334,13 +274,13 @@ pipenv run black geopackage_validator
 Run the tests regularly. This also checks with pyflakes and black:
 
 ```bash
-pipenv run pytest
+docker-compose run --rm validator pytest
 ```
 
 Code coverage:
 
 ```bash
-pipenv run pytest --cov=geopackage_validator  --cov-report html
+docker-compose run --rm --cov=geopackage_validator  --cov-report html
 ```
 
 ### Releasing

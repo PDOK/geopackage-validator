@@ -13,4 +13,5 @@ services:
     command: pipenv install --dev --site-packages
     volumes:
     - .:/code
+#    - /home:/home   # uncomment this line for easier reach of other geopackages.
     working_dir: /code
