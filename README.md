@@ -52,7 +52,7 @@ The current checks are (see also the 'show-validations' command):
 
 ## Installation
 
-This package requires [GDAL](https://gdal.org/) version >= 3.0.4.
+This package requires [GDAL](https://gdal.org/) version >= 3.2.1.
 And python >= 3.8 to run.
 
 ### Ubuntu
@@ -61,28 +61,6 @@ Install GDAL:
 
 ```sudo
 sudo apt-get install gdal-bin
-```
-
-Install the validator with:  
-
-```bash
-pip3 install pdok-geopackage-validator
-```
-
-### Windows
-
-
-Either use anaconda to install gdal:
-
-```bash
-conda install -c conda-forge gdal
-```
-
-Or download and install [OSGeo4W](https://trac.osgeo.org/osgeo4w/). And download
-[get-pip.py](https://bootstrap.pypa.io/get-pip.py) and run it in the OSGeo4W shell:
-
-```bash
-python3 get-pip.py
 ```
 
 Install the validator with:  
@@ -264,6 +242,37 @@ This is to give an indication of the performance and by no means a guarantee.
 
 ## Local development
 
+### From geopackage-validator version > 0.6.0
+
+Since we use the latest gdal version available. We have changed our local development by using docker-compose.
+This docker-compose uses a local docker-image and is not based on the image that is build for production.  
+
+First build the local image with your machines user id and group id: 
+
+```bash
+docker-compose build --build-arg uid=`id -u` --build-arg gid=`id -g`
+```
+
+
+Next you can run all available commands:  
+
+```bash
+docker-compose run --rm validator geopackage-validator
+```
+
+Run black to force codestyle: 
+
+```bash
+docker-compose run --rm validator black .
+```
+
+And pytests to run tests:  
+
+```bash
+docker-compose run --rm validator pytest
+```
+
+
 ### Pipenv installation
 
 We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
@@ -280,7 +289,7 @@ Make sure you have GDAL version 3.0.4:
 
 ```bash
 $ gdalinfo --version
-GDAL 3.0.4, released 2020/01/28
+GDAL 3.2.1, released 2020/01/28
 ```
 
 Then install the dependencies of this project:

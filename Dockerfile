@@ -1,4 +1,4 @@
-FROM pdok/gdal:0.8.3 AS base
+FROM pdok/gdal:unstable-0.8.3.1 AS base
 
 ## In case you need base debian dependencies install them here.
 #RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \

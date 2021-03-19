@@ -22,7 +22,7 @@ name = "pypi"
 "pdok-geopackage-validator" = {path = ".", editable = true}
 "Click" = "==7.*"
 "click-log" = "==0.3.*"
-"gdal" = "==3.0.4"
+"gdal" = "==3.2.1"
 "minio" = "*"
 "deepdiff" = "*"
 "pyyaml" = "*"

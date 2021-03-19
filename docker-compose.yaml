@@ -1,0 +1,16 @@
+version: '3'
+services:
+
+  validator:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    environment:
+      - DOCKER=True
+      - PYTHONUNBUFFERED=1
+      - PIPENV_VENV_IN_PROJECT=1
+      - SHELL=/bin/bash
+    command: pipenv install --dev --site-packages
+    volumes:
+    - .:/code
+    working_dir: /code
