@@ -1,1 +1,1 @@
-from constants import __version__
+from geopackage_validator.constants import __version__

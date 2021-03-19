@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 from configparser import ConfigParser
-from geopackage_validator.constants import __version__
+from geopackage_validator import __version__
 
 
 long_description = "\n\n".join([open("README.md").read(), open("CHANGES.md").read()])
