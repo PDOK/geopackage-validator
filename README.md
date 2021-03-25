@@ -52,7 +52,7 @@ The current checks are (see also the 'show-validations' command):
 
 ## Installation
 
-This package requires [GDAL](https://gdal.org/) version >= 3.0.4.
+This package requires [GDAL](https://gdal.org/) version >= 3.2.1.
 And python >= 3.8 to run.
 
 ### Ubuntu
@@ -61,28 +61,6 @@ Install GDAL:
 
 ```sudo
 sudo apt-get install gdal-bin
-```
-
-Install the validator with:  
-
-```bash
-pip3 install pdok-geopackage-validator
-```
-
-### Windows
-
-
-Either use anaconda to install gdal:
-
-```bash
-conda install -c conda-forge gdal
-```
-
-Or download and install [OSGeo4W](https://trac.osgeo.org/osgeo4w/). And download
-[get-pip.py](https://bootstrap.pypa.io/get-pip.py) and run it in the OSGeo4W shell:
-
-```bash
-python3 get-pip.py
 ```
 
 Install the validator with:  
@@ -264,51 +242,30 @@ This is to give an indication of the performance and by no means a guarantee.
 
 ## Local development
 
-### Pipenv installation
-
-We're installed with [pipenv](https://docs.pipenv.org/), a handy wrapper
-around pip and virtualenv. Install that first with `pip install pipenv`.
-
-Install the GDAL native library version 3.0.4 and development headers:
+We advise using docker-compose for local development. This allows live editing and testing code with the correct gdal/ogr version with spatialite 5.0.0. 
+First build the local image with your machines user id and group id: 
 
 ```bash
-sudo apt-get update
-sudo apt-get install gdal-bin libgdal-dev -y
+docker-compose build --build-arg uid=`id -u` --build-arg gid=`id -g`
 ```
 
-Make sure you have GDAL version 3.0.4:
-
-```bash
-$ gdalinfo --version
-GDAL 3.0.4, released 2020/01/28
-```
-
-Then install the dependencies of this project:
-
-```bash
-export CPLUS_INCLUDE_PATH=/usr/include/gdal
-export C_INCLUDE_PATH=/usr/include/gdal
-PIPENV_VENV_IN_PROJECT=1 pipenv install --python 3.8 --dev
-```
-
-In case you do not have python 3.8 on your machine, install python using
-[pyenv](https://github.com/pyenv/pyenv) and try the previous command again.
-See install pyenv below for instructions.
-
-If you need a new dependency (like `requests`), add it in `setup.py` in
-`install_requires`. Afterwards, run install again to actually install your
-dependency:
-
-```bash
-pipenv install --dev
-```
-
-### Pipenv usage
+### Usage
 
 There will be a script you can run like this:
 
 ```bash
-pipenv run geopackage-validator
+docker-compose run --rm validator geopackage-validator
+```
+
+This command has direct access to the files found in this directory. In case you want
+to point the docker-compose to other files, you can add or edit the volumes in the `docker-compose.yaml`
+
+### Python console
+
+Ipython is available in the docker: 
+
+```bash
+docker-compose run --rm validator ipython
 ```
 
 ### Code style
@@ -317,7 +274,7 @@ In order to get nicely formatted python files without having to spend manual
 work on it, run the following command periodically:
 
 ```bash
-pipenv run black geopackage_validator
+docker-compose run --rm validator black .
 ```
 
 ### Tests
@@ -325,28 +282,15 @@ pipenv run black geopackage_validator
 Run the tests regularly. This also checks with pyflakes and black:
 
 ```bash
-pipenv run pytest
+docker-compose run --rm validator pytest
 ```
 
 Code coverage:
 
 ```bash
-pipenv run pytest --cov=geopackage_validator  --cov-report html
+docker-compose run --rm --cov=geopackage_validator  --cov-report html
 ```
 
 ### Releasing
 
-Release in github by creating and pushing a new tag to master and create a new release in github.  
-
-
-
-## Install pyenv
-
-We can install pyenv by running the following commands:
-
-```bash
-sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev
-curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-```
-
-Also make sure to put pyenv in your `.bashrc` or `.zshrc` as instructed by the previous commands.
+Release in github by bumping the `__version__` in [`geopackage_validator.constants.py`](geopackage_validator/constants.py) and by creating and pushing a new tag to master and create a new release in github.  

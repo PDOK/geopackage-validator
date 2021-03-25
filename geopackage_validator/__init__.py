@@ -1,4 +1,1 @@
-import pkg_resources
-
-
-__version__ = pkg_resources.get_distribution("pdok_geopackage_validator").version
+from geopackage_validator.constants import __version__
