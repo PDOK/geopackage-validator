@@ -55,7 +55,7 @@ The current checks are (see also the 'show-validations' command):
 This package requires [GDAL](https://gdal.org/) version >= 3.2.1.
 And python >= 3.8 to run.
 
-We can be installed using pip (`pip install pdok-geopackage-validator`). But we recommend using the docker image. 
+We recommend using the docker image. When above requirements are met the package can be installed using pip (`pip install pdok-geopackage-validator`).  
 
 ### Docker
 
