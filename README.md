@@ -55,19 +55,7 @@ The current checks are (see also the 'show-validations' command):
 This package requires [GDAL](https://gdal.org/) version >= 3.2.1.
 And python >= 3.8 to run.
 
-### Ubuntu
-
-Install GDAL:
-
-```sudo
-sudo apt-get install gdal-bin
-```
-
-Install the validator with:  
-
-```bash
-pip3 install pdok-geopackage-validator
-```
+We can be installed using pip (`pip install pdok-geopackage-validator`). But we recommend using the docker image. 
 
 ### Docker
 
@@ -96,7 +84,7 @@ docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/g
 To validate RQ8 you have to generate definitions first.
 
 ```bash
-geopackage-validator generate-definitions --gpkg-path /path/to/file.gpkg
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator geopackage-validator generate-definitions --gpkg-path /path/to/file.gpkg
 ````
 
 ### Validate
@@ -156,7 +144,7 @@ Options:
 Examples:
 
 ```bash
-pipenv run geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path tests/data/test_allcorrect.gpkg
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path tests/data/test_allcorrect.gpkg
 ```
 
 Run with specific validations only
@@ -164,13 +152,13 @@ Run with specific validations only
 Specified in file:
 
 ```bash
-pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-path tests/validationsets/example-validation-set.json
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-path tests/validationsets/example-validation-set.json
 ```
 
 Or specified on command line:
 
 ```bash
-pipenv run geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations R1,R2,R3
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations R1,R2,R3
 ```
 
 ### Show validations
@@ -227,19 +215,6 @@ Options:
   --help                          Show this message and exit.
 ```
 
-## Performance
-
-On a PC with 32GB memory and Intel Core i7-8850H CPU @ 2.6 ghz, the following performance has been measured:
-
-| Geopackage size | Time needed for validation | MB / minute     |
-| --------------- | -------------------------- | --------------- |
-| 315 MB          | 0.5 minutes                | 630 MB / minute |
-| 6.3 GB          | 12.5 minutes               | 504 MB / minute |
-| 9.9 GB          | 17.5 minutes               | 565 MB / minute |
-| 15.7 GB         | 24 minutes                 | 654 MB / minute |
-
-This is to give an indication of the performance and by no means a guarantee.
-
 ## Local development
 
 We advise using docker-compose for local development. This allows live editing and testing code with the correct gdal/ogr version with spatialite 5.0.0. 
@@ -275,7 +250,7 @@ work on it, run the following command periodically:
 
 ```bash
 docker-compose run --rm validator black .
-```
+``` 
 
 ### Tests
 
