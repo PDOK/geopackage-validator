@@ -103,9 +103,9 @@ def validate(
                 for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
             ]
             output = format_result(
-                validation_code="ERROR",
-                validation_description="No unexpected errors must occur.",
-                level=ValidationLevel.UNKNOWN,
+                validation_code=validator.validation_code,
+                validation_description=f"No unexpected errors must occur for: {validator.__doc__}",
+                level=validator.level,
                 trace=trace,
             )
             validation_results.append([output])
