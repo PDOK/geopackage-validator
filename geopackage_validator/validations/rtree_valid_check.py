@@ -1,5 +1,6 @@
 from typing import Iterable
 
+from geopackage_validator.utils import silence_gdal
 from geopackage_validator.validations import validator
 
 
@@ -19,21 +20,22 @@ def rtree_valid_check_query(dataset) -> Iterable[str]:
         "and extension_name = 'gpkg_rtree_index');"
     )
     for index in indexes:
-        validations = dataset.ExecuteSQL(
-            'select rtreecheck("{index_name}");'.format(
-                index_name="rtree_" + index[0] + "_" + index[1]
+        with silence_gdal():
+            validations = dataset.ExecuteSQL(
+                'select rtreecheck("{index_name}");'.format(
+                    index_name="rtree_" + index[0] + "_" + index[1]
+                )
             )
-        )
 
-        if validations is None:
-            yield index[0]
+            if validations is None:
+                yield index[0]
+                dataset.ReleaseResultSet(validations)
+                continue
+
+            for validation in validations:
+                if validation[0] != "ok":
+                    yield validation[0]
             dataset.ReleaseResultSet(validations)
-            continue
-
-        for validation in validations:
-            if validation[0] != "ok":
-                yield validation[0]
-        dataset.ReleaseResultSet(validations)
 
     dataset.ReleaseResultSet(indexes)
 

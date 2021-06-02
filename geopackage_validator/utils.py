@@ -1,4 +1,5 @@
 import sys
+from contextlib import contextmanager
 from functools import lru_cache
 
 from pathlib import Path
@@ -32,6 +33,17 @@ def init_gdal(gdal_error_handler: Callable[[str, str, str], None]):
     gdal.UseExceptions()
 
     gdal.PushErrorHandler(gdal_error_handler)
+
+
+@contextmanager
+def silence_gdal():
+    try:
+        from osgeo import gdal
+    except:
+        sys.exit("ERROR: cannot find GDAL/OGR modules")
+
+    error_handler = gdal.PopErrorHandler()
+    yield gdal.PushErrorHandler(error_handler)
 
 
 def check_gdal_version():
