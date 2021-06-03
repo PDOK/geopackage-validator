@@ -1,4 +1,4 @@
-from geopackage_validator.utils import open_dataset
+from geopackage_validator.utils import open_dataset, init_gdal, silence_gdal
 from geopackage_validator.validations.rtree_valid_check import (
     ValidRtreeValidator,
     rtree_valid_check_query,
@@ -26,3 +26,35 @@ def test_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     checks = list(rtree_valid_check_query(dataset))
     assert len(checks) == 0
+
+
+def test_with_gdal_error():
+    results = []
+
+    # Register GDAL error handler function
+    def gdal_error_handler(err_class, err_num, error):
+        results.append("GDAL_ERROR")
+
+    init_gdal(gdal_error_handler)
+
+    dataset = open_dataset("tests/data/test_gdal_error.gpkg")
+    validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
+    dataset.ReleaseResultSet(validations)
+    assert results[0] == "GDAL_ERROR"
+    assert len(results) == 1
+
+
+def test_without_gdal_error():
+    results = []
+
+    # Register GDAL error handler function
+    def gdal_error_handler(err_class, err_num, error):
+        results.append("GDAL_ERROR")
+
+    init_gdal(gdal_error_handler)
+
+    dataset = open_dataset("tests/data/test_gdal_error.gpkg")
+    with silence_gdal():
+        validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
+    dataset.ReleaseResultSet(validations)
+    assert len(results) == 0
