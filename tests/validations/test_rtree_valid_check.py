@@ -58,3 +58,32 @@ def test_without_gdal_error():
         validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
     dataset.ReleaseResultSet(validations)
     assert len(results) == 0
+
+
+def do_something_with_error_gdal(dataset):
+    validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
+    dataset.ReleaseResultSet(validations)
+
+
+def do_something_silenced_gdal(dataset):
+    with silence_gdal():
+        validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
+    dataset.ReleaseResultSet(validations)
+
+
+def test_silence_between_gdal_errors():
+    results = []
+
+    # Register GDAL error handler function
+    def gdal_error_handler(err_class, err_num, error):
+        results.append("GDAL_ERROR")
+
+    init_gdal(gdal_error_handler)
+
+    dataset = open_dataset("tests/data/test_gdal_error.gpkg")
+    do_something_with_error_gdal(dataset)
+    do_something_silenced_gdal(dataset)
+    do_something_with_error_gdal(dataset)
+
+    assert len(results) == 2
+    assert results == ["GDAL_ERROR", "GDAL_ERROR"]
