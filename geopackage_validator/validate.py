@@ -54,11 +54,7 @@ def validate(
     gpkg_path, table_definitions_path=None, validations_path=None, validations=""
 ):
     """Starts the geopackage validations."""
-    utils.check_gdal_installed()
     utils.check_gdal_version()
-
-    # Explicit import here
-    from geopackage_validator.utils import init_gdal
 
     results = []
 
@@ -72,9 +68,7 @@ def validate(
         )
         results.append(result)
 
-    init_gdal(gdal_error_handler)
-
-    dataset = utils.open_dataset(gpkg_path)
+    dataset = utils.open_dataset(gpkg_path, gdal_error_handler)
 
     if dataset is None:
         return results, None, False
