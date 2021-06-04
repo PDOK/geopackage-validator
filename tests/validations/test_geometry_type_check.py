@@ -1,4 +1,4 @@
-from geopackage_validator.utils import open_dataset, dataset_geometry_tables
+from geopackage_validator.utils import Dataset, dataset_geometry_tables
 from geopackage_validator.validations.geometry_type_check import (
     query_geometry_types,
     aggregate,
@@ -37,7 +37,7 @@ def test_invalid_geometry_type_aggregate():
 
 
 def test_rq3_with_gpkg():
-    dataset = open_dataset("tests/data/test_geometry_type.gpkg")
+    dataset = Dataset("tests/data/test_geometry_type.gpkg")
     checks = list(query_geometry_types(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_geometry_type"
@@ -45,13 +45,13 @@ def test_rq3_with_gpkg():
 
 
 def test_rq3_with_gpkg_allcorrect():
-    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
+    dataset = Dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_geometry_types(dataset))
     assert len(checks) == 0
 
 
 def test_rq14_with_gpkg_geometry_type_valid_check():
-    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
+    dataset = Dataset("tests/data/test_allcorrect.gpkg")
     geometry_type_names = dataset_geometry_tables(dataset)
     result = GpkgGeometryTypeNameValidator(dataset).gpkg_geometry_valid_check(
         geometry_type_names
@@ -60,7 +60,7 @@ def test_rq14_with_gpkg_geometry_type_valid_check():
 
 
 def test_rq14_with_gpkg_geometry_type_invalid_check():
-    dataset = open_dataset("tests/data/test_geometry_type.gpkg")
+    dataset = Dataset("tests/data/test_geometry_type.gpkg")
     geometry_type_names = dataset_geometry_tables(dataset)
     result = GpkgGeometryTypeNameValidator(dataset).gpkg_geometry_valid_check(
         geometry_type_names
@@ -73,13 +73,13 @@ def test_rq14_with_gpkg_geometry_type_invalid_check():
 
 
 def test_rq15_with_gpkg_geometry_type_equals_gpkg_definition_valid_check():
-    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
+    dataset = Dataset("tests/data/test_allcorrect.gpkg")
     result = list(GeometryTypeEqualsGpkgDefinitionValidator(dataset).check())
     assert len(result) == 0
 
 
 def test_rq15_with_gpkg_geometry_type_equals_gpkg_definition_invalid_check():
-    dataset = open_dataset("tests/data/test_geometry_type.gpkg")
+    dataset = Dataset("tests/data/test_geometry_type.gpkg")
     result = list(GeometryTypeEqualsGpkgDefinitionValidator(dataset).check())
     assert len(result) == 1
     assert (

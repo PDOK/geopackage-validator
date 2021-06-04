@@ -1,4 +1,4 @@
-from geopackage_validator.utils import open_dataset
+from geopackage_validator.utils import Dataset
 from geopackage_validator.validations.columnname_check import (
     ColumnNameValidator,
     query_columnames,
@@ -43,7 +43,7 @@ def test_lowercasecolumnname_with_capitals():
 
 
 def test_with_gpkg():
-    dataset = open_dataset("tests/data/test_columnname.gpkg")
+    dataset = Dataset("tests/data/test_columnname.gpkg")
     checks = list(query_columnames(dataset))
     assert len(checks) == 2
     assert checks[0][0] == "test_columnname"
@@ -53,7 +53,7 @@ def test_with_gpkg():
 
 
 def test_with_gpkg_allcorrect():
-    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
+    dataset = Dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_columnames(dataset))
     assert len(checks) == 2
     assert checks[0][0] == "test_allcorrect"

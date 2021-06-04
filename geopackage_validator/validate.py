@@ -68,7 +68,7 @@ def validate(
         )
         results.append(result)
 
-    dataset = utils.open_dataset(gpkg_path, gdal_error_handler)
+    dataset = utils.Dataset(gpkg_path, gdal_error_handler)
 
     if dataset is None:
         return results, None, False

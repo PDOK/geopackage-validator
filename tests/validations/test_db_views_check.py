@@ -1,4 +1,4 @@
-from geopackage_validator.utils import open_dataset
+from geopackage_validator.utils import Dataset
 from geopackage_validator.validations.db_views_check import (
     ViewsValidator,
     query_db_views,
@@ -16,13 +16,13 @@ def test_oneview():
 
 
 def test_with_gpkg():
-    dataset = open_dataset("tests/data/test_db_views.gpkg")
+    dataset = Dataset("tests/data/test_db_views.gpkg")
     checks = list(query_db_views(dataset))
     assert len(checks) == 1
     assert checks[0] == "wrong_view"
 
 
 def test_with_gpkg_allcorrect():
-    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
+    dataset = Dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_db_views(dataset))
     assert len(checks) == 0

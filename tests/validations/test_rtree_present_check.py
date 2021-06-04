@@ -1,4 +1,4 @@
-from geopackage_validator.utils import open_dataset
+from geopackage_validator.utils import Dataset
 from geopackage_validator.validations.rtree_present_check import (
     RTreeExistsValidator,
     query_rtree_presence,
@@ -32,26 +32,26 @@ def test_rtree_absent_one_table():
 
 
 def test_with_gpkg():
-    dataset = open_dataset("tests/data/test_rtree_present_alltables.gpkg")
+    dataset = Dataset("tests/data/test_rtree_present_alltables.gpkg")
     checks = list(query_rtree_presence(dataset))
     assert len(checks) == 1
     assert checks[0] == "no table has an rtree index"
 
 
 def test_singletable_with_gpkg():
-    dataset = open_dataset("tests/data/test_rtree_present_single_table.gpkg")
+    dataset = Dataset("tests/data/test_rtree_present_single_table.gpkg")
     checks = list(query_rtree_presence(dataset))
     assert len(checks) == 1
     assert checks[0] == "test_rtree_present_single_table"
 
 
 def test_rtrees_query_has_no_result_on_table__with_no_geometry():
-    dataset = open_dataset("tests/data/test_correct_attribute.gpkg")
+    dataset = Dataset("tests/data/test_correct_attribute.gpkg")
     checks = list(query_rtree_presence(dataset))
     assert len(checks) == 0
 
 
 def test_with_gpkg_allcorrect():
-    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
+    dataset = Dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_rtree_presence(dataset))
     assert len(checks) == 0

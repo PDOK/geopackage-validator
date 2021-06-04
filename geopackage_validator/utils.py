@@ -21,24 +21,22 @@ except:
     )
 
 
-@contextmanager
-def _silence_gdal(error_handler):
-    gdal.PopErrorHandler()
-    yield
-    gdal.PushErrorHandler(error_handler)
-
-
 class Dataset(ogr.DataSource):
-    def __new__(cls, filename=None, error_handler=None):
+    """Wrapper around an ogr Datasource."""
+
+    def __new__(cls, filename=None, error_handler=None, *args, **kwargs):
         if error_handler is not None:
             gdal.UseExceptions()
             gdal.PushErrorHandler(error_handler)
 
+        @contextmanager
         def silence_gdal():
             if error_handler is None:
                 warnings.warn("cannot silence gdal without error handler")
                 return
-            return _silence_gdal(error_handler)
+            gdal.PopErrorHandler()
+            yield
+            gdal.PushErrorHandler(error_handler)
 
         driver = ogr.GetDriverByName("GPKG")
         dataset = driver.Open(filename, 0)
@@ -47,10 +45,6 @@ class Dataset(ogr.DataSource):
             dataset.silence_gdal = silence_gdal
 
         return dataset
-
-
-def open_dataset(filename: str, error_handler: Optional[Callable] = None) -> Dataset:
-    return Dataset(filename=filename, error_handler=error_handler)
 
 
 def check_gdal_version():
