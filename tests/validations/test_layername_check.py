@@ -1,4 +1,4 @@
-from geopackage_validator.utils import Dataset
+from geopackage_validator.utils import open_dataset
 from geopackage_validator.validations.layername_check import (
     LayerNameValidator,
     query_layernames,
@@ -32,14 +32,14 @@ def test_lowercaselayername_with_capitals():
 
 
 def test_with_gpkg():
-    dataset = Dataset("tests/data/test_layername.gpkg")
+    dataset = open_dataset("tests/data/test_layername.gpkg")
     checks = list(query_layernames(dataset))
     assert len(checks) == 1
     assert checks[0] == "test_LAYERNAME"
 
 
 def test_with_gpkg_allcorrect():
-    dataset = Dataset("tests/data/test_allcorrect.gpkg")
+    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_layernames(dataset))
     assert len(checks) == 1
     assert checks[0] == "test_allcorrect"

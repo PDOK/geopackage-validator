@@ -1,4 +1,4 @@
-from geopackage_validator.utils import Dataset
+from geopackage_validator.utils import open_dataset
 from geopackage_validator.validations.feature_id_check import (
     FeatureIdValidator,
     query_feature_id,
@@ -16,7 +16,7 @@ def test_invalid_featureid():
 
 
 def test_with_gpkg():
-    dataset = Dataset("tests/data/test_featureid.gpkg")
+    dataset = open_dataset("tests/data/test_featureid.gpkg")
     checks = list(query_feature_id(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_featureid"
@@ -24,7 +24,7 @@ def test_with_gpkg():
 
 
 def test_with_gpkg_allcorrect():
-    dataset = Dataset("tests/data/test_allcorrect.gpkg")
+    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_feature_id(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_allcorrect"

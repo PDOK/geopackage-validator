@@ -1,11 +1,11 @@
 from geopackage_validator.utils import (
-    Dataset,
+    open_dataset,
     dataset_geometry_tables,
 )
 
 
 def test_with_gpkg():
-    dataset = Dataset("tests/data/test_geom_columnname.gpkg")
+    dataset = open_dataset("tests/data/test_geom_columnname.gpkg")
     checks = list(dataset_geometry_tables(dataset))
     assert len(checks) == 3
     assert checks[0][0] == "test_columnname"
@@ -23,7 +23,7 @@ def test_with_gdal_error():
     def gdal_error_handler(err_class, err_num, error):
         results.append("GDAL_ERROR")
 
-    dataset = Dataset("tests/data/test_gdal_error.gpkg", gdal_error_handler)
+    dataset = open_dataset("tests/data/test_gdal_error.gpkg", gdal_error_handler)
     validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
     dataset.ReleaseResultSet(validations)
     assert results[0] == "GDAL_ERROR"
@@ -37,7 +37,7 @@ def test_without_gdal_error():
     def gdal_error_handler(err_class, err_num, error):
         results.append("GDAL_ERROR")
 
-    dataset = Dataset("tests/data/test_gdal_error.gpkg", gdal_error_handler)
+    dataset = open_dataset("tests/data/test_gdal_error.gpkg", gdal_error_handler)
     with dataset.silence_gdal():
         validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
     dataset.ReleaseResultSet(validations)
@@ -63,7 +63,7 @@ def test_silence_between_gdal_errors():
         print(results)
         results.append("GDAL_ERROR")
 
-    dataset = Dataset("tests/data/test_gdal_error.gpkg", gdal_error_handler)
+    dataset = open_dataset("tests/data/test_gdal_error.gpkg", gdal_error_handler)
     do_something_with_error_gdal(dataset)
     do_something_silenced_gdal(dataset)
     do_something_with_error_gdal(dataset)

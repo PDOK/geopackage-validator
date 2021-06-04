@@ -1,9 +1,9 @@
-from geopackage_validator.utils import Dataset
+from geopackage_validator.utils import open_dataset
 from geopackage_validator.validations.geometry_valid_check import query_geometry_valid
 
 
 def test_with_gpkg():
-    dataset = Dataset("tests/data/test_geometry_valid.gpkg")
+    dataset = open_dataset("tests/data/test_geometry_valid.gpkg")
     checks = list(query_geometry_valid(dataset))
     assert len(checks) == 1
     assert checks[0][0] == "test_geometry_valid"
@@ -14,6 +14,6 @@ def test_with_gpkg():
 
 
 def test_with_gpkg_allcorrect():
-    dataset = Dataset("tests/data/test_allcorrect.gpkg")
+    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_geometry_valid(dataset))
     assert len(checks) == 0

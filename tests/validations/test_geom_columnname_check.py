@@ -1,4 +1,4 @@
-from geopackage_validator.utils import Dataset
+from geopackage_validator.utils import open_dataset
 from geopackage_validator.validations.geom_column_check import (
     GeomColumnNameValidator,
     GeomColumnNameEqualValidator,
