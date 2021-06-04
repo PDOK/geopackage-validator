@@ -82,7 +82,7 @@ def cli():
     required=False,
     default="",
     envvar="VALIDATIONS",
-    help="Comma-separated list of validations to run (e.g. --validations R1,R2,R3). If validations-path and validations are not given, validate runs all validations",
+    help="Comma-separated list of validations to run (e.g. --validations RQ1,RQ2,RQ3). If validations-path and validations are not given, validate runs all validations",
 )
 @click.option(
     "--exit-on-fail",

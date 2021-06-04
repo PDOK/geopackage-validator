@@ -16,13 +16,13 @@ def test_rtree_invalidvalid_one_tables():
 
 
 def test_with_gpkg():
-    dataset = open_dataset("tests/data/test_rtree_valid.gpkg")
+    dataset = open_dataset("tests/data/test_rtree_valid.gpkg", lambda x: None)
     checks = list(rtree_valid_check_query(dataset))
     assert len(checks) == 1
     assert checks[0] == "Found (1 -> 2) in %_rowid table, expected (1 -> 1)"
 
 
 def test_with_gpkg_allcorrect():
-    dataset = open_dataset("tests/data/test_allcorrect.gpkg")
+    dataset = open_dataset("tests/data/test_allcorrect.gpkg", lambda x: None)
     checks = list(rtree_valid_check_query(dataset))
     assert len(checks) == 0
