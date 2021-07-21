@@ -11,8 +11,8 @@ def query_ccw(dataset) -> Iterable[Tuple[str, str]]:
 
     for table_name, column_name in columns:
         sql = (
-            f"SELECT cast(rowid AS INTEGER) AS row_id, count({column_name}) as amount "
-            f"FROM {table_name} WHERE NOT ST_IsPolygonCCW({column_name});"
+            f'SELECT cast(rowid AS INTEGER) AS row_id, count("{column_name}") as amount '
+            f'FROM "{table_name}" WHERE NOT ST_IsPolygonCCW("{column_name}");'
         )
         validations = dataset.ExecuteSQL(sql)
 
