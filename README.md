@@ -109,7 +109,7 @@ Options:
                                   [env var: VALIDATIONS_FILE]
 
   --validations TEXT              Comma-separated list of validations to run
-                                  (e.g. --validations R1,R2,R3). If
+                                  (e.g. --validations RQ1,RQ2,RQ3). If
                                   validations-path and validations are not
                                   given, validate runs all validations  [env
                                   var: VALIDATIONS]
@@ -158,7 +158,7 @@ docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path t
 Or specified on command line:
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations R1,R2,R3
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations RQ1,RQ2,RQ3
 ```
 
 ### Show validations
