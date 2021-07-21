@@ -8,7 +8,7 @@ def query_layerfeature_counts(dataset) -> Iterable[Tuple[str, int, int]]:
         layer_name = layer.GetName()
 
         table_featurecount = dataset.ExecuteSQL(
-            "SELECT count(*) from {table_name}".format(table_name=layer_name)
+            'SELECT count(*) from "{table_name}"'.format(table_name=layer_name)
         )
         (table_count,) = table_featurecount.GetNextFeature()
 

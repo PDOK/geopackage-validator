@@ -26,14 +26,14 @@ def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
 
 
 SQL_TEMPLATE_TABLE_GEOMETRY_TYPES = """SELECT
-    CASE ST_AsText({column_name})
+    CASE ST_AsText("{column_name}")
         WHEN 'GEOMETRYCOLLECTION()'
             THEN 'GEOMETRYCOLLECTION'
-        ELSE ST_GEOMETRYTYPE({column_name})
+        ELSE ST_GEOMETRYTYPE("{column_name}")
     END AS geom_type
-    , count({column_name}) AS count
+    , count("{column_name}") AS count
     , cast(rowid AS INTEGER) AS row_id
-FROM {table_name}
+FROM "{table_name}"
 WHERE geom_type != '{expected_geometry}'
 GROUP BY geom_type;"""
 

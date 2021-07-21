@@ -6,11 +6,11 @@ from geopackage_validator import utils
 
 DIMENSION_QUERY = """
 SELECT DISTINCT
-    (ST_MinZ({geom_column_name}) == 0 AND ST_MaxZ({geom_column_name}) == 0) as z_check,
-    (ST_MinM({geom_column_name}) IS NOT NULL AND
-     ST_MinM({geom_column_name}) == 0 AND ST_MaxM({geom_column_name}) == 0) as m_check,
-     st_ndims({geom_column_name}) as ndims
-FROM {table_name} where st_ndims({geom_column_name}) > 2;
+    (ST_MinZ("{geom_column_name}") == 0 AND ST_MaxZ("{geom_column_name}") == 0) as z_check,
+    (ST_MinM("{geom_column_name}") IS NOT NULL AND
+     ST_MinM("{geom_column_name}") == 0 AND ST_MaxM("{geom_column_name}") == 0) as m_check,
+     st_ndims("{geom_column_name}") as ndims
+FROM "{table_name}" where st_ndims("{geom_column_name}") > 2;
 """
 
 MEASUREMENT_COORDINATE_MESSAGE = "a measurement (M) dimension that are all 0."
