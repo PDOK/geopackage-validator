@@ -56,22 +56,19 @@ def validate(
     """Starts the geopackage validations."""
     utils.check_gdal_version()
 
-    results = []
+    gdal_traces = []
 
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
-        result = format_result(
-            validation_code="GDAL_ERROR",
-            validation_description="No unexpected GDAL errors must occur.",
-            level=ValidationLevel.UNKNOWN,
-            trace=[error.replace("\n", " ")],
-        )
-        results.append(result)
+        trace = [error.replace("\n", " ")]
+        gdal_traces.append(trace)
 
     dataset = utils.open_dataset(gpkg_path, gdal_error_handler)
+    initial_gdal_traces = [gdal_traces.pop() for _ in range(len(gdal_traces))]
+    initial_gdal_errors = format_gdal_errors(initial_gdal_traces)
 
     if dataset is None:
-        return results, None, False
+        return initial_gdal_errors, None, False
 
     is_rq8_requested = table_definitions_path is not None
     table_definitions = (
@@ -102,13 +99,40 @@ def validate(
                 level=validator.level,
                 trace=trace,
             )
-            validation_results.append([output])
+            validation_results.append(output)
             success = False
+        current_gdal_traces = [gdal_traces.pop() for _ in range(len(gdal_traces))]
+        if current_gdal_traces:
+            success = False
+            for trace in current_gdal_traces:
+                output = format_result(
+                    validation_code=validator.validation_code,
+                    validation_description=f"No unexpected errors must occur for: {validator.__doc__}",
+                    level=validator.level,
+                    trace=trace,
+                )
+                validation_results.append(output)
 
     # results has values when a gdal error is thrown:
-    success = success and not results
+    success = success and not initial_gdal_traces
 
-    return results + validation_results, get_validation_codes(validators), success
+    return (
+        initial_gdal_errors + validation_results,
+        get_validation_codes(validators),
+        success,
+    )
+
+
+def format_gdal_errors(traces):
+    return [
+        format_result(
+            validation_code="GDAL_ERROR",
+            validation_description="No unexpected GDAL errors must occur.",
+            level=ValidationLevel.UNKNOWN,
+            trace=trace,
+        )
+        for trace in traces
+    ]
 
 
 def get_validation_descriptions():

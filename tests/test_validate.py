@@ -109,6 +109,7 @@ def test_validate_all_validations_with_broken_gpkg_throws_gdal_error():
         gpkg_path="tests/data/test_broken_geopackage.gpkg", validations="ALL"
     )
     assert len(results) == 1
+    print(results)
     assert results[0]["locations"] == [
         "At least one of the required GeoPackage tables, gpkg_spatial_ref_sys or gpkg_contents, is missing"
     ]
