@@ -1,6 +1,6 @@
 import re
 
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 
 ALLOWED_PROJECTIONS_LIST = [
     28992,
