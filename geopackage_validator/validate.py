@@ -79,14 +79,18 @@ def validate(
 
     if dataset is None:
         if len(initial_gdal_errors) == 0:
-            return [
-            format_result(
-                validation_code="GDAL_ERROR",
-                validation_description="Could not open gpkg.",
-                level=ValidationLevel.UNKNOWN,
-                trace=[],
+            return (
+                [
+                    format_result(
+                        validation_code="GDAL_ERROR",
+                        validation_description="Could not open gpkg.",
+                        level=ValidationLevel.UNKNOWN,
+                        trace=[],
+                    )
+                ],
+                None,
+                False,
             )
-        ], None, False
         return initial_gdal_errors, None, False
 
     is_rq8_requested = table_definitions_path is not None
