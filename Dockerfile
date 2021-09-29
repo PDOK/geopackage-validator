@@ -18,7 +18,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-reco
         python3-pip && \
         apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --upgrade --no-cache-dir setuptools pip
+RUN pip3 install --no-cache-dir virtualenv==v20.7.2 pipenv
 RUN pip3 install --no-cache-dir pipenv
 
 # Copy source
