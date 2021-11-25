@@ -6,7 +6,6 @@
   * [What does it do](#What-does-it-do)
   * [Installation](#installation)
     * [Ubuntu](#ubuntu)
-    * [Windows](#windows)
     * [Docker](#docker)
   * [Usage](#usage)
     * [Validate](#validate)
