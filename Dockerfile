@@ -18,8 +18,8 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-reco
         python3-pip && \
         apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --upgrade --no-cache-dir setuptools pip
-RUN pip3 install --no-cache-dir pipenv
+# pin virtualenv pipenv b/c of problem with use_2to3 in setuptools 58.*
+RUN pip3 install --no-cache-dir virtualenv==v20.7.2 pipenv
 
 # Copy source
 WORKDIR /code
