@@ -73,7 +73,9 @@ def validate(
 
     dataset = utils.open_dataset(gpkg_path, gdal_error_handler)
     if len(gdal_error_traces):
-        initial_gdal_traces = [gdal_error_traces.pop() for _ in range(len(gdal_error_traces))]
+        initial_gdal_traces = [
+            gdal_error_traces.pop() for _ in range(len(gdal_error_traces))
+        ]
         initial_gdal_errors = [
             format_result(
                 validation_code="GDAL_ERROR",
@@ -135,7 +137,9 @@ def validate(
             validation_results.append(output)
             validation_error = True
             success = False
-        current_gdal_error_traces = [gdal_error_traces.pop() for _ in range(len(gdal_error_traces))]
+        current_gdal_error_traces = [
+            gdal_error_traces.pop() for _ in range(len(gdal_error_traces))
+        ]
         if current_gdal_error_traces:
             success = False
             if validation_error:
