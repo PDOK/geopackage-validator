@@ -149,7 +149,7 @@ def validate(
         output = format_result(
             validation_code="RC5",
             validation_description=f"It is recommended that gdal Warnings that occur while validating the geopackage are looked into.",
-            level=validator.level,
+            level=ValidationLevel.RC,
             trace=gdal_warning_traces,
         )
         validation_results.append(output)
