@@ -56,16 +56,20 @@ def validate(
     """Starts the geopackage validations."""
     utils.check_gdal_version()
 
-    gdal_traces = []
+    gdal_error_traces = []
+    gdal_warning_traces = []
 
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
         trace = error.replace("\n", " ")
-        gdal_traces.append(trace)
+        if "Warning" in error and not "Error" in error:
+            gdal_warning_traces.append(trace)
+            return
+        gdal_error_traces.append(trace)
 
     dataset = utils.open_dataset(gpkg_path, gdal_error_handler)
-    if len(gdal_traces):
-        initial_gdal_traces = [gdal_traces.pop() for _ in range(len(gdal_traces))]
+    if len(gdal_error_traces):
+        initial_gdal_traces = [gdal_error_traces.pop() for _ in range(len(gdal_error_traces))]
         initial_gdal_errors = [
             format_result(
                 validation_code="GDAL_ERROR",
@@ -127,19 +131,28 @@ def validate(
             validation_results.append(output)
             validation_error = True
             success = False
-        current_gdal_traces = [gdal_traces.pop() for _ in range(len(gdal_traces))]
-        if current_gdal_traces:
+        current_gdal_error_traces = [gdal_error_traces.pop() for _ in range(len(gdal_error_traces))]
+        if current_gdal_error_traces:
             success = False
             if validation_error:
-                validation_results[-1]["locations"].extend(current_gdal_traces)
+                validation_results[-1]["locations"].extend(current_gdal_error_traces)
             else:
                 output = format_result(
                     validation_code=validator.validation_code,
                     validation_description=f"No unexpected errors must occur for: {validator.__doc__}",
                     level=validator.level,
-                    trace=current_gdal_traces,
+                    trace=current_gdal_error_traces,
                 )
                 validation_results.append(output)
+
+    if gdal_warning_traces:
+        output = format_result(
+            validation_code="RC5",
+            validation_description=f"It is recommended that gdal Warnings that occur while validating the geopackage are looked into.",
+            level=validator.level,
+            trace=gdal_warning_traces,
+        )
+        validation_results.append(output)
 
     return (
         initial_gdal_errors + validation_results,
