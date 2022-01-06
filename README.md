@@ -26,6 +26,7 @@ The current checks are (see also the 'show-validations' command):
 
 | Validation code | Description                                                                                                                                                                                         |
 |:---------------:|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   GDAL_ERROR    | No unexpected GDAL errors must occur.                                                                                                                                                               |
 |       RQ0       | _LEGACY:_ * Geopackage must conform to table names in the given JSON or YAML definitions.                                                                                                           |
 |       RQ1       | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.                                                                                               |
 |       RQ2       | Layers must have at least one feature.                                                                                                                                                              |
@@ -46,7 +47,7 @@ The current checks are (see also the 'show-validations' command):
 |       RC2       | It is recommended to give all GEOMETRY type columns the same name.                                                                                                                                  |
 |       RC3       | It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary.                                                                                     |
 |       RC4       | It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings.                                |
-|       RC5       | It is recommended that gdal Warnings that occur while validating the geopackage are looked into.                                                                                                    |
+|  GDAL_WARNINGS  | It is recommended that gdal warnings are looked into.                                                                                                                                               |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
 
