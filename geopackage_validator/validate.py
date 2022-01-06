@@ -80,7 +80,7 @@ def validate(
             format_result(
                 validation_code="GDAL_ERROR",
                 validation_description="No unexpected GDAL errors must occur.",
-                level=ValidationLevel.UNKNOWN,
+                level=ValidationLevel.UNKNOWN_ERROR,
                 trace=initial_gdal_traces,
             )
         ]
@@ -94,7 +94,7 @@ def validate(
                     format_result(
                         validation_code="GDAL_ERROR",
                         validation_description="Could not open gpkg.",
-                        level=ValidationLevel.UNKNOWN,
+                        level=ValidationLevel.UNKNOWN_ERROR,
                         trace=[],
                     )
                 ],
@@ -157,7 +157,7 @@ def validate(
         output = format_result(
             validation_code="GDAL_WARNINGS",
             validation_description="It is recommended that these gdal warnings are looked into.",
-            level=ValidationLevel.UNKNOWN,
+            level=ValidationLevel.UNKNOWN_WARNING,
             trace=gdal_warning_traces,
         )
         validation_results.append(output)
