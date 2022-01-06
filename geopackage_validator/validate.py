@@ -66,7 +66,7 @@ def validate(
         trace = error.replace("\n", " ")
         # import pdb
         # pdb.set_trace()
-        if err_class >= gdal.CE_Warning:
+        if err_class == gdal.CE_Warning:
             gdal_warning_traces.append(trace)
         else:
             gdal_error_traces.append(trace)
