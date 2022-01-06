@@ -3,6 +3,8 @@ import logging
 import sys
 import traceback
 
+from osgeo import gdal
+
 from geopackage_validator.generate import TableDefinition
 from geopackage_validator import validations as validation
 from geopackage_validator.validations.validator import (
@@ -62,10 +64,12 @@ def validate(
     # Register GDAL error handler function
     def gdal_error_handler(err_class, err_num, error):
         trace = error.replace("\n", " ")
-        if "Warning" in error and not "Error" in error:
+        # import pdb
+        # pdb.set_trace()
+        if err_class >= gdal.CE_Warning:
             gdal_warning_traces.append(trace)
-            return
-        gdal_error_traces.append(trace)
+        else:
+            gdal_error_traces.append(trace)
 
     dataset = utils.open_dataset(gpkg_path, gdal_error_handler)
     if len(gdal_error_traces):
@@ -147,9 +151,9 @@ def validate(
 
     if gdal_warning_traces:
         output = format_result(
-            validation_code="RC5",
-            validation_description=f"It is recommended that gdal Warnings that occur while validating the geopackage are looked into.",
-            level=ValidationLevel.RC,
+            validation_code="GDAL_WARNINGS",
+            validation_description="It is recommended that these gdal warnings are looked into.",
+            level=ValidationLevel.UNKNOWN,
             trace=gdal_warning_traces,
         )
         validation_results.append(output)
