@@ -22,7 +22,7 @@ ARG gid=1000
 RUN groupadd -g $gid pdok && useradd -lm -u $uid -g $gid pdok
 
 RUN pip3 install --upgrade --no-cache-dir setuptools pip
-RUN pip3 install --no-cache-dir pipenv
+RUN pip3 install --no-cache-dir virtualenv==v20.7.2 pipenv
 
 ADD local_entrypoint.sh /entry/local_entrypoint.sh
 ENV PATH /home/pdok/.local/bin:$PATH
