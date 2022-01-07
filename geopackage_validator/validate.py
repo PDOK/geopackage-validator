@@ -78,9 +78,9 @@ def validate(
         ]
         initial_gdal_errors = [
             format_result(
-                validation_code="GDAL_ERROR",
-                validation_description="No unexpected GDAL errors must occur.",
-                level=ValidationLevel.UNKNOWN_ERROR,
+                validation_code="UNKNOWN_ERROR",
+                validation_description="No unexpected (GDAL) errors must occur.",
+                level=ValidationLevel.ERROR,
                 trace=initial_gdal_traces,
             )
         ]
@@ -155,9 +155,9 @@ def validate(
 
     if gdal_warning_traces:
         output = format_result(
-            validation_code="GDAL_WARNINGS",
-            validation_description="It is recommended that these gdal warnings are looked into.",
-            level=ValidationLevel.UNKNOWN_WARNING,
+            validation_code="UNKNOWN_WARNINGS",
+            validation_description="It is recommended that these unexpected (GDAL) warnings are looked into.",
+            level=ValidationLevel.RECCOMENDATION,
             trace=gdal_warning_traces,
         )
         validation_results.append(output)

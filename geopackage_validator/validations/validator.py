@@ -4,8 +4,6 @@ from enum import IntEnum
 
 
 class ValidationLevel(IntEnum):
-    UNKNOWN_ERROR = 0
-    UNKNOWN_WARNING = 0
     RQ = 1
     ERROR = 1
     RC = 2
@@ -13,8 +11,6 @@ class ValidationLevel(IntEnum):
 
 
 VALIDATION_LEVELS = {
-    ValidationLevel.UNKNOWN_ERROR: "unknown_error",
-    ValidationLevel.UNKNOWN_WARNING: "unknown_warning",
     ValidationLevel.RQ: "error",
     ValidationLevel.RC: "recommendation",
 }
