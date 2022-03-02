@@ -15,10 +15,30 @@ try:
     assert ogr  # silence pyflakes
     assert osr  # silence pyflakes
     assert gdal  # silence pyflakes
-except:
+except (ImportError, AssertionError):
     sys.exit(
         "ERROR: cannot find GDAL/OGR modules, follow the instructions in the README to install these."
     )
+
+GDAL_ENV_MAPPING = {
+    "s3_no_sign_request": (
+        "AWS_NO_SIGN_REQUEST",
+        {True: "YES", False: "NO", "true": "YES", "false": "NO"},
+    ),
+    "s3_endpoint_no_protocol": ("AWS_S3_ENDPOINT", None),
+    "s3_access_key": ("AWS_ACCESS_KEY_ID", None),
+    "s3_secret_key": ("AWS_SECRET_ACCESS_KEY", None),
+    "s3_session_token": ("AWS_SESSION_TOKEN", None),
+    "s3_secure": (
+        "AWS_HTTPS",
+        {True: "YES", False: "NO", "true": "YES", "false": "NO"},
+    ),
+    "s3_virtual_hosting": (
+        "AWS_VIRTUAL_HOSTING",
+        {True: "TRUE", False: "FALSE", "true": "TRUE", "false": "FALSE"},
+    ),
+    "s3_signing_region": ("AWS_SIGNING_REGION", None),
+}
 
 
 def open_dataset(filename=None, error_handler=None):
@@ -74,3 +94,14 @@ def load_config(file_path):
         if path.suffix in (".yaml", ".yml"):
             return yaml.load(file_handler, Loader=yaml.SafeLoader)
         return json.load(file_handler)
+
+
+def set_gdal_env(**kwargs):
+    for k, v in kwargs.items():
+        gdal_env_map = GDAL_ENV_MAPPING.get(k)
+        if gdal_env_map is not None:
+            gdal_env_parameter, gdal_argument_mapping = gdal_env_map
+            if gdal_env_parameter is not None:
+                if gdal_argument_mapping:
+                    v = gdal_argument_mapping.get(v, v)
+                gdal.SetConfigOption(gdal_env_parameter, v)

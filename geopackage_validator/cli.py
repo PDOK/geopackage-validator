@@ -3,6 +3,7 @@
 # Setup logging before package imports.
 import logging
 from datetime import datetime
+from pathlib import Path
 import sys
 import time
 
@@ -13,10 +14,11 @@ logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
 
 
-from geopackage_validator.generate import generate_definitions_for_path
-from geopackage_validator.minio.minio_context import minio_resource
-from geopackage_validator.output import log_output, print_output
-from geopackage_validator.validate import validate, get_validation_descriptions
+from geopackage_validator import generate
+from geopackage_validator import minio
+from geopackage_validator import output
+from geopackage_validator import validate
+from geopackage_validator import utils
 
 
 @click.group()
@@ -36,12 +38,7 @@ def cli():
     default=None,
     help="Path pointing to the geopackage.gpkg file",
     type=click.types.Path(
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        readable=True,
-        writable=False,
-        allow_dash=False,
+        file_okay=True, dir_okay=False, readable=True, writable=False, allow_dash=False,
     ),
 )
 @click.option(
@@ -131,6 +128,24 @@ def cli():
     default="true",
     help="Use a secure TLS connection for S3.",
 )
+@click.option(
+    "--s3-virtual-hosting",
+    envvar="S3_VIRTUAL_HOSTING",
+    show_envvar=True,
+    help="TRUE value, identifies the bucket via a virtual bucket host name, e.g.: mybucket.cname.domain.com - FALSE value, identifies the bucket as the top-level directory in the URI, e.g.: cname.domain.com/mybucket. Convenience parameter, same as gdal AWS_VIRTUAL_HOSTING.",
+)
+@click.option(
+    "--s3-signing-region",
+    envvar="S3_SIGNING_REGION",
+    show_envvar=True,
+    help="S3 signing region. Convenience parameter, same as gdal AWS_DEFAULT_REGION.",
+)
+@click.option(
+    "--s3-no-sign-request",
+    envvar="S3_NO_SIGN_REQUEST",
+    show_envvar=True,
+    help="When set, request signing is disabled. This option might be used for buckets with public access rights. Convenience parameter, same as gdal AWS_NO_SIGN_REQUEST.",
+)
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command(
     gpkg_path,
@@ -145,22 +160,39 @@ def geopackage_validator_command(
     s3_bucket,
     s3_key,
     s3_secure,
+    s3_virtual_hosting,
+    s3_signing_region,
+    s3_no_sign_request,
 ):
     start_time = datetime.now()
     duration_start = time.monotonic()
-
-    if gpkg_path is None and s3_endpoint_no_protocol is None:
+    gpkg_path_not_exists = s3_endpoint_no_protocol is None and (
+        gpkg_path is None
+        or (not gpkg_path.startswith("/vsi") and not Path(gpkg_path).exists())
+    )
+    if gpkg_path_not_exists:
         logger.error("Give --gpkg-path or s3 location")
         sys.exit(1)
 
     if gpkg_path is not None:
+        utils.set_gdal_env(
+            s3_endpoint_no_protocol=s3_endpoint_no_protocol,
+            s3_access_key=s3_access_key,
+            s3_secret_key=s3_secret_key,
+            s3_bucket=s3_bucket,
+            s3_key=s3_key,
+            s3_secure=s3_secure,
+            s3_virtual_hosting=s3_virtual_hosting,
+            s3_signing_region=s3_signing_region,
+            s3_no_sign_request=s3_no_sign_request,
+        )
         filename = gpkg_path
-        results, validations_executed, success = validate(
+        results, validations_executed, success = validate.validate(
             gpkg_path, table_definitions_path, validations_path, validations,
         )
     else:
         try:
-            with minio_resource(
+            with minio.minio_resource(
                 s3_endpoint_no_protocol,
                 s3_access_key,
                 s3_secret_key,
@@ -169,7 +201,7 @@ def geopackage_validator_command(
                 s3_secure,
             ) as localfilename:
                 filename = s3_key
-                results, validations_executed, success = validate(
+                results, validations_executed, success = validate.validate(
                     localfilename,
                     table_definitions_path,
                     validations_path,
@@ -179,7 +211,7 @@ def geopackage_validator_command(
             logger.error(str(e))
             sys.exit(1)
     duration_seconds = time.monotonic() - duration_start
-    log_output(
+    output.log_output(
         filename=filename,
         results=results,
         validations_executed=validations_executed,
@@ -204,12 +236,7 @@ def geopackage_validator_command(
     show_envvar=True,
     help="Path pointing to the geopackage.gpkg file",
     type=click.types.Path(
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        readable=True,
-        writable=False,
-        allow_dash=False,
+        file_okay=True, dir_okay=False, readable=True, writable=False, allow_dash=False,
     ),
 )
 @click.option(
@@ -253,6 +280,24 @@ def geopackage_validator_command(
     default="true",
     help="Use a secure TLS connection for S3.",
 )
+@click.option(
+    "--s3-virtual-hosting",
+    envvar="S3_VIRTUAL_HOSTING",
+    show_envvar=True,
+    help="TRUE value, identifies the bucket via a virtual bucket host name, e.g.: mybucket.cname.domain.com - FALSE value, identifies the bucket as the top-level directory in the URI, e.g.: cname.domain.com/mybucket. Convenience parameter, same as gdal AWS_VIRTUAL_HOSTING.",
+)
+@click.option(
+    "--s3-signing-region",
+    envvar="S3_SIGNING_REGION",
+    show_envvar=True,
+    help="S3 signing region. Convenience parameter, same as gdal AWS_DEFAULT_REGION.",
+)
+@click.option(
+    "--s3-no-sign-request",
+    envvar="S3_NO_SIGN_REQUEST",
+    show_envvar=True,
+    help="When set, request signing is disabled. This option might be used for buckets with public access rights. Convenience parameter, same as gdal AWS_NO_SIGN_REQUEST.",
+)
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_generate_table_definitions(
     gpkg_path,
@@ -263,16 +308,33 @@ def geopackage_validator_command_generate_table_definitions(
     s3_bucket,
     s3_key,
     s3_secure,
+    s3_virtual_hosting,
+    s3_signing_region,
+    s3_no_sign_request,
 ):
-    if gpkg_path is None and s3_endpoint_no_protocol is None:
-        logger.error("Give --gpkg-path or s3 location")
+    gpkg_path_not_exists = s3_endpoint_no_protocol is None and (
+        gpkg_path is None
+        or (not gpkg_path.startswith("/vsi") and not Path(gpkg_path).exists())
+    )
+    if gpkg_path_not_exists:
+        logger.error("Give a valid --gpkg-path or (/vsi)s3 location")
         sys.exit(1)
-
     try:
         if gpkg_path is not None:
-            definitionlist = generate_definitions_for_path(gpkg_path)
+            utils.set_gdal_env(
+                s3_endpoint_no_protocol=s3_endpoint_no_protocol,
+                s3_access_key=s3_access_key,
+                s3_secret_key=s3_secret_key,
+                s3_bucket=s3_bucket,
+                s3_key=s3_key,
+                s3_secure=s3_secure,
+                s3_virtual_hosting=s3_virtual_hosting,
+                s3_signing_region=s3_signing_region,
+                s3_no_sign_request=s3_no_sign_request,
+            )
+            definitionlist = generate.generate_definitions_for_path(gpkg_path)
         else:
-            with minio_resource(
+            with minio.minio_resource(
                 s3_endpoint_no_protocol,
                 s3_access_key,
                 s3_secret_key,
@@ -280,8 +342,8 @@ def geopackage_validator_command_generate_table_definitions(
                 s3_key,
                 s3_secure,
             ) as localfilename:
-                definitionlist = generate_definitions_for_path(localfilename)
-        print_output(definitionlist, yaml)
+                definitionlist = generate.generate_definitions_for_path(localfilename)
+        output.print_output(definitionlist, yaml)
     except Exception:
         logger.exception("Error while generating table definitions")
         sys.exit(1)
@@ -297,8 +359,8 @@ def geopackage_validator_command_generate_table_definitions(
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_show_validations(yaml):
     try:
-        validation_codes = get_validation_descriptions()
-        print_output(validation_codes, yaml, yaml_indent=5)
+        validation_codes = validate.get_validation_descriptions()
+        output.print_output(validation_codes, yaml, yaml_indent=5)
     except Exception:
         logger.exception("Error while listing validations")
         sys.exit(1)
