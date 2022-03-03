@@ -28,7 +28,13 @@ def cli():
 
 @cli.command(
     name="validate",
-    help="Geopackage validator validating a local file or from s3 storage",
+    help=(
+        "Geopackage validator validating a local file or a file from S3 storage. When the filepath is preceded with "
+        "'/vsi' the geopackage gdal virtual file system method will be used to access the file on S3 and will not be "
+        "directly downloaded. See https://gdal.org/user/virtual_file_systems.html for further explanation how to use "
+        "gdal virtual file systems. For convenience the gdal vsi environment parameters and optional parameters are "
+        "provided with an S3_ instead of an AWS_ prefix. The AWS_ environment parameters will also work."
+    ),
 )
 @click.option(
     "--gpkg-path",
@@ -47,7 +53,10 @@ def cli():
     show_envvar=True,
     required=False,
     default=None,
-    help="Path pointing to the table-definitions  JSON or YAML file (generate this file by calling the generate-definitions command)",
+    help=(
+        "Path pointing to the table-definitions  JSON or YAML file (generate this file by calling the "
+        "generate-definitions command)"
+    ),
     type=click.types.Path(
         exists=True,
         file_okay=True,
@@ -63,7 +72,10 @@ def cli():
     required=False,
     default=None,
     envvar="VALIDATIONS_FILE",
-    help="Path pointing to the set of validations to run. If validations-path and validations are not given, validate runs all validations",
+    help=(
+        "Path pointing to the set of validations to run. If validations-path and validations are not given, validate "
+        "runs all validations"
+    ),
     type=click.types.Path(
         exists=True,
         file_okay=True,
@@ -79,7 +91,10 @@ def cli():
     required=False,
     default="",
     envvar="VALIDATIONS",
-    help="Comma-separated list of validations to run (e.g. --validations RQ1,RQ2,RQ3). If validations-path and validations are not given, validate runs all validations",
+    help=(
+        "Comma-separated list of validations to run (e.g. --validations RQ1,RQ2,RQ3). If validations-path and "
+        "validations are not given, validate runs all validations"
+    ),
 )
 @click.option(
     "--exit-on-fail",
@@ -132,7 +147,11 @@ def cli():
     "--s3-virtual-hosting",
     envvar="S3_VIRTUAL_HOSTING",
     show_envvar=True,
-    help="TRUE value, identifies the bucket via a virtual bucket host name, e.g.: mybucket.cname.domain.com - FALSE value, identifies the bucket as the top-level directory in the URI, e.g.: cname.domain.com/mybucket. Convenience parameter, same as gdal AWS_VIRTUAL_HOSTING.",
+    help=(
+        "TRUE value, identifies the bucket via a virtual bucket host name, e.g.: mybucket.cname.domain.com - FALSE "
+        "value, identifies the bucket as the top-level directory in the URI, e.g.: cname.domain.com/mybucket. "
+        "Convenience parameter, same as gdal AWS_VIRTUAL_HOSTING."
+    ),
 )
 @click.option(
     "--s3-signing-region",
@@ -144,7 +163,10 @@ def cli():
     "--s3-no-sign-request",
     envvar="S3_NO_SIGN_REQUEST",
     show_envvar=True,
-    help="When set, request signing is disabled. This option might be used for buckets with public access rights. Convenience parameter, same as gdal AWS_NO_SIGN_REQUEST.",
+    help=(
+        "When set, request signing is disabled. This option might be used for buckets with public access rights. "
+        "Convenience parameter, same as gdal AWS_NO_SIGN_REQUEST."
+    ),
 )
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command(
@@ -226,7 +248,14 @@ def geopackage_validator_command(
 
 @cli.command(
     name="generate-definitions",
-    help="Generate Geopackage table definition  JSON or YAML from given local or s3 package. Use the generated definition  JSON or YAML in the validation step by providing the table definitions with the --table-definitions-path parameter.",
+    help=(
+        "Generate table definition for a geopackage on local or S3 storage. Use the generated definition JSON or YAML "
+        "in the validation step by providing the table definitions with the --table-definitions-path parameter. When "
+        "the filepath is preceded with '/vsi' the gdal virtual file system method will be used to access the file on "
+        "S3 and will not be directly downloaded. See https://gdal.org/user/virtual_file_systems.html for further "
+        "explanation. For convenience the gdal vsi environment parameters and optional parameters are provided with "
+        "an S3_ instead of an AWS_ prefix. The AWS_ environment parameters will also work."
+    ),
 )
 @click.option(
     "--gpkg-path",
@@ -284,7 +313,11 @@ def geopackage_validator_command(
     "--s3-virtual-hosting",
     envvar="S3_VIRTUAL_HOSTING",
     show_envvar=True,
-    help="TRUE value, identifies the bucket via a virtual bucket host name, e.g.: mybucket.cname.domain.com - FALSE value, identifies the bucket as the top-level directory in the URI, e.g.: cname.domain.com/mybucket. Convenience parameter, same as gdal AWS_VIRTUAL_HOSTING.",
+    help=(
+        "TRUE value, identifies the bucket via a virtual bucket host name, e.g.: mybucket.cname.domain.com - FALSE "
+        "value, identifies the bucket as the top-level directory in the URI, e.g.: cname.domain.com/mybucket. "
+        "Convenience parameter, same as gdal AWS_VIRTUAL_HOSTING."
+    ),
 )
 @click.option(
     "--s3-signing-region",
@@ -296,7 +329,10 @@ def geopackage_validator_command(
     "--s3-no-sign-request",
     envvar="S3_NO_SIGN_REQUEST",
     show_envvar=True,
-    help="When set, request signing is disabled. This option might be used for buckets with public access rights. Convenience parameter, same as gdal AWS_NO_SIGN_REQUEST.",
+    help=(
+        "When set, request signing is disabled. This option might be used for buckets with public access rights. "
+        "Convenience parameter, same as gdal AWS_NO_SIGN_REQUEST."
+    ),
 )
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_generate_table_definitions(
