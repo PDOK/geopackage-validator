@@ -1,4 +1,5 @@
 import sys
+import os
 import warnings
 from contextlib import contextmanager
 from functools import lru_cache
@@ -103,4 +104,5 @@ def set_gdal_env(**kwargs):
             gdal_env_parameter, gdal_argument_mapping = gdal_env_map
             if gdal_env_parameter and gdal_argument_mapping:
                 v = gdal_argument_mapping.get(v, v)
-            gdal.SetConfigOption(gdal_env_parameter, v)
+            if gdal_env_parameter not in os.environ:
+                gdal.SetConfigOption(gdal_env_parameter, v)

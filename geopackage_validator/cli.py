@@ -30,10 +30,17 @@ def cli():
     name="validate",
     help=(
         "Geopackage validator validating a local file or a file from S3 storage. When the filepath is preceded with "
-        "'/vsi' the geopackage gdal virtual file system method will be used to access the file on S3 and will not be "
+        "'/vsis3' or '/vsicurl' the gdal virtual file system will be used to access the file on S3 and will not be "
         "directly downloaded. See https://gdal.org/user/virtual_file_systems.html for further explanation how to use "
         "gdal virtual file systems. For convenience the gdal vsi environment parameters and optional parameters are "
-        "provided with an S3_ instead of an AWS_ prefix. The AWS_ environment parameters will also work."
+        "provided with an S3_ instead of an AWS_ prefix. The AWS_ environment parameters will also work.\n\n"
+        "Examples:\n\n"
+        "viscurl:\n\n"
+        "geopackage-validator validiate --gpkg-path /vsicurl/http://minio-url.nl/bucketname/key/to/public.gpkg\n\n"
+        "vsis3:\n\n"
+        "geopackage-validator validiate --gpkg-path /vsis3/bucketname/key/to/public.gpkg --s3-signing-region eu-central-1 --s3-secret-key secret --s3-access-key acces-key --s3-secure=false --s3-virtual-hosting false --s3-endpoint-no-protocol minio-url.nl\n\n"
+        "S3_SECRET_KEY=secret S3_ACCESS_KEY=acces-key S3_SIGNING_REGION=eu-central-1 S3_SECURE=false S3_VIRTUAL_HOSTING=false S3_ENDPOINT_NO_PROTOCOL=minio-url.nl geopackage-validator validate --gpkg-path /vsis3/bucketname/key/to/public.gpkg\n\n"
+        "AWS_SECRET_ACCESS_KEY=secret AWS_ACCESS_KEY_ID=acces-key AWS_DEFAULT_REGION=eu-central-1 AWS_HTTPS=NO AWS_VIRTUAL_HOSTING=FALSE AWS_S3_ENDPOINT=minio-url.nl geopackage-validator validate --gpkg-path /vsis3/bucketname/key/to/public.gpkg"
     ),
 )
 @click.option(
@@ -254,7 +261,14 @@ def geopackage_validator_command(
         "the filepath is preceded with '/vsi' the gdal virtual file system method will be used to access the file on "
         "S3 and will not be directly downloaded. See https://gdal.org/user/virtual_file_systems.html for further "
         "explanation. For convenience the gdal vsi environment parameters and optional parameters are provided with "
-        "an S3_ instead of an AWS_ prefix. The AWS_ environment parameters will also work."
+        "an S3_ instead of an AWS_ prefix. The AWS_ environment parameters will also work.\n\n"
+        "Examples:\n\n"
+        "viscurl:\n\n"
+        "geopackage-validator validiate --gpkg-path /vsicurl/http://minio-url.nl/bucketname/key/to/public.gpkg\n\n"
+        "vsis3:\n\n"
+        "geopackage-validator validiate --gpkg-path /vsis3/bucketname/key/to/public.gpkg --s3-signing-region eu-central-1 --s3-secret-key secret --s3-access-key acces-key --s3-secure=false --s3-virtual-hosting false --s3-endpoint-no-protocol minio-url.nl\n\n"
+        "S3_SECRET_KEY=secret S3_ACCESS_KEY=acces-key S3_SIGNING_REGION=eu-central-1 S3_SECURE=false S3_VIRTUAL_HOSTING=false S3_ENDPOINT_NO_PROTOCOL=minio-url.nl geopackage-validator validate --gpkg-path /vsis3/bucketname/key/to/public.gpkg\n\n"
+        "AWS_SECRET_ACCESS_KEY=secret AWS_ACCESS_KEY_ID=acces-key AWS_DEFAULT_REGION=eu-central-1 AWS_HTTPS=NO AWS_VIRTUAL_HOSTING=FALSE AWS_S3_ENDPOINT=minio-url.nl geopackage-validator validate --gpkg-path /vsis3/bucketname/key/to/public.gpkg"
     ),
 )
 @click.option(
