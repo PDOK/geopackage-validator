@@ -20,7 +20,7 @@ def test_generate_definitions_no_gpkg():
     runner = CliRunner()
     result = runner.invoke(cli, ["generate-definitions"])
     assert result.exit_code == 1
-    assert "Give --gpkg-path or s3 location" in result.output
+    assert "Give a valid --gpkg-path or (/vsi)s3 location" in result.output
 
 
 def test_generate_definitions_error_s3():

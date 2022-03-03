@@ -93,16 +93,47 @@ docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator geopackage-validator g
 ```bash
 Usage: geopackage-validator validate [OPTIONS]
 
-  Geopackage validator validating a local file or from s3 storage
+  Geopackage validator validating a local file or a file from S3 storage.
+  When the filepath is preceded with '/vsis3' or '/vsicurl' the gdal virtual
+  file system will be used to access the file on S3 and will not be directly
+  downloaded. See https://gdal.org/user/virtual_file_systems.html for
+  further explanation how to use gdal virtual file systems. For convenience
+  the gdal vsi environment parameters and optional parameters are provided
+  with an S3_ instead of an AWS_ prefix. The AWS_ environment parameters
+  will also work.
+
+  Examples:
+
+  viscurl:
+
+  geopackage-validator validate --gpkg-path /vsicurl/http://minio-
+  url.nl/bucketname/key/to/public.gpkg
+
+  vsis3:
+
+  geopackage-validator validate --gpkg-path
+  /vsis3/bucketname/key/to/public.gpkg --s3-signing-region eu-central-1
+  --s3-secret-key secret --s3-access-key acces-key --s3-secure=false
+  --s3-virtual-hosting false --s3-endpoint-no-protocol minio-url.nl
+
+  S3_SECRET_KEY=secret S3_ACCESS_KEY=acces-key S3_SIGNING_REGION=eu-
+  central-1 S3_SECURE=false S3_VIRTUAL_HOSTING=false
+  S3_ENDPOINT_NO_PROTOCOL=minio-url.nl geopackage-validator validate --gpkg-
+  path /vsis3/bucketname/key/to/public.gpkg
+
+  AWS_SECRET_ACCESS_KEY=secret AWS_ACCESS_KEY_ID=acces-key
+  AWS_DEFAULT_REGION=eu-central-1 AWS_HTTPS=NO AWS_VIRTUAL_HOSTING=FALSE
+  AWS_S3_ENDPOINT=minio-url.nl geopackage-validator validate --gpkg-path
+  /vsis3/bucketname/key/to/public.gpkg
 
 Options:
   --gpkg-path FILE                Path pointing to the geopackage.gpkg file
                                   [env var: GPKG_PATH]
 
   -t, --table-definitions-path FILE
-                                  Path pointing to the table-definitions JSON or YAML
-                                  file (generate this file by calling the
-                                  generate-definitions command)
+                                  Path pointing to the table-definitions  JSON
+                                  or YAML file (generate this file by calling
+                                  the generate-definitions command)
 
   --validations-path FILE         Path pointing to the set of validations to
                                   run. If validations-path and validations are
@@ -118,6 +149,7 @@ Options:
   --exit-on-fail                  Exit with code 1 when validation success is
                                   false.
 
+  --yaml                          Output yaml.
   --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
                                   [env var: S3_ENDPOINT_NO_PROTOCOL]
 
@@ -135,6 +167,25 @@ Options:
 
   --s3-secure BOOLEAN             Use a secure TLS connection for S3.  [env
                                   var: S3_SECURE]
+
+  --s3-virtual-hosting TEXT       TRUE value, identifies the bucket via a
+                                  virtual bucket host name, e.g.:
+                                  mybucket.cname.domain.com - FALSE value,
+                                  identifies the bucket as the top-level
+                                  directory in the URI, e.g.:
+                                  cname.domain.com/mybucket. Convenience
+                                  parameter, same as gdal AWS_VIRTUAL_HOSTING.
+                                  [env var: S3_VIRTUAL_HOSTING]
+
+  --s3-signing-region TEXT        S3 signing region. Convenience parameter,
+                                  same as gdal AWS_DEFAULT_REGION.  [env var:
+                                  S3_SIGNING_REGION]
+
+  --s3-no-sign-request TEXT       When set, request signing is disabled. This
+                                  option might be used for buckets with public
+                                  access rights. Convenience parameter, same
+                                  as gdal AWS_NO_SIGN_REQUEST.  [env var:
+                                  S3_NO_SIGN_REQUEST]
 
   -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
                                   DEBUG
@@ -179,19 +230,48 @@ Options:
 
 ### Generate table definitions
 
-Generate Geopackage table definition JSON or YAML from given local or s3 package. This command generates a definition that describes the Geopackage layout, in JSON or YAML format. This output, when saved in a file, can be used in the validation step to validate a Geopackage against these table definitions.
-
 ```bash
 Usage: geopackage-validator generate-definitions [OPTIONS]
 
-  Generate Geopackage table definition file from given local or s3 package.
-  Use the generated definition in the validation step by providing the
-  table definitions with the --table-definitions-path parameter.
+  Generate table definition for a geopackage on local or S3 storage. Use the
+  generated definition JSON or YAML in the validation step by providing the
+  table definitions with the --table-definitions-path parameter. When the
+  filepath is preceded with '/vsi' the gdal virtual file system method will
+  be used to access the file on S3 and will not be directly downloaded. See
+  https://gdal.org/user/virtual_file_systems.html for further explanation.
+  For convenience the gdal vsi environment parameters and optional
+  parameters are provided with an S3_ instead of an AWS_ prefix. The AWS_
+  environment parameters will also work.
+
+  Examples:
+
+  viscurl:
+
+  geopackage-validator validate --gpkg-path /vsicurl/http://minio-
+  url.nl/bucketname/key/to/public.gpkg
+
+  vsis3:
+
+  geopackage-validator generate-definitions --gpkg-path
+  /vsis3/bucketname/key/to/public.gpkg --s3-signing-region eu-central-1
+  --s3-secret-key secret --s3-access-key acces-key --s3-secure=false
+  --s3-virtual-hosting false --s3-endpoint-no-protocol minio-url.nl
+
+  S3_SECRET_KEY=secret S3_ACCESS_KEY=acces-key S3_SIGNING_REGION=eu-
+  central-1 S3_SECURE=false S3_VIRTUAL_HOSTING=false
+  S3_ENDPOINT_NO_PROTOCOL=minio-url.nl geopackage-validator generate-definitions --gpkg-
+  path /vsis3/bucketname/key/to/public.gpkg
+
+  AWS_SECRET_ACCESS_KEY=secret AWS_ACCESS_KEY_ID=acces-key
+  AWS_DEFAULT_REGION=eu-central-1 AWS_HTTPS=NO AWS_VIRTUAL_HOSTING=FALSE
+  AWS_S3_ENDPOINT=minio-url.nl geopackage-validator generate-definitions --gpkg-path
+  /vsis3/bucketname/key/to/public.gpkg
 
 Options:
   --gpkg-path FILE                Path pointing to the geopackage.gpkg file
                                   [env var: GPKG_PATH]
 
+  --yaml                          Output yaml
   --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
                                   [env var: S3_ENDPOINT_NO_PROTOCOL]
 
@@ -209,6 +289,25 @@ Options:
 
   --s3-secure BOOLEAN             Use a secure TLS connection for S3.  [env
                                   var: S3_SECURE]
+
+  --s3-virtual-hosting TEXT       TRUE value, identifies the bucket via a
+                                  virtual bucket host name, e.g.:
+                                  mybucket.cname.domain.com - FALSE value,
+                                  identifies the bucket as the top-level
+                                  directory in the URI, e.g.:
+                                  cname.domain.com/mybucket. Convenience
+                                  parameter, same as gdal AWS_VIRTUAL_HOSTING.
+                                  [env var: S3_VIRTUAL_HOSTING]
+
+  --s3-signing-region TEXT        S3 signing region. Convenience parameter,
+                                  same as gdal AWS_DEFAULT_REGION.  [env var:
+                                  S3_SIGNING_REGION]
+
+  --s3-no-sign-request TEXT       When set, request signing is disabled. This
+                                  option might be used for buckets with public
+                                  access rights. Convenience parameter, same
+                                  as gdal AWS_NO_SIGN_REQUEST.  [env var:
+                                  S3_NO_SIGN_REQUEST]
 
   -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
                                   DEBUG
