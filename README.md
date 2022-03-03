@@ -106,12 +106,12 @@ Usage: geopackage-validator validate [OPTIONS]
 
   viscurl:
 
-  geopackage-validator validiate --gpkg-path /vsicurl/http://minio-
+  geopackage-validator validate --gpkg-path /vsicurl/http://minio-
   url.nl/bucketname/key/to/public.gpkg
 
   vsis3:
 
-  geopackage-validator validiate --gpkg-path
+  geopackage-validator validate --gpkg-path
   /vsis3/bucketname/key/to/public.gpkg --s3-signing-region eu-central-1
   --s3-secret-key secret --s3-access-key acces-key --s3-secure=false
   --s3-virtual-hosting false --s3-endpoint-no-protocol minio-url.nl
@@ -247,24 +247,24 @@ Usage: geopackage-validator generate-definitions [OPTIONS]
 
   viscurl:
 
-  geopackage-validator validiate --gpkg-path /vsicurl/http://minio-
+  geopackage-validator validate --gpkg-path /vsicurl/http://minio-
   url.nl/bucketname/key/to/public.gpkg
 
   vsis3:
 
-  geopackage-validator validiate --gpkg-path
+  geopackage-validator generate-definitions --gpkg-path
   /vsis3/bucketname/key/to/public.gpkg --s3-signing-region eu-central-1
   --s3-secret-key secret --s3-access-key acces-key --s3-secure=false
   --s3-virtual-hosting false --s3-endpoint-no-protocol minio-url.nl
 
   S3_SECRET_KEY=secret S3_ACCESS_KEY=acces-key S3_SIGNING_REGION=eu-
   central-1 S3_SECURE=false S3_VIRTUAL_HOSTING=false
-  S3_ENDPOINT_NO_PROTOCOL=minio-url.nl geopackage-validator validate --gpkg-
+  S3_ENDPOINT_NO_PROTOCOL=minio-url.nl geopackage-validator generate-definitions --gpkg-
   path /vsis3/bucketname/key/to/public.gpkg
 
   AWS_SECRET_ACCESS_KEY=secret AWS_ACCESS_KEY_ID=acces-key
   AWS_DEFAULT_REGION=eu-central-1 AWS_HTTPS=NO AWS_VIRTUAL_HOSTING=FALSE
-  AWS_S3_ENDPOINT=minio-url.nl geopackage-validator validate --gpkg-path
+  AWS_S3_ENDPOINT=minio-url.nl geopackage-validator generate-definitions --gpkg-path
   /vsis3/bucketname/key/to/public.gpkg
 
 Options:
