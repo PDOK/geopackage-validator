@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-"black" = "*"
+"black" = "==19.*"
 "flake8" = "*"
 "ipdb" = "*"
 "ipython" = "*"
@@ -20,15 +20,15 @@ name = "pypi"
 # have to modify PYTHONPATH at several points in the project)
 # We install python-gdal via gdal-bin
 "pdok-geopackage-validator" = {path = ".", editable = true}
-"Click" = "==8.*"
-"click-log" = "==0.4.*"
+"Click" = "==7.*"
+"click-log" = "==0.3.*"
 "gdal" = "==3.2.1"
 "minio" = "*"
 "deepdiff" = "*"
 "pyyaml" = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3"
 
 [pipenv]
 # This is necessary to be able to install black and pipenv-black.
