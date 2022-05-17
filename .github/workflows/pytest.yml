@@ -22,10 +22,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # pin virtualenv pipenv b/c of problem with use_2to3 in setuptools 58.*
         pip install --no-cache-dir setuptools pip pipenv
-        PIPENV_VENV_IN_PROJECT=1 pipenv --python 3.8
-        pipenv sync
+        PIPENV_VENV_IN_PROJECT=1 pipenv --three
+        pipenv sync --dev
 # TODO   - name: Test with pipenv check
 #      run: |
 #        pipenv check
