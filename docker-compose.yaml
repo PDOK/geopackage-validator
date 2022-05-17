@@ -10,8 +10,8 @@ services:
       - PYTHONUNBUFFERED=1
       - PIPENV_VENV_IN_PROJECT=1
       - SHELL=/bin/bash
-    command: pipenv install --dev --site-packages
+#    command: pipenv install --dev --site-packages
     volumes:
     - .:/code
-#    - /home:/home   # uncomment this line for easier reach of other geopackages.
+    - /home:/home   # uncomment this line for easier reach of other geopackages.
     working_dir: /code

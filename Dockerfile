@@ -19,21 +19,19 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-reco
         apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # pin virtualenv pipenv b/c of problem with use_2to3 in setuptools 58.*
-RUN pip3 install --no-cache-dir virtualenv==v20.7.2 pipenv
+RUN pip install --no-cache-dir setuptools pip pipenv --upgrade
 
 # Copy source
 WORKDIR /code
 COPY . /code
 
-# Install packages, including the dev (test) packages.
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv --three --site-packages
-RUN pipenv sync --dev
+# Install packages, and check for deprecations and vulnerabilities
+RUN PIPENV_VENV_IN_PROJECT=1 pipenv --python 3.8 --site-packages
+RUN pipenv sync && pipenv check
 
 # Run pytest tests.
-# pipenv check fails due to a github connection error. Pipenv check scans for python
-# vulnerabilities amongst other things. We might want to debug and fix this:
-# RUN PIPENV_PYUP_API_KEY="" pipenv check &&
-RUN pipenv run pytest
+# Install packages, including the dev (test) packages.
+RUN pipenv sync --dev && pipenv run pytest
 
 # Cleanup test packages. We want to use pipenv uninstall --all-dev but that command is
 # broken. See: https://github.com/pypa/pipenv/issues/3722
