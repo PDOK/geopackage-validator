@@ -1,6 +1,5 @@
 from typing import Iterable, Tuple, List
 
-from geopackage_validator.constants import SNAKE_CASE_REGEX
 from geopackage_validator.validations import validator
 from geopackage_validator import utils
 
