@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-"black" = "==19.*"
+"black" = "*"
 "flake8" = "*"
 "ipdb" = "*"
 "ipython" = "*"
@@ -20,8 +20,8 @@ name = "pypi"
 # have to modify PYTHONPATH at several points in the project)
 # We install python-gdal via gdal-bin
 "pdok-geopackage-validator" = {path = ".", editable = true}
-"Click" = "==7.*"
-"click-log" = "==0.3.*"
+"Click" = "==8.*"
+"click-log" = "==0.4.*"
 "gdal" = "==3.2.1"
 "minio" = "*"
 "deepdiff" = "*"
