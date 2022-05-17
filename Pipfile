@@ -28,7 +28,7 @@ name = "pypi"
 "pyyaml" = "*"
 
 [requires]
-python_version = "3"
+python_version = "3.8"
 
 [pipenv]
 # This is necessary to be able to install black and pipenv-black.
