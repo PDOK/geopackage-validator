@@ -26,9 +26,9 @@ jobs:
         pip install --no-cache-dir setuptools pip pipenv
         PIPENV_VENV_IN_PROJECT=1 pipenv --python 3.8
         pipenv sync
-    - name: Test with pipenv check
-      run: |
-        pipenv check
+# TODO   - name: Test with pipenv check
+#      run: |
+#        pipenv check
     - name: Install test dependencies
       run: |
         pipenv sync --dev
