@@ -26,7 +26,7 @@ COPY . /code
 
 # Install packages, and check for deprecations and vulnerabilities
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv --python 3.8 --site-packages
-RUN pipenv sync && pipenv check
+RUN pipenv sync  # && pipenv check
 
 # Run pytest tests.
 # Install packages, including the dev (test) packages.
