@@ -18,7 +18,6 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-reco
         python3-pip && \
         apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# pin virtualenv pipenv b/c of problem with use_2to3 in setuptools 58.*
 RUN pip install --no-cache-dir setuptools pip pipenv --upgrade
 
 # Copy source
