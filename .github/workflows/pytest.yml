@@ -21,8 +21,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # pin virtualenv pipenv b/c of problem with use_2to3 in setuptools 58.*
-        # pip install --upgrade --no-cache-dir setuptools pip
+        # we need to pin GDAL here to match the python3-gdal
+        pip install GDAL==3.4.0
         pip3 install --no-cache-dir .[test]
     - name: Test with pytest
       run: |
