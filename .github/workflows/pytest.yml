@@ -23,12 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         # pin virtualenv pipenv b/c of problem with use_2to3 in setuptools 58.*
         # pip install --upgrade --no-cache-dir setuptools pip
-        pip install --no-cache-dir virtualenv==v20.7.2 pipenv
-        PIPENV_VENV_IN_PROJECT=1 pipenv --three
-        pipenv sync --dev
+        pip3 install --no-cache-dir .[test]
     - name: Test with pytest
       run: |
-        pipenv run pytest -vv
-    - name: Run black
-      run: |
-        pipenv run black .
+        pytest -vv

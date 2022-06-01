@@ -12,5 +12,5 @@ services:
       - SHELL=/bin/bash
     volumes:
     - .:/code
-#    - /home/TODO:/home/TODO   # uncomment and update this with your own homedir for easier reach of other geopackages.
+#    - /home/YOUR_HOME_DIR:/home/YOUR_HOME_DIR   # uncomment and update this with your own homedir for easier reach of other geopackages.
     working_dir: /code

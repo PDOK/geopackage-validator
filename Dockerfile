@@ -4,51 +4,27 @@ FROM osgeo/gdal:alpine-normal-${GDAL_VERSION} AS base
 
 LABEL maintainer="Roel van den Berg <roel.vandenberg@kadaster.nl>"
 
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-ENV C_INCLUDE_PATH=/usr/include/gdal
-ENV PYTHON_VERSION=3.9
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv --system-site-packages /opt/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+RUN pip3 install --no-cache-dir setuptools pip --upgrade
 
-# --- COMPILE-IMAGE ---
-FROM base AS compile-image
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install dev dependencies
-RUN python3 -m ensurepip
-
-RUN pip3 install --no-cache-dir setuptools pip pipenv --upgrade
-
-# Copy source
 WORKDIR /code
-COPY . /code
 
-# Install packages, and check for deprecations and vulnerabilities
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv --python ${PYTHON_VERSION} --site-packages
-# Ignore numpy vulnerabilities for now that comes from osgeo/gdal:alpine-normal-3.5.0
-RUN pipenv sync & pipenv check -i 44716 -i 44717 -i 44715
+COPY ./geopackage_validator /code/geopackage_validator
+COPY ./pyproject.toml /code/pyproject.toml
+COPY ./setup.cfg /code/setup.cfg
+COPY ./setup.py /code/setup.py
 
-# Run pytest tests.
-# Install packages, including the dev (test) packages.
-RUN pipenv sync --dev && pipenv run pytest
+# --- TEST-IMAGE ---
+FROM base AS test-image
+COPY ./tests /code/tests
 
-# Cleanup test packages. We want to use pipenv uninstall --all-dev but that command is
-# broken. See: https://github.com/pypa/pipenv/issues/3722
-RUN pipenv --rm && \
-    PIPENV_VENV_IN_PROJECT=1 pipenv --python ${PYTHON_VERSION} --site-packages && \
-    pipenv sync
+RUN pip3 install --no-cache-dir .[test] && pytest
 
 # --- BUILD IMAGE ---
 FROM base AS build-image
 
-WORKDIR /code
-
-COPY --from=compile-image "/code/pdok_geopackage_validator.egg-info/" "/code/pdok_geopackage_validator.egg-info/"
-COPY --from=compile-image "/code/geopackage_validator" "/code/geopackage_validator"
-COPY --from=compile-image /code/.venv /code/.venv
-COPY --from=compile-image "/usr/local/lib/python${PYTHON_VERSION}/dist-packages" "/usr/local/lib/python${PYTHON_VERSION}/dist-packages"
-
-# Make sure we use the virtualenv:
-ENV PATH="/code/.venv/bin:$PATH"
+RUN pip3 install --no-cache-dir .
 
 ENTRYPOINT [ "geopackage-validator" ]

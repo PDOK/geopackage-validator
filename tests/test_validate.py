@@ -70,7 +70,8 @@ def test_determine_validations_to_use_file_and_param():
 
 def test_validate_all_no_validations():
     results, validations_executed, success = validate(
-        gpkg_path="tests/data/test_allcorrect.gpkg", validations="ALL",
+        gpkg_path="tests/data/test_allcorrect.gpkg",
+        validations="ALL",
     )
     assert success
     assert len(results) == 0
@@ -78,7 +79,8 @@ def test_validate_all_no_validations():
 
 def test_validate_single_validation():
     results, validations_executed, success = validate(
-        gpkg_path="tests/data/test_layername.gpkg", validations="RQ1",
+        gpkg_path="tests/data/test_layername.gpkg",
+        validations="RQ1",
     )
     assert not success
     assert len(results) == 1
