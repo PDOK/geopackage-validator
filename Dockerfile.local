@@ -1,4 +1,4 @@
-FROM pdok/gdal:unstable-0.8.3.1 AS base
+FROM osgeo/gdal:alpine-normal-3.5.0 AS base
 
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
@@ -6,12 +6,8 @@ ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 ENV DEBIAN_FRONTEND=noninteractive
 
-
-# Install dev dependencies
-RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
-        python3-pip && \
-        apt-get clean && rm -rf /var/lib/apt/lists/*
-
+# fixes pipenv problems: https://github.com/pypa/pipenv/issues/5075
+ENV PYTHONUNBUFFERED=1
 
 # Create a pdok user and group, with IDs matching those of the developer.
 # The default values can be overridden at build-time via:
@@ -19,16 +15,15 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-reco
 # docker-compose build --build-arg uid=`id -u` --build-arg gid=`id -g` validator
 ARG uid=1000
 ARG gid=1000
-RUN groupadd -g $gid pdok && useradd -lm -u $uid -g $gid pdok
+RUN addgroup -S -g $gid pdok && adduser -S -u $uid pdok pdok
+USER pdok
 
-RUN pip3 install --upgrade --no-cache-dir setuptools pip
-RUN pip3 install --no-cache-dir virtualenv==v20.7.2 pipenv
-
-ADD local_entrypoint.sh /entry/local_entrypoint.sh
 ENV PATH /home/pdok/.local/bin:$PATH
 
-VOLUME /code
-WORKDIR /code
-USER pdok
+RUN python3 -m ensurepip
+
+RUN pip3 install --no-cache-dir setuptools pip pipenv --upgrade
+
+ADD local_entrypoint.sh /entry/local_entrypoint.sh
 
 ENTRYPOINT [ "/entry/local_entrypoint.sh" ]
