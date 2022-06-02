@@ -51,7 +51,11 @@ def cli():
     default=None,
     help="Path pointing to the geopackage.gpkg file",
     type=click.types.Path(
-        file_okay=True, dir_okay=False, readable=True, writable=False, allow_dash=False,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
     ),
 )
 @click.option(
@@ -110,7 +114,10 @@ def cli():
     help="Exit with code 1 when validation success is false.",
 )
 @click.option(
-    "--yaml", required=False, is_flag=True, help="Output yaml.",
+    "--yaml",
+    required=False,
+    is_flag=True,
+    help="Output yaml.",
 )
 @click.option(
     "--s3-endpoint-no-protocol",
@@ -217,7 +224,10 @@ def geopackage_validator_command(
         )
         filename = gpkg_path
         results, validations_executed, success = validate.validate(
-            gpkg_path, table_definitions_path, validations_path, validations,
+            gpkg_path,
+            table_definitions_path,
+            validations_path,
+            validations,
         )
     else:
         try:
@@ -279,11 +289,18 @@ def geopackage_validator_command(
     show_envvar=True,
     help="Path pointing to the geopackage.gpkg file",
     type=click.types.Path(
-        file_okay=True, dir_okay=False, readable=True, writable=False, allow_dash=False,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
     ),
 )
 @click.option(
-    "--yaml", required=False, is_flag=True, help="Output yaml",
+    "--yaml",
+    required=False,
+    is_flag=True,
+    help="Output yaml",
 )
 @click.option(
     "--s3-endpoint-no-protocol",
@@ -404,7 +421,10 @@ def geopackage_validator_command_generate_table_definitions(
     help="Show all the possible validations that can be executed in the validate command.",
 )
 @click.option(
-    "--yaml", required=False, is_flag=True, help="Output yaml",
+    "--yaml",
+    required=False,
+    is_flag=True,
+    help="Output yaml",
 )
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_show_validations(yaml):

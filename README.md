@@ -11,11 +11,10 @@
     * [Validate](#validate)
     * [Show validations](#show-validations)
     * [Generate table definitions](#generate-table-definitions)
-  * [Performance](#performance)
   * [Local development](#local-development)
-    * [Installation](#pipenv-installation)
-    * [Usage](#pipenv-usage)
-    * [Code style](#pipenv-code-style)
+    * [Installation](#installation)
+    * [Usage](#usage)
+    * [Code style](#code-style)
     * [Tests](#pipenv-tests)
     * [Releasing](#releasing)
 
@@ -53,8 +52,10 @@ The current checks are (see also the 'show-validations' command):
 
 ## Installation
 
-This package requires [GDAL](https://gdal.org/) version >= 3.2.1.
-And python >= 3.8 to run.
+This package requires:
+- [GDAL](https://gdal.org/) version >= 3.2.1.
+- [Spatialite](https://www.gaia-gis.it/fossil/libspatialite/index) version >= 5.0.0
+- And python >= 3.8 to run.
 
 We recommend using the docker image. When above requirements are met the package can be installed using pip (`pip install pdok-geopackage-validator`).  
 
@@ -321,7 +322,7 @@ We advise using docker-compose for local development. This allows live editing a
 First build the local image with your machines user id and group id: 
 
 ```bash
-docker-compose build --build-arg uid=`id -u` --build-arg gid=`id -g`
+docker-compose build --build-arg USER_ID=`id -u` --build-arg GROUP_ID=`id -g`
 ```
 
 ### Usage
@@ -358,12 +359,6 @@ Run the tests regularly. This also checks with pyflakes and black:
 
 ```bash
 docker-compose run --rm validator pytest
-```
-
-Code coverage:
-
-```bash
-docker-compose run --rm --cov=geopackage_validator  --cov-report html
 ```
 
 ### Releasing
