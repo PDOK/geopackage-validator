@@ -29,6 +29,7 @@ from geopackage_validator.validations.geometry_ccw_check import (
 from geopackage_validator.validations.geometry_dimension_check import (
     GeometryDimensionValidator,
 )
+from geopackage_validator.validations.name_length_check import NameLengthValidator
 
 __all__ = [
     # Requirements
@@ -53,4 +54,5 @@ __all__ = [
     "GeomColumnNameValidator",
     "GeomColumnNameEqualValidator",
     "GeometryDimensionValidator",
+    "NameLengthValidator",
 ]
