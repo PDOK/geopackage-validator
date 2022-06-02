@@ -2,21 +2,22 @@
 
 ## Table of Contents
 
-* [geopackage-validator](#geopackage-validator)
-  * [What does it do](#What-does-it-do)
-  * [Installation](#installation)
-    * [Ubuntu](#ubuntu)
-    * [Docker](#docker)
-  * [Usage](#usage)
-    * [Validate](#validate)
-    * [Show validations](#show-validations)
-    * [Generate table definitions](#generate-table-definitions)
-  * [Local development](#local-development)
-    * [Installation](#installation)
-    * [Usage](#usage)
-    * [Code style](#code-style)
-    * [Tests](#pipenv-tests)
-    * [Releasing](#releasing)
+- [geopackage-validator](#geopackage-validator)
+  - [Table of Contents](#table-of-contents)
+  - [What does it do](#what-does-it-do)
+  - [Geopackage versions](#geopackage-versions)
+  - [Installation](#installation)
+    - [Docker](#docker)
+  - [Usage](#usage)
+    - [RQ8 Validation](#rq8-validation)
+    - [Show validations](#show-validations)
+    - [Generate table definitions](#generate-table-definitions)
+  - [Local development](#local-development)
+    - [Usage](#usage-1)
+    - [Python console](#python-console)
+    - [Code style](#code-style)
+    - [Tests](#tests)
+    - [Releasing](#releasing)
 
 ## What does it do
 
@@ -50,6 +51,13 @@ The current checks are (see also the 'show-validations' command):
 | UNKNOWN_WARNINGS | It is recommended that the unexpected (GDAL) warnings are looked into.                                                                                                                              |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
+
+## Geopackage versions
+
+The Geopackage validator support the following Geopackage versions:
+- 1.3.1
+- 1.3
+- 1.2.1
 
 ## Installation
 
