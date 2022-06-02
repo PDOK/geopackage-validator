@@ -49,6 +49,17 @@ def validators_to_use(
 
     validator_dict = {v.validation_code: v for v in validator_classes}
 
+    unknown_codes = set(codes) - set(validator_dict.keys())
+    if len(unknown_codes):
+        if any(code in ("RC1", "RC2", "RC3", "RC4", ) for code in unknown_codes):
+            logger.error(
+                "unknown validation codes: %s, since pdok-geopackage-validator version 0.8.0 recommendation codes have"
+                " been renumbered see: https://github.com/PDOK/geopackage-validator#what-does-it-do for the new codes",
+                ",".join(unknown_codes))
+        else:
+            logger.error("unknown validation codes: %s", ",".join(unknown_codes))
+        sys.exit(1)
+
     return [validator_dict[code] for code in codes]
 
 
