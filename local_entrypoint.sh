@@ -1,9 +1,8 @@
-#!/usr/bin/env bash
-export PIPENV_VENV_IN_PROJECT=1
+#!/usr/bin/env sh
 
-if [[ ! -d ./.venv/ ]]
+# this entrypoint does just that: make sure the egg-info dir is available by installing (again) with pip.
+if [ ! -d ./pdok_geopackage_validator.egg-info/ ]
 then
-  echo "No pipenv environment found. Install a .venv/ directory in this directory."
-  pipenv install --dev --site-packages
+  pip3 install --no-cache-dir -e .
 fi
-pipenv run "$@"
+exec "$@"
