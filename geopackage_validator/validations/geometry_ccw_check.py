@@ -28,7 +28,7 @@ def query_ccw(dataset) -> Iterable[Tuple[str, str]]:
 class PolygonWindingOrderValidator(validator.Validator):
     """It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings."""
 
-    code = 4
+    code = 20
     level = validator.ValidationLevel.RECCOMENDATION
     message = "Warning layer: {layer}, example id: {row_id}, has {count} features that do not have a counter-clockwise exterior ring and/or a clockwise interior ring."
 

@@ -23,33 +23,36 @@
 The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
 The current checks are (see also the 'show-validations' command):
 
-| Validation code  | Description                                                                                                                                                                                         |
-|:----------------:|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|  UNKNOWN_ERROR   | No unexpected (GDAL) errors must occur.                                                                                                                                                             |
-|       RQ0        | _LEGACY:_ * Geopackage must conform to table names in the given JSON or YAML definitions.                                                                                                           |
-|       RQ1        | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.                                                                                               |
-|       RQ2        | Layers must have at least one feature.                                                                                                                                                              |
-|       RQ3        | _LEGACY:_ * Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON).                                                  |
-|       RQ4        | The geopackage should have no views defined.                                                                                                                                                        |
-|       RQ5        | Geometry should be valid.                                                                                                                                                                           |
-|       RQ6        | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.                                                                                              |
-|       RQ7        | Tables should have a feature id column with unique index.                                                                                                                                           |
-|       RQ8        | Geopackage must conform to given JSON or YAML definitions.                                                                                                                                          |
-|       RQ9        | All geometry tables must have an rtree index.                                                                                                                                                       |
-|       RQ10       | All geometry table rtree indexes must be valid.                                                                                                                                                     |
-|       RQ11       | OGR indexed feature counts must be up to date.                                                                                                                                                      |
-|       RQ12       | Only the following EPSG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409. |
-|       RQ13       | It is required to give all GEOMETRY features the same default spatial reference system.                                                                                                             |
-|       RQ14       | The geometry_type_name from the gpkg_geometry_columns table must be one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON.                                                |
-|       RQ15       | All table geometries must match the geometry_type_name from the gpkg_geometry_columns table.                                                                                                        |
-|       RQ16       | All layer and column names shall not be longer than 53 characters.                                                                                                                                  |
-|       RC1        | It is recommended to name all GEOMETRY type columns 'geom'.                                                                                                                                         |
-|       RC2        | It is recommended to give all GEOMETRY type columns the same name.                                                                                                                                  |
-|       RC3        | It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary.                                                                                     |
-|       RC4        | It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings.                                |
-| UNKNOWN_WARNINGS | It is recommended that the unexpected (GDAL) warnings are looked into.                                                                                                                              |
+| Validation code** | Description                                                                                                                                                                                         |
+|:-----------------:|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   UNKNOWN_ERROR   | No unexpected (GDAL) errors must occur.                                                                                                                                                             |
+|        RQ0        | _LEGACY:_ * Geopackage must conform to table names in the given JSON or YAML definitions.                                                                                                           |
+|        RQ1        | Layer names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.                                                                                               |
+|        RQ2        | Layers must have at least one feature.                                                                                                                                                              |
+|        RQ3        | _LEGACY:_ * Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON).                                                  |
+|        RQ4        | The geopackage should have no views defined.                                                                                                                                                        |
+|        RQ5        | Geometry should be valid.                                                                                                                                                                           |
+|        RQ6        | Column names must start with a letter, and valid characters are lowercase a-z, numbers or underscores.                                                                                              |
+|        RQ7        | Tables should have a feature id column with unique index.                                                                                                                                           |
+|        RQ8        | Geopackage must conform to given JSON or YAML definitions.                                                                                                                                          |
+|        RQ9        | All geometry tables must have an rtree index.                                                                                                                                                       |
+|       RQ10        | All geometry table rtree indexes must be valid.                                                                                                                                                     |
+|       RQ11        | OGR indexed feature counts must be up to date.                                                                                                                                                      |
+|       RQ12        | Only the following EPSG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409. |
+|       RQ13        | It is required to give all GEOMETRY features the same default spatial reference system.                                                                                                             |
+|       RQ14        | The geometry_type_name from the gpkg_geometry_columns table must be one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON.                                                |
+|       RQ15        | All table geometries must match the geometry_type_name from the gpkg_geometry_columns table.                                                                                                        |
+|       RQ16        | All layer and column names shall not be longer than 53 characters.                                                                                                                                  |
+|       RC17        | It is recommended to name all GEOMETRY type columns 'geom'.                                                                                                                                         |
+|       RC18        | It is recommended to give all GEOMETRY type columns the same name.                                                                                                                                  |
+|       RC19        | It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary.                                                                                     |
+|       RC20        | It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings.                                |
+| UNKNOWN_WARNINGS  | It is recommended that the unexpected (GDAL) warnings are looked into.                                                                                                                              |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
+\** Since version 0.8.0 the recommendations are part of the same sequence as the requirements. From now on a check will always maintain the integer part of the code. Even if at a later time the validation type can shift between requirement and recommendation.  
+
+An explanation in Dutch with a reason for each rule can be found [here](https://www.pdok.nl/voor-data-aanbieders#:~:text=Regels%20in%20detail).
 
 ## Installation
 
