@@ -19,6 +19,18 @@
     - [Tests](#tests)
     - [Releasing](#releasing)
 
+## TLDR Command
+
+To validate a GeoPackage with the default set of validation rules, run the following commands from the root of this repo (requires Docker):
+
+```sh
+gpkg_path=tests/data/test_allcorrect.gpkg
+schema_path="$(realpath $gpkg_path | xargs dirname)/$(uuidgen).json"
+docker run -v "$(realpath $gpkg_path | xargs dirname)":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/$(basename $gpkg_path)" > "$schema_path" 
+docker run -v "$(realpath $gpkg_path | xargs dirname)":/gpkg --rm pdok/geopackage-validator validate -t "/gpkg/$(basename $schema_path)" --gpkg-path "/gpkg/$(basename $gpkg_path)" 
+rm -f "${schema_path:?variable not set or empty}"
+```
+
 ## What does it do
 
 The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
