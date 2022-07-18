@@ -10,8 +10,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
-        python-version: ['3.6']
+        os: [ubuntu-22.04, ubuntu-20.04]
+        python-version: ['3.9', '3.8', '3.7', '3.6']
         gdal-version: ['3.4.3', '3.0.4']
         exclude:
           - os: ubuntu-22.04
@@ -45,3 +45,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -vv
+    - name: Test with black
+      run: |
+        black --check .
