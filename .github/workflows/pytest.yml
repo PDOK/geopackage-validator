@@ -16,6 +16,7 @@ jobs:
         exclude:
           - os: ubuntu-22.04
             python-version: '3.6'
+
           - os: ubuntu-22.04
             gdal-version: '3.0.4'
           - os: ubuntu-20.04
@@ -39,6 +40,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        python -m pip install --upgrade pip setuptools>=42.0,!=58.*,!=59.*,!=60.*,!=61.*
         # we need to pin GDAL here to match the python3-gdal
         pip install GDAL==${{ matrix.gdal-version }}
         pip3 install --no-cache-dir .[test]
