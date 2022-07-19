@@ -1,6 +1,6 @@
 # geopackage-validator
 
-![Tests](https://github.com/pdok/geopackage-validator/actions/workflows/tests.yml/badge.svg)
+![Tests](https://github.com/pdok/geopackage-validator/actions/workflows/pytest.yml/badge.svg)
 
 ## Table of Contents
 
