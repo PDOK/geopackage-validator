@@ -21,6 +21,31 @@
     - [Tests](#tests)
     - [Releasing](#releasing)
 
+## TL;DR Commands
+
+Validate a GeoPackage with the default set of validation rules:
+
+```sh
+gpkg_path=relative/path/to/the.gpkg
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" 
+```
+
+Validate a GeoPackage with the default set of validation rules including a schema:
+
+```sh
+schema_path=relative/path/to/the/schema.json
+gpkg_path=relative/path/to/the.gpkg
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}" 
+```
+
+Generate a schema: 
+
+```sh
+schema_path=relative/path/to/the/schema.json
+gpkg_path=relative/path/to/the.gpkg
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path" 
+```
+
 ## What does it do
 
 The Geopackage validator can validate .gkpg files to see if they conform to a set of standards.
@@ -211,7 +236,7 @@ Options:
 Examples:
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path tests/data/test_allcorrect.gpkg
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
 
 Run with specific validations only
