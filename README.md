@@ -21,16 +21,29 @@
     - [Tests](#tests)
     - [Releasing](#releasing)
 
-## TLDR Command
+## TL;DR Commands
 
-To validate a GeoPackage with the default set of validation rules, run the following commands from the root of this repo (requires Docker):
+Validate a GeoPackage with the default set of validation rules:
 
 ```sh
-gpkg_path=tests/data/test_allcorrect.gpkg
-schema_path="$(realpath $gpkg_path | xargs dirname)/$(uuidgen).json"
-docker run -v "$(realpath $gpkg_path | xargs dirname)":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/$(basename $gpkg_path)" > "$schema_path" 
-docker run -v "$(realpath $gpkg_path | xargs dirname)":/gpkg --rm pdok/geopackage-validator validate -t "/gpkg/$(basename $schema_path)" --gpkg-path "/gpkg/$(basename $gpkg_path)" 
-rm -f "${schema_path:?variable not set or empty}"
+gpkg_path=relative/path/to/the.gpkg
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" 
+```
+
+Validate a GeoPackage with the default set of validation rules including a schema:
+
+```sh
+schema_path=relative/path/to/the/schema.json
+gpkg_path=relative/path/to/the.gpkg
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}" 
+```
+
+Generate a schema: 
+
+```sh
+schema_path=relative/path/to/the/schema.json
+gpkg_path=relative/path/to/the.gpkg
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path" 
 ```
 
 ## What does it do
@@ -223,7 +236,7 @@ Options:
 Examples:
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path tests/data/test_allcorrect.gpkg
+docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
 
 Run with specific validations only
