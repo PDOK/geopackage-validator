@@ -1,5 +1,7 @@
 # geopackage-validator
 
+![Tests](https://github.com/pdok/geopackage-validator/actions/workflows/tests.yml/badge.svg)
+
 ## Table of Contents
 
 - [geopackage-validator](#geopackage-validator)
