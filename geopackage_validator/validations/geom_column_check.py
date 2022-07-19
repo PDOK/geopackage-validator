@@ -7,7 +7,7 @@ from geopackage_validator import utils
 class GeomColumnNameValidator(validator.Validator):
     """It is recommended to name all GEOMETRY type columns 'geom'."""
 
-    code = 1
+    code = 17
     level = validator.ValidationLevel.RECCOMENDATION
     message = "Found in table: {table_name}, column: {column_name}"
 
@@ -27,7 +27,7 @@ class GeomColumnNameValidator(validator.Validator):
 class GeomColumnNameEqualValidator(validator.Validator):
     """It is recommended to give all GEOMETRY type columns the same name."""
 
-    code = 2
+    code = 18
     level = validator.ValidationLevel.RECCOMENDATION
     message = "Found column names are unequal: {column_names}"
 
