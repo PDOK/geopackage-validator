@@ -8,10 +8,11 @@ def query_rtree_presence(dataset) -> Iterable[str]:
     gpkg_extensions = dataset.ExecuteSQL(
         "select * from sqlite_master where type = 'table' and name = 'gpkg_extensions';"
     )
+    has_gpkg_extensions = len(gpkg_extensions) > 0
+    dataset.ReleaseResultSet(gpkg_extensions)
 
-    if len(gpkg_extensions) == 0:
+    if not has_gpkg_extensions:
         yield "no table has an rtree index"
-        dataset.ReleaseResultSet(gpkg_extensions)
         return
 
     indexes = dataset.ExecuteSQL(

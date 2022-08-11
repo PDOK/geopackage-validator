@@ -1,3 +1,6 @@
+import tempfile, shutil
+from osgeo import ogr
+
 from geopackage_validator.validate import (
     validators_to_use,
     get_validation_codes,
@@ -116,3 +119,21 @@ def test_validate_all_validations_with_broken_gpkg_throws_gdal_error():
     assert results[0]["locations"] == [
         "At least one of the required GeoPackage tables, gpkg_spatial_ref_sys or gpkg_contents, is missing"
     ]
+
+
+def test_validate_all_properly_closes_all_gpkg_connections():
+    tmp_gpkg = tempfile.NamedTemporaryFile(delete=True, suffix=".gpkg")
+    filename = tmp_gpkg.name
+    shutil.copy2("tests/data/test_allcorrect.gpkg", filename)
+    results, validations_executed, success = validate(
+        gpkg_path=filename,
+        validations="ALL",
+        table_definitions_path="tests/data/test_allcorrect_definition.json",
+    )
+    assert success
+    assert len(results) == 0
+
+    driver = ogr.GetDriverByName("GPKG")
+    gpkg_src = driver.Open(filename, update=True)
+    error_code = gpkg_src.DeleteLayer(0)
+    assert error_code == 0

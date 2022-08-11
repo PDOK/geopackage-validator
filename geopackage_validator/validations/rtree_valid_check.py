@@ -9,8 +9,9 @@ def rtree_valid_check_query(dataset) -> Iterable[str]:
         "select * from sqlite_master where type = 'table' and name = 'gpkg_extensions';"
     )
 
-    if gpkg_extensions_present.GetFeatureCount() == 0:
-        dataset.ReleaseResultSet(gpkg_extensions_present)
+    has_extensions = gpkg_extensions_present.GetFeatureCount() == 0
+    dataset.ReleaseResultSet(gpkg_extensions_present)
+    if has_extensions:
         return
 
     indexes = dataset.ExecuteSQL(

@@ -9,7 +9,7 @@ services:
       - DOCKER=True
       - PYTHONUNBUFFERED=1
       - PIPENV_VENV_IN_PROJECT=1
-      - SHELL=/bin/bash
+      - SHELL=/bin/ash
     volumes:
     - .:/code
 #    - /home/YOUR_HOME_DIR:/home/YOUR_HOME_DIR   # uncomment and update this with your own homedir for easier reach of other geopackages.
