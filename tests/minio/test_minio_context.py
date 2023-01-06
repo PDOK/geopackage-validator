@@ -2,7 +2,7 @@ import os
 from minio import Minio
 
 
-from geopackage_validator.minio import minio_resource
+from geopackage_validator.s3 import minio_resource
 
 
 def test_minio_context(mocker):

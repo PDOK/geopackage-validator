@@ -87,9 +87,6 @@ def generate_definitions_for_path(gpkg_path: str) -> TableDefinition:
     """Starts the geopackage validation."""
     utils.check_gdal_version()
 
-    # Explicit import here
-
-    driver = ogr.GetDriverByName("GPKG")
-    dataset = driver.Open(gpkg_path, 0)
+    dataset = utils.open_dataset(gpkg_path)
 
     return generate_table_definitions(dataset)
