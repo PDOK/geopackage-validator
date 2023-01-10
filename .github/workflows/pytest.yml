@@ -17,6 +17,8 @@ jobs:
           - os: ubuntu-22.04
             python-version: '3.6'
           - os: ubuntu-20.04
+            python-version: '3.11'
+          - os: ubuntu-20.04
             gdal-version: '3.6'
     steps:
     - name: Checkout 🛎️
