@@ -15,7 +15,7 @@ click_log.basic_config(logger)
 
 
 from geopackage_validator import generate
-from geopackage_validator import minio
+from geopackage_validator import s3
 from geopackage_validator import output
 from geopackage_validator import validate
 from geopackage_validator import utils
@@ -231,7 +231,7 @@ def geopackage_validator_command(
         )
     else:
         try:
-            with minio.minio_resource(
+            with s3.minio_resource(
                 s3_endpoint_no_protocol,
                 s3_access_key,
                 s3_secret_key,
@@ -401,7 +401,7 @@ def geopackage_validator_command_generate_table_definitions(
             )
             definitionlist = generate.generate_definitions_for_path(gpkg_path)
         else:
-            with minio.minio_resource(
+            with s3.minio_resource(
                 s3_endpoint_no_protocol,
                 s3_access_key,
                 s3_secret_key,
