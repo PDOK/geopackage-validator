@@ -30,8 +30,10 @@ jobs:
         if [ "${APT_GDAL_VERSION}" -lt "3.6" ]
         then
           sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable  
-          sudo apt-get update
+        else 
+          sudo apt-add-repository ppa:ubuntugis/ubuntugis-stable
         fi
+        sudo apt-get update
         echo available python3-gdal versions: $(apt-cache madison python3-gdal | cut -f2 -d "|" | tr -d " ")
         echo available libgdal-dev versions: $(apt-cache madison libgdal-dev | cut -f2 -d "|" | tr -d " ")
         export APT_GDAL_VERSION=$(apt-cache madison python3-gdal | grep ${{ matrix.gdal-version }} | head -n1 | cut -f2 -d "|" | tr -d " ")
