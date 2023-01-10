@@ -31,7 +31,7 @@ jobs:
         then
           sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable  
         else 
-          sudo add-apt-repository ppa:ubuntugis/ppa
+          sudo apt-add-repository ppa:ubuntugis/ppa
         fi
         sudo apt-get update
         echo available python3-gdal versions: $(apt-cache madison python3-gdal | cut -f2 -d "|" | tr -d " ")
