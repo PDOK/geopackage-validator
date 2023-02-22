@@ -1,4 +1,4 @@
-ARG GDAL_VERSION=3.5.0
+ARG GDAL_VERSION=3.6.2
 
 FROM osgeo/gdal:alpine-normal-${GDAL_VERSION} AS base
 
