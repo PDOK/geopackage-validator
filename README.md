@@ -402,4 +402,4 @@ docker-compose run --rm validator pytest
 
 ### Releasing
 
-Release in github by bumping the `__version__` in [`geopackage_validator.constants.py`](geopackage_validator/constants.py) and by creating and pushing a new tag to master and create a new release in github.  
+Release in github by creating a new release in github.
