@@ -51,7 +51,7 @@ jobs:
         if [ "${{ matrix.python-version }}" == "3.6" ]
         then
            echo "hack setup.cfg to accomodate python version <= 3.6"
-           sed -i 's/geopackage_validator.constants.__version__/0.0.0/g' setup.cfg
+           sed -i 's/geopackage_validator.__version__/0.0.0/g' setup.cfg
         fi
     - name: Install dependencies from config
       run: |

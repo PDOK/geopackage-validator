@@ -1,1 +1,1 @@
-from geopackage_validator.constants import __version__
+__version__ = "0.0.0-dev"
