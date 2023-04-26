@@ -9,11 +9,16 @@
   - [What does it do](#what-does-it-do)
   - [Geopackage versions](#geopackage-versions)
   - [Installation](#installation)
-    - [Docker](#docker)
+    - [Docker](#docker-installation)
   - [Usage](#usage)
-    - [RQ8 Validation](#rq8-validation)
-    - [Show validations](#show-validations)
-    - [Generate table definitions](#generate-table-definitions)
+    - [Docker](#docker)
+      - [RQ8 Validation](#docker-rq8-validation)
+      - [Show validations](#docker-show-validations)
+      - [Generate table definitions](#docker-generate-table-definitions)
+    - [Local]
+      - [RQ8 Validation](#local-rq8-validation)
+      - [Show validations](#local-show-validations)
+      - [Generate table definitions](#local-generate-table-definitions)
   - [Local development](#local-development)
     - [Usage](#usage-1)
     - [Python console](#python-console)
@@ -23,6 +28,9 @@
 
 ## TL;DR Commands
 
+Either run through [docker](#docker) or [locally](#local). 
+
+### Docker
 Validate a GeoPackage with the default set of validation rules:
 
 ```sh
@@ -44,6 +52,31 @@ Generate a schema:
 schema_path=relative/path/to/the/schema.json
 gpkg_path=relative/path/to/the.gpkg
 docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path" 
+```
+
+### Local
+
+For a local setup we require/tested against python > 3.6 and gdal = 3.4.
+
+```sh
+gpkg_path=relative/path/to/the.gpkg
+geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" 
+```
+
+Validate a GeoPackage with the default set of validation rules including a schema:
+
+```sh
+schema_path=relative/path/to/the/schema.json
+gpkg_path=relative/path/to/the.gpkg
+geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}" 
+```
+
+Generate a schema: 
+
+```sh
+schema_path=relative/path/to/the/schema.json
+gpkg_path=relative/path/to/the.gpkg
+geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path" 
 ```
 
 ## What does it do
@@ -98,7 +131,7 @@ This package requires:
 
 We recommend using the docker image. When above requirements are met the package can be installed using pip (`pip install pdok-geopackage-validator`).  
 
-### Docker
+### Docker Installation
 
 Pull the latest version of the Docker image (only once needed, or after an update)
 
