@@ -1,6 +1,8 @@
-# geopackage-validator
+# PDOK geopackage-validator
 
 [![Tests](https://github.com/pdok/geopackage-validator/actions/workflows/pytest.yml/badge.svg)](https://github.com/pdok/geopackage-validator/actions/workflows/pytest.yml)[![PyPI version](https://badge.fury.io/py/pdok-geopackage-validator.svg)](https://pypi.org/project/pdok-geopackage-validator/)
+
+The PDOK geopackage validator is used by [PDOK](https://www.pdok.nl/). PDOK is part of the Dutch government. This geopackage validator is used to validate a [set of requirements](#what-does-it-do) to make sure geopackages adhere to our standardized ETL pipeline. All validations will not change (except for bugfixes); only added to the list. 
 
 ## Table of Contents
 
