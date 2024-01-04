@@ -20,9 +20,11 @@ logger = logging.getLogger(__name__)
 RQ0 = "RQ0"
 RQ3 = "RQ3"
 RQ8 = "RQ8"
+RQ16 = "RQ16"
+
 
 # Drop legacy requirements
-DROP_LEGACY_RQ_FROM_ALL = [RQ0, RQ3]
+DROP_LEGACY_RQ_FROM_ALL = [RQ0, RQ3, RQ16]
 
 
 def validators_to_use(
