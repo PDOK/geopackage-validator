@@ -103,11 +103,12 @@ The current checks are (see also the 'show-validations' command):
 |       RQ13        | It is required to give all GEOMETRY features the same default spatial reference system.                                                                                                             |
 |       RQ14        | The geometry_type_name from the gpkg_geometry_columns table must be one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON.                                                |
 |       RQ15        | All table geometries must match the geometry_type_name from the gpkg_geometry_columns table.                                                                                                        |
-|       RQ16        | All layer and column names shall not be longer than 53 characters.                                                                                                                                  |
+|       RQ16        | _LEGACY:_ * All layer and column names shall not be longer than 53 characters.                                                                                                                      |
 |       RC17        | It is recommended to name all GEOMETRY type columns 'geom'.                                                                                                                                         |
 |       RC18        | It is recommended to give all GEOMETRY type columns the same name.                                                                                                                                  |
 |       RC19        | It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary.                                                                                     |
 |       RC20        | It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings.                                |
+|       RQ21        | All layer and column names shall not be longer than 57 characters.                                                                                                                                  |
 | UNKNOWN_WARNINGS  | It is recommended that the unexpected (GDAL) warnings are looked into.                                                                                                                              |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
