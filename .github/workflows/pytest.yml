@@ -48,11 +48,6 @@ jobs:
         python -m pip install --upgrade pip wheel
         python -m pip install setuptools==57.*
         python -m pip freeze
-        if [ "${{ matrix.python-version }}" == "3.6" ]
-        then
-           echo "hack setup.cfg to accomodate python version <= 3.6"
-           sed -i 's/geopackage_validator.__version__/0.0.0/g' setup.cfg
-        fi
     - name: Install dependencies from config
       run: |
         # we need to pin GDAL here to match the python3-gdal
