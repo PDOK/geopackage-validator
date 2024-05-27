@@ -1,8 +1,11 @@
 #!/usr/bin/env sh
-
 # this entrypoint does just that: make sure the egg-info dir is available by installing (again) with pip.
-if [ ! -d ./pdok_geopackage_validator.egg-info/ ]
+if [ ! -d /code/pdok_geopackage_validator.egg-info/ ] || [ ! -d /code/venv/ ]
 then
-  pip3 install --no-cache-dir -e .
+  python3 -m venv --system-site-packages /code/venv
+  . /code/venv/bin/activate
+  pip3 install -e .[test]
+else
+  . /code/venv/bin/activate
 fi
 exec "$@"
