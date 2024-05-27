@@ -27,6 +27,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: install gdal
+      id: gdal
       run: |
         if [ "${{ matrix.os }}" = "ubuntu-20.04" ]
         then
@@ -41,6 +42,7 @@ jobs:
         echo available libgdal-dev versions: $(apt-cache madison libgdal-dev | cut -f2 -d "|" | tr -d " ")
         export APT_GDAL_VERSION=$(apt-cache madison python3-gdal | grep ${{ matrix.gdal-version }} | head -n1 | cut -f2 -d "|" | tr -d " ")
         echo "using version ->${APT_GDAL_VERSION}<-"
+        echo "gdal_version=${APT_GDAL_VERSION}" >> $GITHUB_OUTPUT
         apt-cache madison libgdal30 | grep "${APT_GDAL_VERSION}" && sudo apt-get install libgdal30="${APT_GDAL_VERSION}"
         sudo apt-get install python3-gdal="${APT_GDAL_VERSION}" libgdal-dev="${APT_GDAL_VERSION}"
     - name: Install dependencies for test
@@ -51,8 +53,7 @@ jobs:
     - name: Install dependencies from config
       run: |
         # we need to pin GDAL here to match the python3-gdal
-        ogrinfo --version
-        pip install "GDAL==$(ogrinfo --version | cut -f2 -d " " | cut -f1 -d ",")"
+        pip install GDAL==${{steps.gdal.outputs.gdal_version}}
         pip3 install --no-cache-dir .[test]
     - name: Test with pytest
       run: |
