@@ -51,8 +51,7 @@ jobs:
     - name: Install dependencies from config
       run: |
         # we need to pin GDAL here to match the python3-gdal
-        export GDAL_VERSION=$(ogrinfo --version | cut -f2 -d " " | cut -f1 -d ",")
-        pip install GDAL==${GDAL_VERSION}
+        pip install GDAL==$(ogrinfo --version | cut -f2 -d " " | cut -f1 -d ",")
         pip3 install --no-cache-dir .[test]
     - name: Test with pytest
       run: |
