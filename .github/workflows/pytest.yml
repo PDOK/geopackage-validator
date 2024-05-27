@@ -13,6 +13,12 @@ jobs:
         python-version: ['3.11', '3.10', '3.9', '3.8', '3.7'] # , '3.6'] <- 3.6 needs setup.cfg
         gdal-version: ['3.4', '3.6']  # TODO: gdal 3.6 is still unstable.
         exclude:
+          - os: ubuntu-24.04
+            python-version: '3.8'
+          - os: ubuntu-24.04
+            python-version: '3.7'
+          - os: ubuntu-24.04
+            gdal-version: '3.4'
           - os: ubuntu-22.04
             gdal-version: '3.4'
           - os: ubuntu-20.04
