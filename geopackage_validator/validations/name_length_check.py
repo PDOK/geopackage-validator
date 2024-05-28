@@ -6,6 +6,7 @@ from geopackage_validator import utils
 LEGACY_MAX_LENGTH = 53
 MAX_LENGTH = 57
 
+
 def query_names(dataset) -> Iterable[Tuple[str, str, int]]:
     tables = utils.dataset_geometry_tables(dataset)
 
