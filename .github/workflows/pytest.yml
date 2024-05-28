@@ -9,12 +9,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04]
-        python-version: ['3.11', '3.10', '3.9', '3.8', '3.7', '3.6']
-        gdal-version: ['3.4'] #, '3.6']  TODO: gdal 3.6 is still unstable.
+        os: [ubuntu-22.04, ubuntu-20.04]  # no ubuntugis @ ubuntu-24.04
+        python-version: ['3.11', '3.10', '3.9', '3.8', '3.7'] # , '3.6'] <- 3.6 needs setup.cfg
+        gdal-version: ['3.4', '3.6']  # TODO: gdal 3.6 is still unstable.
         exclude:
+          - os: ubuntu-24.04
+            python-version: '3.8'
+          - os: ubuntu-24.04
+            python-version: '3.7'
+          - os: ubuntu-24.04
+            gdal-version: '3.4'
           - os: ubuntu-22.04
-            python-version: '3.6'
+            gdal-version: '3.4'
           - os: ubuntu-20.04
             python-version: '3.11'
           - os: ubuntu-20.04
@@ -27,6 +33,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: install gdal
+      id: gdal
       run: |
         if [ "${{ matrix.os }}" = "ubuntu-20.04" ]
         then
@@ -43,20 +50,16 @@ jobs:
         echo "using version ->${APT_GDAL_VERSION}<-"
         apt-cache madison libgdal30 | grep "${APT_GDAL_VERSION}" && sudo apt-get install libgdal30="${APT_GDAL_VERSION}"
         sudo apt-get install python3-gdal="${APT_GDAL_VERSION}" libgdal-dev="${APT_GDAL_VERSION}"
+        echo gdal_version=$(echo "${APT_GDAL_VERSION}" | cut -f1 -d '+') >> $GITHUB_OUTPUT
     - name: Install dependencies for test
       run: |
         python -m pip install --upgrade pip wheel
         python -m pip install setuptools==57.*
         python -m pip freeze
-        if [ "${{ matrix.python-version }}" == "3.6" ]
-        then
-           echo "hack setup.cfg to accomodate python version <= 3.6"
-           sed -i 's/geopackage_validator.__version__/0.0.0/g' setup.cfg
-        fi
     - name: Install dependencies from config
       run: |
         # we need to pin GDAL here to match the python3-gdal
-        pip install GDAL==${{ matrix.gdal-version }}
+        pip install GDAL==${{steps.gdal.outputs.gdal_version}}
         pip3 install --no-cache-dir .[test]
     - name: Test with pytest
       run: |
