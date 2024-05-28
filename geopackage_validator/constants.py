@@ -1,6 +1,6 @@
 import re
 
-ALLOWED_PROJECTIONS_LIST = [
+LEGACY_ALLOWED_PROJECTIONS_LIST = [
     28992,
     3034,
     3035,
@@ -19,6 +19,29 @@ ALLOWED_PROJECTIONS_LIST = [
     3050,
     3051,
     4258,
+    4936,
+    4937,
+    5730,
+    7409,
+]
+
+ALLOWED_PROJECTIONS_LIST = [
+    28992,
+    3034,
+    3035,
+    3040,
+    3041,
+    3042,
+    3043,
+    3044,
+    3045,
+    3046,
+    3047,
+    3048,
+    3049,
+    3857,
+    4258,
+    4326,
     4936,
     4937,
     5730,
