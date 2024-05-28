@@ -25,9 +25,13 @@ def query_dimensions(dataset) -> Iterable[Tuple[str, str]]:
         validations = dataset.ExecuteSQL(
             DIMENSION_QUERY.format(table_name=table_name, geom_column_name=column_name)
         )
+        validation_list = (
+            []
+            if validations is None
+            else [(z, m, ndims) for z, m, ndims in validations]
+        )
 
-        if validations is not None:
-            validation_list = [(z, m, ndims) for z, m, ndims in validations]
+        if validation_list:
             four_dimensions = all(ndims == 4 for z, m, ndims in validation_list)
             m_coordinates_all_0 = all(m for z, m, ndims in validation_list)
             z_coordinates_all_0 = all(z for z, m, ndims in validation_list)

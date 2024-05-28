@@ -15,7 +15,28 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
 ]
-dynamic = ["version", "readme", "requires-python"]
+dynamic = ["version", "readme"]
+dependencies = [
+    "setuptools>=42.0,!=58.*,!=59.*,!=60.*,!=61.*",
+    "Click >= 8.0",
+    "click-log >=0.3",
+    "gdal >=3.0.4",
+    "minio",
+    "pyyaml",
+]
+requires-python = ">=3.6"
+
+[project.optional-dependencies]
+test = [
+    "black == 22.3.0",
+    "flake8",
+    "ipdb",
+    "ipython",
+    "pytest >= 7.0.1",
+    "pytest-cov",
+    "pytest-flakes",
+    "pytest-mock"
+]
 
 [project.scripts]
 geopackage-validator = "geopackage_validator.cli:cli"

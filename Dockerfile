@@ -13,7 +13,6 @@ WORKDIR /code
 
 COPY ./geopackage_validator /code/geopackage_validator
 COPY ./pyproject.toml /code/pyproject.toml
-COPY ./setup.cfg /code/setup.cfg
 COPY ./setup.py /code/setup.py
 
 # --- TEST-IMAGE ---
