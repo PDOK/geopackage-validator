@@ -18,7 +18,11 @@ from geopackage_validator.validations.table_definitions_check import (
 from geopackage_validator.validations.layername_check import LayerNameValidator
 from geopackage_validator.validations.rtree_present_check import RTreeExistsValidator
 from geopackage_validator.validations.rtree_valid_check import ValidRtreeValidator
-from geopackage_validator.validations.srs_check import SrsValidator, SrsEqualValidator
+from geopackage_validator.validations.srs_check import (
+    SrsValidator,
+    SrsValidatorV0,
+    SrsEqualValidator,
+)
 from geopackage_validator.validations.geom_column_check import (
     GeomColumnNameValidator,
     GeomColumnNameEqualValidator,
@@ -49,6 +53,7 @@ __all__ = [
     "TableDefinitionValidator",
     "TableDefinitionValidatorV0",
     "SrsValidator",
+    "SrsValidatorV0",
     "SrsEqualValidator",
     "GpkgGeometryTypeNameValidator",
     "GeometryTypeEqualsGpkgDefinitionValidator",
