@@ -35,6 +35,7 @@ def test_determine_validations_to_use_none():
         "RQ15",
         "RQ21",
         "RQ22",
+        "RQ23",
         "RC17",
         "RC18",
         "RC19",

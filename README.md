@@ -110,6 +110,7 @@ The current checks are (see also the 'show-validations' command):
 |       RC20        | It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings.                                            |
 |       RQ21        | All layer and column names shall not be longer than 57 characters.                                                                                                                                              |
 |       RQ22        | Only the following EPSG spatial reference systems are allowed: 28992, 3034, 3035, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3857, 4258, 4326, 4936, 4937, 5730, 7409.                         |
+|       RQ23        | Geometry should be simple.                                                                                                                                                                                      | 
 | UNKNOWN_WARNINGS  | It is recommended that the unexpected (GDAL) warnings are looked into.                                                                                                                                          |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
