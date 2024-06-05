@@ -6,7 +6,10 @@ from geopackage_validator.validations.geometry_type_check import (
     GpkgGeometryTypeNameValidator,
     GeometryTypeEqualsGpkgDefinitionValidator,
 )
-from geopackage_validator.validations.geometry_valid_check import ValidGeometryValidator
+from geopackage_validator.validations.geometry_valid_check import (
+    ValidGeometryValidator,
+    ValidGeometryValidatorV0,
+)
 from geopackage_validator.validations.layerfeature_check import (
     OGRIndexValidator,
     NonEmptyLayerValidator,
@@ -45,6 +48,7 @@ __all__ = [
     "FeatureIdValidator",
     "GeometryTypeValidator",
     "ValidGeometryValidator",
+    "ValidGeometryValidatorV0",
     "OGRIndexValidator",
     "NonEmptyLayerValidator",
     "LayerNameValidator",

@@ -421,15 +421,22 @@ def geopackage_validator_command_generate_table_definitions(
     help="Show all the possible validations that can be executed in the validate command.",
 )
 @click.option(
+    "--no-legacy",
+    required=False,
+    is_flag=True,
+    help="Output without Legacy checks",
+)
+@click.option(
     "--yaml",
     required=False,
     is_flag=True,
     help="Output yaml",
 )
 @click_log.simple_verbosity_option(logger)
-def geopackage_validator_command_show_validations(yaml):
+def geopackage_validator_command_show_validations(no_legacy, yaml):
     try:
-        validation_codes = validate.get_validation_descriptions()
+        legacy = not no_legacy
+        validation_codes = validate.get_validation_descriptions(legacy)
         output.print_output(validation_codes, yaml, yaml_indent=5)
     except Exception:
         logger.exception("Error while listing validations")
