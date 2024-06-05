@@ -24,7 +24,6 @@ def test_determine_validations_to_use_none():
         "RQ1",
         "RQ2",
         "RQ4",
-        "RQ5",
         "RQ6",
         "RQ7",
         "RQ9",

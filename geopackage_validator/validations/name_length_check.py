@@ -21,7 +21,7 @@ def query_names(dataset) -> Iterable[Tuple[str, str, int]]:
 
 
 class NameLengthValidatorV0(validator.Validator):
-    f"""All names must be maximally {LEGACY_MAX_LENGTH} characters long."""
+    """LEGACY: * All names must be maximally 53 characters long."""
 
     code = 16
     level = validator.ValidationLevel.ERROR
@@ -42,7 +42,7 @@ class NameLengthValidatorV0(validator.Validator):
 
 
 class NameLengthValidator(validator.Validator):
-    f"""All names must be maximally {MAX_LENGTH} characters long."""
+    """All names must be maximally 57 characters long."""
 
     code = 21
     level = validator.ValidationLevel.ERROR
