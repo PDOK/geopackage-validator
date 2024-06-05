@@ -194,10 +194,20 @@ def validate(
     )
 
 
-def get_validation_descriptions():
+def get_validation_descriptions(legacy):
     validation_classes = get_validator_classes()
+
+    if legacy:
+        return OrderedDict(
+            (klass.validation_code, klass.__doc__) for klass in validation_classes
+        )
+
+    rq_drop_list = DROP_LEGACY_RQ_FROM_ALL
+
     return OrderedDict(
-        (klass.validation_code, klass.__doc__) for klass in validation_classes
+        (klass.validation_code, klass.__doc__)
+        for klass in validation_classes
+        if klass.validation_code not in rq_drop_list
     )
 
 
