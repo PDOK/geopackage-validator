@@ -51,7 +51,7 @@ def query_geometry_valid(dataset, sql_template) -> Iterable[Tuple[str, str, str,
 
 
 class ValidGeometryValidatorV0(validator.Validator):
-    """Legacy: * Geometries should be valid."""
+    """Legacy: use RQ23 * Geometries should be valid."""
 
     code = 5
     level = validator.ValidationLevel.ERROR

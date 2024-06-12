@@ -32,7 +32,7 @@ def srs_equal_check_query(dataset) -> Iterable[str]:
 
 
 class SrsValidatorV0(validator.Validator):
-    """LEGACY: * Only the following EPSG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409."""
+    """LEGACY: use RQ22 * Only the following EPSG spatial reference systems are allowed: 28992, 3034, 3035, 3038, 3039, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 4258, 4936, 4937, 5730, 7409."""
 
     code = 12
     level = validator.ValidationLevel.ERROR

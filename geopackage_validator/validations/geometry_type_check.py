@@ -84,7 +84,7 @@ def aggregate(results):
 
 
 class GeometryTypeValidator(validator.Validator):
-    """LEGACY: * Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON)."""
+    """LEGACY: use RQ14 * Layer features should have an allowed geometry_type (one of POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, or MULTIPOLYGON)."""
 
     code = 3
     level = validator.ValidationLevel.ERROR

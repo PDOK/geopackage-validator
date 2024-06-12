@@ -116,7 +116,7 @@ class TableDefinitionValidator(validator.Validator):
 
 
 class TableDefinitionValidatorV0(validator.Validator):
-    """LEGACY: * Geopackage must conform to table names in the given JSON definitions."""
+    """LEGACY: use RQ8 * Geopackage must conform to table names in the given JSON definitions."""
 
     code = 0
     level = validator.ValidationLevel.ERROR
