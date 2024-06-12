@@ -21,7 +21,7 @@ def query_names(dataset) -> Iterable[Tuple[str, str, int]]:
 
 
 class NameLengthValidatorV0(validator.Validator):
-    """LEGACY: * All names must be maximally 53 characters long."""
+    """LEGACY: use RQ21 * All names must be maximally 53 characters long."""
 
     code = 16
     level = validator.ValidationLevel.ERROR
