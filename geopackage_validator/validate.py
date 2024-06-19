@@ -154,9 +154,9 @@ def validate(
                 for t in traceback.format_exception(exc_type, exc_value, exc_traceback)
             ]
             output = format_result(
-                validation_code=validator.validation_code,
-                validation_description=f"No unexpected errors must occur for: {validator.__doc__}",
-                level=validator.level,
+                validation_code="UNKNOWN_WARNINGS",
+                validation_description=f"No unexpected errors must occur for: {validator.code}: {validator.__doc__}",
+                level=ValidationLevel.UNKNOWN_WARNING,
                 trace=trace,
             )
             validation_results.append(output)
@@ -171,9 +171,9 @@ def validate(
                 validation_results[-1]["locations"].extend(current_gdal_error_traces)
             else:
                 output = format_result(
-                    validation_code=validator.validation_code,
-                    validation_description=f"No unexpected errors must occur for: {validator.__doc__}",
-                    level=validator.level,
+                    validation_code="UNKNOWN_WARNINGS",
+                    validation_description=f"No unexpected errors must occur for: {validator.code}:  {validator.__doc__}",
+                    level=ValidationLevel.UNKNOWN_WARNING,
                     trace=current_gdal_error_traces,
                 )
                 validation_results.append(output)
