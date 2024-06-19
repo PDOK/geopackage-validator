@@ -155,7 +155,7 @@ def validate(
             ]
             output = format_result(
                 validation_code="UNKNOWN_WARNINGS",
-                validation_description=f"No unexpected errors must occur for: {validator.code}: {validator.__doc__}",
+                validation_description=f"No unexpected errors must occur for: RQ{validator.code} - {validator.__doc__}",
                 level=ValidationLevel.UNKNOWN_WARNING,
                 trace=trace,
             )
@@ -172,7 +172,7 @@ def validate(
             else:
                 output = format_result(
                     validation_code="UNKNOWN_WARNINGS",
-                    validation_description=f"No unexpected errors must occur for: {validator.code}:  {validator.__doc__}",
+                    validation_description=f"No unexpected errors must occur for: RQ{validator.code} -  {validator.__doc__}",
                     level=ValidationLevel.UNKNOWN_WARNING,
                     trace=current_gdal_error_traces,
                 )
