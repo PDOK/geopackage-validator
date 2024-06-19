@@ -15,6 +15,17 @@ jobs:
     steps:
     - name: Checkout 🛎️
       uses: actions/checkout@v3
+    - name: Autobump version
+      shell: bash
+      # language=bash
+      run: |
+        set -e
+        # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+        VERSION=$(echo $GITHUB_REF | grep -oP '(?<=/)(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')
+        PLACEHOLDER='__version__ = "0.0.0-dev"'
+        VERSION_FILE='geopackage_validator/__init__.py'
+        grep "$PLACEHOLDER" "$VERSION_FILE" || { echo 'version placeholder not found'; exit 1; }
+        sed -i "s/$PLACEHOLDER/__version__ = \"${VERSION}\"/g" "$VERSION_FILE"
     - name: Docker meta
       id: docker_meta
       uses: docker/metadata-action@v3
@@ -41,6 +52,7 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v2
       with:
+        context: .
         push: true
         tags: ${{ steps.docker_meta.outputs.tags }}
         labels: ${{ steps.docker_meta.outputs.labels }}
