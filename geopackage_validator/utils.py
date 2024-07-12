@@ -6,6 +6,8 @@ from functools import lru_cache
 
 from pathlib import Path
 import json
+from time import sleep
+
 import yaml
 
 from typing import Callable, Optional
@@ -57,7 +59,12 @@ def open_dataset(filename=None, error_handler=None):
         gdal.PushErrorHandler(error_handler)
 
     driver = ogr.GetDriverByName("GPKG")
-    dataset = driver.Open(filename, 0)
+
+    dataset = None
+    try:
+        dataset = driver.Open(filename, 0)
+    except Exception as e:
+        error_handler(gdal.CE_Fatal, 0, e.args[0])
 
     if dataset is not None:
         dataset.silence_gdal = silence_gdal

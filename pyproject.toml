@@ -10,17 +10,18 @@ license = {text = "MIT"}
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
 dynamic = ["version", "readme"]
 dependencies = [
     "setuptools>=42.0,!=58.*,!=59.*,!=60.*,!=61.*",
     "Click >= 8.0",
     "click-log >=0.3",
-    "gdal >=3.0.4",
+    "gdal >=3.4",
     "minio",
     "pyyaml",
 ]

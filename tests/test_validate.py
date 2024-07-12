@@ -111,9 +111,16 @@ def test_validate_all_validations_no_error():
 
 
 def test_validate_all_validations_with_broken_gpkg_throws_gdal_error():
+
+    # try:
     results, validations_executed, success = validate(
         gpkg_path="tests/data/test_broken_geopackage.gpkg", validations="ALL"
     )
+    # except Exception:
+    #     print('verwachte fout')
+    # else:
+    #     print('foute fout')
+
     assert len(results) == 1
     print(results)
     assert results[0]["locations"] == [
