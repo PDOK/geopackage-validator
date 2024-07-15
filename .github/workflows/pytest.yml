@@ -9,22 +9,30 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04] #, ubuntu-22.04, ubuntu-20.04]  # no ubuntugis @ ubuntu-24.04
-        python-version: ['3.11'] #, '3.10', '3.9', '3.8', '3.7'] # , '3.6'] <- 3.6 needs setup.cfg
-        gdal-version: ['3.8'] #, '3.6.2', '3.4']
+        os: [ubuntu-24.04, ubuntu-22.04, ubuntu-20.04] # no ubuntugis @ ubuntu-24.04
+        python-version: ['3.11', '3.10', '3.9', '3.8', '3.7'] # , '3.6'] <- 3.6 needs setup.cfg
+        gdal-version: ['3.8', '3.6', '3.4']
         exclude:
           - os: ubuntu-24.04
-            python-version: '3.8'
+            python-version: '3.9'
           - os: ubuntu-24.04
             python-version: '3.7'
+          - os: ubuntu-24.04
+            python-version: '3.7'
+          - os: ubuntu-24.04
+            gdal-version: '3.6'
           - os: ubuntu-24.04
             gdal-version: '3.4'
           - os: ubuntu-22.04
             gdal-version: '3.4'
+          - os: ubuntu-22.04
+            gdal-version: '3.8'
           - os: ubuntu-20.04
             python-version: '3.11'
           - os: ubuntu-20.04
             gdal-version: '3.6'
+          - os: ubuntu-20.04
+            gdal-version: '3.8'
     steps:
     - name: Checkout 🛎️
       uses: actions/checkout@v3
@@ -43,7 +51,7 @@ jobs:
           echo adding ubuntugis stable
           sudo apt-add-repository ppa:ubuntugis/ppa
         fi
-        sudo apt-get update || true
+        sudo apt-get update || true # ignore erros becouse we can not install gdal from `ppa:ubuntugis/ppa` without apt errors
         echo available python3-gdal versions: $(apt-cache madison python3-gdal | cut -f2 -d "|" | tr -d " ")
         echo available libgdal-dev versions: $(apt-cache madison libgdal-dev | cut -f2 -d "|" | tr -d " ")
         export APT_GDAL_VERSION=$(apt-cache madison python3-gdal | grep ${{ matrix.gdal-version }} | head -n1 | cut -f2 -d "|" | tr -d " ")

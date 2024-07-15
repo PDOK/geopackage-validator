@@ -1,3 +1,5 @@
+from osgeo import gdal
+
 from geopackage_validator.utils import (
     open_dataset,
     dataset_geometry_tables,
@@ -53,14 +55,12 @@ def test_without_gdal_error():
 
 
 def do_something_with_error_gdal(dataset):
-    validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
-    dataset.ReleaseResultSet(validations)
+    gdal.Error(gdal.CE_Warning, 9999, "test warning message")
 
 
 def do_something_silenced_gdal(dataset):
     with dataset.silence_gdal():
-        validations = dataset.ExecuteSQL('select rtreecheck("rtree_table_geom");')
-    dataset.ReleaseResultSet(validations)
+        gdal.Error(gdal.CE_Warning, 9999, "test warning message")
 
 
 def test_silence_between_gdal_errors():
@@ -73,16 +73,9 @@ def test_silence_between_gdal_errors():
 
     dataset = open_dataset("tests/data/test_gdal_error.gpkg", gdal_error_handler)
 
-    # Since GDAL 3.7 this test will not work because these errors are thrown through the try except clause
-    try:
-        do_something_with_error_gdal(dataset)
-        do_something_silenced_gdal(dataset)
-        do_something_with_error_gdal(dataset)
-    except RuntimeError as e:
-        results.append("GDAL_TRY_ERROR")
+    do_something_with_error_gdal(dataset)
+    do_something_silenced_gdal(dataset)
+    do_something_with_error_gdal(dataset)
 
-    if len(results) == 1:
-        assert results == ["GDAL_TRY_ERROR"]
-    else:
-        assert len(results) == 2
-        assert results == ["GDAL_ERROR", "GDAL_ERROR"]
+    assert len(results) == 2
+    assert results == ["GDAL_ERROR", "GDAL_ERROR"]

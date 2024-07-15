@@ -2,7 +2,6 @@ from collections import OrderedDict
 import logging
 import sys
 import traceback
-from time import sleep
 
 from osgeo import gdal
 
