@@ -43,6 +43,7 @@ jobs:
           echo adding ubuntugis stable
           sudo apt-add-repository ppa:ubuntugis/ppa
         fi
+        echo test if this still works
         sudo apt-get update
         echo available python3-gdal versions: $(apt-cache madison python3-gdal | cut -f2 -d "|" | tr -d " ")
         echo available libgdal-dev versions: $(apt-cache madison libgdal-dev | cut -f2 -d "|" | tr -d " ")
