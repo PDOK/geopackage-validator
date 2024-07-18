@@ -1,6 +1,6 @@
-ARG GDAL_VERSION=3.6.2
+ARG GDAL_VERSION=3.9.1
 
-FROM osgeo/gdal:alpine-normal-${GDAL_VERSION} AS base
+FROM ghcr.io/osgeo/gdal:alpine-normal-${GDAL_VERSION} AS base
 
 LABEL maintainer="Roel van den Berg <roel.vandenberg@kadaster.nl>"
 

@@ -77,29 +77,32 @@ def validators_to_use(
     return [validator_dict[code] for code in codes]
 
 
+class GdalErrorHandler(object):
+    def __init__(self):
+        self.gdal_error_traces = []
+        self.gdal_warning_traces = []
+
+    def handler(self, err_level, err_no, err_msg):
+        trace = err_msg.replace("\n", " ")
+        if err_level == gdal.CE_Warning:
+            self.gdal_warning_traces.append(trace)
+        else:
+            self.gdal_error_traces.append(trace)
+
+
 def validate(
     gpkg_path, table_definitions_path=None, validations_path=None, validations=""
 ):
     """Starts the geopackage validations."""
     utils.check_gdal_version()
 
-    gdal_error_traces = []
-    gdal_warning_traces = []
+    errHandler = GdalErrorHandler()
+    dataset = utils.open_dataset(gpkg_path, errHandler.handler)
 
-    # Register GDAL error handler function
-    def gdal_error_handler(err_class, err_num, error):
-        trace = error.replace("\n", " ")
-        # import pdb
-        # pdb.set_trace()
-        if err_class == gdal.CE_Warning:
-            gdal_warning_traces.append(trace)
-        else:
-            gdal_error_traces.append(trace)
-
-    dataset = utils.open_dataset(gpkg_path, gdal_error_handler)
-    if len(gdal_error_traces):
+    if len(errHandler.gdal_error_traces):
         initial_gdal_traces = [
-            gdal_error_traces.pop() for _ in range(len(gdal_error_traces))
+            errHandler.gdal_error_traces.pop()
+            for _ in range(len(errHandler.gdal_error_traces))
         ]
         initial_gdal_errors = [
             format_result(
@@ -163,7 +166,8 @@ def validate(
             validation_error = True
             success = False
         current_gdal_error_traces = [
-            gdal_error_traces.pop() for _ in range(len(gdal_error_traces))
+            errHandler.gdal_error_traces.pop()
+            for _ in range(len(errHandler.gdal_error_traces))
         ]
         if current_gdal_error_traces:
             success = False
@@ -178,12 +182,12 @@ def validate(
                 )
                 validation_results.append(output)
 
-    if gdal_warning_traces:
+    if errHandler.gdal_warning_traces:
         output = format_result(
             validation_code="UNKNOWN_WARNINGS",
             validation_description="It is recommended that these unexpected (GDAL) warnings are looked into.",
             level=ValidationLevel.UNKNOWN_WARNING,
-            trace=gdal_warning_traces,
+            trace=errHandler.gdal_warning_traces,
         )
         validation_results.append(output)
 
