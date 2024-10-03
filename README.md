@@ -125,6 +125,7 @@ An explanation in Dutch with a reason for each rule can be found [here](https://
 ## Geopackage versions
 
 The Geopackage validator support the following Geopackage versions:
+- 1.4
 - 1.3.1
 - 1.3
 - 1.2.1
