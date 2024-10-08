@@ -4,8 +4,12 @@
 
 Geopackages are a data format that have a deliberately broad application, so many of the requirements are dependend on your use.
 
-The PDOK geopackage validator is used by [PDOK](https://www.pdok.nl/). PDOK is part of the Dutch government. This geopackage validator is used to validate a [set of requirements](#what-does-it-do) to make sure geopackages adhere to our standardized ETL pipeline. It is possible to use this for your own purposes as described [here](https://github.com/PDOK/geopackage-validator/issues/115#issuecomment-1529488733). The validations will not change (except for bugfixes); **new validations are always added to the list**. 
+The PDOK geopackage validator is used by [PDOK](https://www.pdok.nl/). PDOK is part of the Dutch government. This geopackage validator is used to validate a [set of requirements](#what-does-it-do) to make sure geopackages adhere to our standardized ETL pipeline. It is possible to use this for your own purposes as described [here](https://github.com/PDOK/geopackage-validator/issues/115#issuecomment-1529488733). The validations will not change (except for bugfixes); **new validations are always added to the list**. In  case you are looking for a more generic validator. These do exist and can be found: 
 
+- [teamengine](https://cite.opengeospatial.org/teamengine) (official OGC, Java)
+  - [teamengine Github](https://github.com/opengeospatial/teamengine)
+  - [OGC GeoPackage 1.2 Conformance Test Suite](https://github.com/opengeospatial/ets-gpkg12)
+- [validate_gpkg.py](https://github.com/OSGeo/gdal/blob/master/swig/python/gdal-utils/osgeo_utils/samples/validate_gpkg.py) (part of gdal repo)
 
 ## Table of Contents
 
