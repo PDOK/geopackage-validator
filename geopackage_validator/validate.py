@@ -5,7 +5,7 @@ import traceback
 
 from osgeo import gdal
 
-from geopackage_validator.generate import TableDefinition
+from geopackage_validator.generate import TableDefinition, load_table_definitions
 from geopackage_validator import validations as validation
 from geopackage_validator.validations.validator import (
     Validator,
@@ -226,7 +226,3 @@ def get_validator_classes():
         if issubclass(getattr(validation, validator), Validator)
     ]
     return sorted(validator_classes, key=lambda v: (v.level, v.code))
-
-
-def load_table_definitions(table_definitions_path) -> TableDefinition:
-    return utils.load_config(table_definitions_path)

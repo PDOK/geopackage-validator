@@ -416,6 +416,77 @@ def geopackage_validator_command_generate_table_definitions(
         sys.exit(1)
 
 
+
+@cli.command(
+    name="generate-gpkg",
+    help=(
+        "Generate an empty geopackage based on a geopackage validator table definition. Provide the table definitions "
+        "with the --table-definitions-path parameter. The generated geopackage will be valid except for the fact that it"
+        "will be empty.\n\n"
+        "When the filepath is preceded with '/vsi' the gdal virtual file system method will be used to access the file on "
+        "S3 and will not be directly downloaded. See https://gdal.org/user/virtual_file_systems.html for further "
+        "explanation. For convenience the gdal vsi environment parameters and optional parameters are provided with "
+        "an S3_ instead of an AWS_ prefix. The AWS_ environment parameters will also work.\n\n"
+        "Examples:\n\n"
+        "viscurl:\n\n"
+        "geopackage-validator generate-definitions --gpkg-path /vsicurl/http://minio-url.nl/bucketname/key/to/public.gpkg\n\n"
+        "vsis3:\n\n"
+        "geopackage-validator generate-definitions --gpkg-path /vsis3/bucketname/key/to/public.gpkg --s3-signing-region eu-central-1 --s3-secret-key secret --s3-access-key acces-key --s3-secure=false --s3-virtual-hosting false --s3-endpoint-no-protocol minio-url.nl\n\n"
+        "S3_SECRET_KEY=secret S3_ACCESS_KEY=acces-key S3_SIGNING_REGION=eu-central-1 S3_SECURE=false S3_VIRTUAL_HOSTING=false S3_ENDPOINT_NO_PROTOCOL=minio-url.nl geopackage-validator generate-definitions --gpkg-path /vsis3/bucketname/key/to/public.gpkg\n\n"
+        "AWS_SECRET_ACCESS_KEY=secret AWS_ACCESS_KEY_ID=acces-key AWS_DEFAULT_REGION=eu-central-1 AWS_HTTPS=NO AWS_VIRTUAL_HOSTING=FALSE AWS_S3_ENDPOINT=minio-url.nl geopackage-validator generate-definitions --gpkg-path /vsis3/bucketname/key/to/public.gpkg"
+    ),
+)
+@click.option(
+    "--gpkg-path",
+    envvar="GPKG_PATH",
+    required=False,
+    default=None,
+    show_envvar=True,
+    help="Path pointing to the geopackage.gpkg file",
+    type=click.types.Path(
+        file_okay=False,
+        dir_okay=False,
+        readable=False,
+        writable=False,
+        resolve_path=False,
+        allow_dash=False,
+    ),
+)
+@click.option(
+    "--validations-path",
+    show_envvar=True,
+    required=False,
+    default=None,
+    envvar="VALIDATIONS_FILE",
+    help=(
+        "Path pointing to the set of validations to run. If validations-path and validations are not given, validate "
+        "runs all validations"
+    ),
+    type=click.types.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
+    ),
+)
+@click_log.simple_verbosity_option(logger)
+def geopackage_validator_command_generate_gpkg(
+    gpkg_path,
+    validations_path,
+):
+    gpkg_path_not_exists = gpkg_path is None
+    if gpkg_path_not_exists:
+        logger.error("Give a valid --gpkg-path or (/vsi)s3 location")
+        sys.exit(1)
+    try:
+        generate.generate_empty_geopackage(gpkg_path, validations_path)
+    except Exception:
+        logger.exception("Error while generating table definitions")
+        sys.exit(1)
+
+
 @cli.command(
     name="show-validations",
     help="Show all the possible validations that can be executed in the validate command.",
