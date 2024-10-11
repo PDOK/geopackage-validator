@@ -526,7 +526,13 @@ def geopackage_validator_command_generate_gpkg(
 
     if do_validate:
         if not (validations or validations_path is not None):
-            validations = ",".join([k for k in validate.get_validation_descriptions(False).keys() if k != "RQ2"])
+            validations = ",".join(
+                [
+                    k
+                    for k in validate.get_validation_descriptions(False).keys()
+                    if k != "RQ2"
+                ]
+            )
         start_time = datetime.now()
         duration_start = time.monotonic()
         filename = gpkg_path
