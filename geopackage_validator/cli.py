@@ -416,7 +416,6 @@ def geopackage_validator_command_generate_table_definitions(
         sys.exit(1)
 
 
-
 @cli.command(
     name="generate-gpkg",
     help=(
@@ -453,6 +452,25 @@ def geopackage_validator_command_generate_table_definitions(
     ),
 )
 @click.option(
+    "-t",
+    "--table-definitions-path",
+    show_envvar=True,
+    required=True,
+    default=None,
+    help=(
+        "Path pointing to the table-definitions  JSON or YAML file (generate this file by calling the "
+        "generate-definitions command)"
+    ),
+    type=click.types.Path(
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
+    ),
+)
+@click.option(
     "--validations-path",
     show_envvar=True,
     required=False,
@@ -471,20 +489,34 @@ def geopackage_validator_command_generate_table_definitions(
         allow_dash=False,
     ),
 )
+@click.option(
+    "--validations",
+    show_envvar=True,
+    required=False,
+    default="",
+    envvar="VALIDATIONS",
+    help=(
+        "Comma-separated list of validations to run (e.g. --validations RQ1,RQ2,RQ3). If validations-path and "
+        "validations are not given, validate runs all validations"
+    ),
+)
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_generate_gpkg(
     gpkg_path,
+    table_definitions_path,
     validations_path,
+    validations,
 ):
     gpkg_path_not_exists = gpkg_path is None
     if gpkg_path_not_exists:
         logger.error("Give a valid --gpkg-path or (/vsi)s3 location")
         sys.exit(1)
     try:
-        generate.generate_empty_geopackage(gpkg_path, validations_path)
+        generate.generate_empty_geopackage(gpkg_path, table_definitions_path)
     except Exception:
         logger.exception("Error while generating table definitions")
         sys.exit(1)
+    validate.validate(gpkg_path, table_definitions_path, validations_path, validations)
 
 
 @cli.command(

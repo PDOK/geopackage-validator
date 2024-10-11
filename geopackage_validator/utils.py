@@ -87,7 +87,7 @@ def create_dataset(filename=None, error_handler=None):
 
     dataset = None
     try:
-        dataset = driver.CreateDataset(filename)
+        dataset = driver.CreateDataSource(filename)
     except Exception as e:
         error_handler(gdal.CE_Failure, 0, e.args[0])
 
@@ -95,7 +95,6 @@ def create_dataset(filename=None, error_handler=None):
         dataset.silence_gdal = silence_gdal
 
     return dataset
-
 
 
 def check_gdal_version():

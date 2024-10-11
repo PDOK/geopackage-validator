@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List, Union
 from collections import OrderedDict
 
-from osgeo import ogr
+from osgeo import ogr, osr
 from osgeo.ogr import DataSource
 
 from geopackage_validator import utils
@@ -24,22 +24,25 @@ OGR_GEOMETRY_TYPES = {
 }
 
 
-OGR_FIELD_TYPES = dict(**OGR_GEOMETRY_TYPES, **{
-    "DATE": ogr.OFTDate,
-    "DATETIME": ogr.OFTDateTime,
-    "TIME": ogr.OFTTime,
-    "INTEGER": ogr.OFTInteger,
-    "INTEGER64": ogr.OFTInteger64,
-    "REAL": ogr.OFTReal ,
-    "STRING": ogr.OFTString ,
-    "BINARY": ogr.OFTBinary,
-    "INTEGERLIST": ogr.OFTIntegerList,
-    "INTEGER64LIST": ogr.OFTInteger64List,
-    "REALLIST": ogr.OFTRealList,
-    "STRINGLIST": ogr.OFTStringList,
-    "WIDESTRING": ogr.OFTWideString,
-    "WIDESTRINGLIST": ogr.OFTWideStringList,
-})
+OGR_FIELD_TYPES = dict(
+    **OGR_GEOMETRY_TYPES,
+    **{
+        "DATE": ogr.OFTDate,
+        "DATETIME": ogr.OFTDateTime,
+        "TIME": ogr.OFTTime,
+        "INTEGER": ogr.OFTInteger,
+        "INTEGER64": ogr.OFTInteger64,
+        "REAL": ogr.OFTReal,
+        "STRING": ogr.OFTString,
+        "BINARY": ogr.OFTBinary,
+        "INTEGERLIST": ogr.OFTIntegerList,
+        "INTEGER64LIST": ogr.OFTInteger64List,
+        "REALLIST": ogr.OFTRealList,
+        "STRINGLIST": ogr.OFTStringList,
+        "WIDESTRING": ogr.OFTWideString,
+        "WIDESTRINGLIST": ogr.OFTWideStringList,
+    },
+)
 
 
 def columns_definition(table, geometry_column) -> ColumnDefinition:
@@ -111,9 +114,10 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
     return result
 
 
-def generate_geopackage_from_table_definition(dataset: DataSource, table_definition: TableDefinition):
-    version = table_definition["geopackage_validator_version"]
-    projection = table_definition["projection"]
+def generate_geopackage_from_table_definition(
+    dataset: DataSource, table_definition: TableDefinition
+):
+    projection = int(table_definition["projection"])
     tables = table_definition["tables"]
 
     srs = osr.SpatialReference()
