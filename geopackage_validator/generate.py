@@ -124,8 +124,15 @@ def generate_geopackage_from_table_definition(
     srs.ImportFromEPSG(projection)
 
     for table in tables:
-        columns = {c["name"]: c["type"] for c in table["columns"]}
-
+        try:
+            columns = {c["name"]: c["type"] for c in table["columns"]}
+        except KeyError:
+            try:
+                columns = {c["name"]: c["data_type"] for c in table["columns"]}
+            except KeyError:
+                raise ValueError(
+                    f"Table defintion is incomplete or its version is too old"
+                )
         try:
             geometry_type = OGR_GEOMETRY_TYPES[columns[table["geometry_column"]]]
         except KeyError:
@@ -139,7 +146,14 @@ def generate_geopackage_from_table_definition(
                 if column["name"] != table["geometry_column"]
             ]
         except KeyError:
-            raise ValueError(f"Unknown field type for table {table['name']}")
+            try:
+                fields = [
+                    ogr.FieldDefn(column["name"], OGR_FIELD_TYPES[column["data_type"]])
+                    for column in table["columns"]
+                    if column["name"] != table["geometry_column"]
+                ]
+            except KeyError:
+                raise ValueError(f"Unknown field type for table {table['name']}")
 
         layer.CreateFields(fields)
 
