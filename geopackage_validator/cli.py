@@ -501,11 +501,27 @@ def geopackage_validator_command_generate_table_definitions(
     ),
 )
 @click_log.simple_verbosity_option(logger)
+@click.option(
+    "--yaml",
+    required=False,
+    is_flag=True,
+    help="Output yaml",
+)
+@click.option(
+    "--validate",
+    "do_validate",
+    required=False,
+    is_flag=True,
+    help="Validate after generation",
+    default=False,
+)
 def geopackage_validator_command_generate_gpkg(
     gpkg_path,
     table_definitions_path,
     validations_path,
     validations,
+    yaml,
+    do_validate,
 ):
     gpkg_path_not_exists = gpkg_path is None
     if gpkg_path_not_exists:
@@ -516,7 +532,31 @@ def geopackage_validator_command_generate_gpkg(
     except Exception:
         logger.exception("Error while generating table definitions")
         sys.exit(1)
-    validate.validate(gpkg_path, table_definitions_path, validations_path, validations)
+
+    do_validate = do_validate or validations or validations_path is not None
+
+    if do_validate:
+        if not (validations or validations_path is not None):
+            validations = ",".join([k for k in validate.get_validation_descriptions(False).keys() if k != "RQ2"])
+        start_time = datetime.now()
+        duration_start = time.monotonic()
+        filename = gpkg_path
+        results, validations_executed, success = validate.validate(
+            gpkg_path,
+            table_definitions_path,
+            validations_path,
+            validations,
+        )
+        duration_seconds = time.monotonic() - duration_start
+        output.log_output(
+            filename=filename,
+            results=results,
+            validations_executed=validations_executed,
+            start_time=start_time,
+            duration_seconds=duration_seconds,
+            success=success,
+            as_yaml=yaml,
+        )
 
 
 @cli.command(
