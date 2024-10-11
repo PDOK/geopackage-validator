@@ -1,5 +1,7 @@
-from geopackage_validator.generate import generate_definitions_for_path
-from geopackage_validator.validate import load_table_definitions
+from geopackage_validator.generate import (
+    generate_definitions_for_path,
+    load_table_definitions,
+)
 from geopackage_validator.validations.table_definitions_check import (
     TableDefinitionValidator,
     TableDefinitionValidatorV0,

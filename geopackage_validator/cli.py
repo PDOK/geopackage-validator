@@ -417,6 +417,144 @@ def geopackage_validator_command_generate_table_definitions(
 
 
 @cli.command(
+    name="generate-gpkg",
+    help=(
+        "Generate an empty geopackage based on a geopackage validator table definition. Provide the table definitions "
+        "with the --table-definitions-path parameter. The generated geopackage will be valid except for the fact that "
+        "it will be empty."
+    ),
+)
+@click.option(
+    "--gpkg-path",
+    envvar="GPKG_PATH",
+    required=False,
+    default=None,
+    show_envvar=True,
+    help="Path pointing to the geopackage.gpkg file",
+    type=click.types.Path(
+        file_okay=False,
+        dir_okay=False,
+        readable=False,
+        writable=False,
+        resolve_path=False,
+        allow_dash=False,
+    ),
+)
+@click.option(
+    "-t",
+    "--table-definitions-path",
+    show_envvar=True,
+    required=True,
+    default=None,
+    help=(
+        "Path pointing to the table-definitions  JSON or YAML file (generate this file by calling the "
+        "generate-definitions command)"
+    ),
+    type=click.types.Path(
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
+    ),
+)
+@click.option(
+    "--validations-path",
+    show_envvar=True,
+    required=False,
+    default=None,
+    envvar="VALIDATIONS_FILE",
+    help=(
+        "Path pointing to the set of validations to run. If validations-path and validations are not given, validate "
+        "runs all validations"
+    ),
+    type=click.types.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        writable=False,
+        allow_dash=False,
+    ),
+)
+@click.option(
+    "--validations",
+    show_envvar=True,
+    required=False,
+    default="",
+    envvar="VALIDATIONS",
+    help=(
+        "Comma-separated list of validations to run (e.g. --validations RQ1,RQ2,RQ3). If validations-path and "
+        "validations are not given, validate runs all validations"
+    ),
+)
+@click_log.simple_verbosity_option(logger)
+@click.option(
+    "--yaml",
+    required=False,
+    is_flag=True,
+    help="Output yaml",
+)
+@click.option(
+    "--validate",
+    "do_validate",
+    required=False,
+    is_flag=True,
+    help="Validate after generation",
+    default=False,
+)
+def geopackage_validator_command_generate_gpkg(
+    gpkg_path,
+    table_definitions_path,
+    validations_path,
+    validations,
+    yaml,
+    do_validate,
+):
+    gpkg_path_not_exists = gpkg_path is None
+    if gpkg_path_not_exists:
+        logger.error("Give a valid --gpkg-path or (/vsi)s3 location")
+        sys.exit(1)
+    try:
+        generate.generate_empty_geopackage(gpkg_path, table_definitions_path)
+    except Exception:
+        logger.exception("Error while generating table definitions")
+        sys.exit(1)
+
+    do_validate = do_validate or validations or validations_path is not None
+
+    if do_validate:
+        if not (validations or validations_path is not None):
+            validations = ",".join(
+                [
+                    k
+                    for k in validate.get_validation_descriptions(False).keys()
+                    if k != "RQ2"
+                ]
+            )
+        start_time = datetime.now()
+        duration_start = time.monotonic()
+        filename = gpkg_path
+        results, validations_executed, success = validate.validate(
+            gpkg_path,
+            table_definitions_path,
+            validations_path,
+            validations,
+        )
+        duration_seconds = time.monotonic() - duration_start
+        output.log_output(
+            filename=filename,
+            results=results,
+            validations_executed=validations_executed,
+            start_time=start_time,
+            duration_seconds=duration_seconds,
+            success=success,
+            as_yaml=yaml,
+        )
+
+
+@cli.command(
     name="show-validations",
     help="Show all the possible validations that can be executed in the validate command.",
 )

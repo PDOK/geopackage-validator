@@ -69,6 +69,34 @@ def open_dataset(filename=None, error_handler=None):
     return dataset
 
 
+def create_dataset(filename=None, error_handler=None):
+    if error_handler is not None:
+        gdal.UseExceptions()
+        gdal.PushErrorHandler(error_handler)
+
+    @contextmanager
+    def silence_gdal():
+        if error_handler is None:
+            warnings.warn("cannot silence gdal without error handler")
+            return
+        gdal.PopErrorHandler()
+        yield
+        gdal.PushErrorHandler(error_handler)
+
+    driver = ogr.GetDriverByName("GPKG")
+
+    dataset = None
+    try:
+        dataset = driver.CreateDataSource(filename)
+    except Exception as e:
+        error_handler(gdal.CE_Failure, 0, e.args[0])
+
+    if dataset is not None:
+        dataset.silence_gdal = silence_gdal
+
+    return dataset
+
+
 def check_gdal_version():
     """This method checks if GDAL has the right version and exits with an error otherwise."""
     version_num = int(gdal.VersionInfo("VERSION_NUM"))

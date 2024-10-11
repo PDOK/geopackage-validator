@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from click.testing import CliRunner
 
@@ -54,6 +55,44 @@ def test_generate_definitions_with_gpkg():
 
     assert result.exit_code == 0
     assert json.loads(result.output) == expected
+
+
+def test_generate_gpkg_with_definitions(tmp_path):
+    gpkg_dir = tmp_path / "gpkg"
+    gpkg_dir.mkdir()
+
+    test_gpkg_path = gpkg_dir / "test.gpkg"
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "generate-gpkg",
+            "--gpkg-path",
+            f"{test_gpkg_path}",
+            "--table-definitions-path",
+            "tests/data/test_allcorrect_definition.yml",
+        ],
+    )
+
+    print(result.stdout)
+
+    assert result.exit_code == 0
+
+    result = runner.invoke(
+        cli, ["generate-definitions", "--gpkg-path", f"{test_gpkg_path}"]
+    )
+
+    expected = json.loads(
+        Path("tests/data/test_allcorrect_definition.json").read_text()
+    )
+    validation_result = json.loads(result.output)
+
+    del expected["geopackage_validator_version"]
+    del validation_result["geopackage_validator_version"]
+
+    assert result.exit_code == 0
+    assert validation_result == expected
 
 
 def test_generate_definitions_with_ndimension_geometries():
