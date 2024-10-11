@@ -392,6 +392,41 @@ Options:
   --help                          Show this message and exit.
 ```
 
+### Generate geopackage from table definitions 
+
+```bash
+geopackage-validator generate-gpkg --help
+Usage: geopackage-validator generate-gpkg [OPTIONS]
+
+  Generate an empty geopackage based on a geopackage validator table
+  definition. Provide the table definitions with the --table-definitions-path
+  parameter. The generated geopackage will be valid except for the fact that
+  it will be empty.
+
+Options:
+  --gpkg-path PATH                Path pointing to the geopackage.gpkg file
+                                  [env var: GPKG_PATH]
+  -t, --table-definitions-path FILE
+                                  Path pointing to the table-definitions  JSON
+                                  or YAML file (generate this file by calling
+                                  the generate-definitions command)
+                                  [required]
+  --validations-path FILE         Path pointing to the set of validations to
+                                  run. If validations-path and validations are
+                                  not given, validate runs all validations
+                                  [env var: VALIDATIONS_FILE]
+  --validations TEXT              Comma-separated list of validations to run
+                                  (e.g. --validations RQ1,RQ2,RQ3). If
+                                  validations-path and validations are not
+                                  given, validate runs all validations  [env
+                                  var: VALIDATIONS]
+  -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
+                                  DEBUG
+  --yaml                          Output yaml
+  --validate                      Validate after generation
+  --help                          Show this message and exit.
+```
+
 ## Local development
 
 We advise using docker-compose for local development. This allows live editing and testing code with the correct gdal/ogr version with spatialite 5.0.0. 
