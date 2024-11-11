@@ -66,7 +66,7 @@ def compare_table_definitions(new_definition, old_definition, compare_columns=Tr
     old_projection = old_definition.get("projection")
     if new_projection != old_projection:
         results.append(
-            f"different projections: {new_projection} changed to {old_projection}"
+            f"different projections: {old_projection} changed to {new_projection}"
         )
 
     column_type_name = get_column_type_name(
