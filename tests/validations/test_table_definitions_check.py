@@ -94,9 +94,12 @@ def test_table_definitions_check_incorrect_column_name():
         "tables": [
             {
                 "name": "test_allcorrect",
-                "geometry_column": "geometry",
+                "geometry_column": "geometry",  # geom -> 1 error
                 "columns": [
-                    {"name": "id", "type": "INTEGER"},  # name should be fid
+                    {
+                        "name": "id",
+                        "type": "INTEGER",
+                    },  # name should be fid -> 2 errors (1 missing and 1 extra)
                     {"name": "geom", "type": "POLYGON"},
                 ],
             }
@@ -111,7 +114,7 @@ def test_table_definitions_check_incorrect_column_name():
         None, table_definitions=table_definitions
     ).check_table_definitions(current_definitions)
 
-    assert len(diff) == 2
+    assert len(diff) == 3
 
 
 def test_table_definitions_check_table_changed():
