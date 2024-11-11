@@ -76,7 +76,7 @@ def compare_table_definitions(new_definition, old_definition, compare_columns=Tr
         old_table = old_tables[table_name]
         new_table = new_tables[table_name]
         old_geometry = old_table.get("geometry_column")
-        new_geometry = old_table.get("geometry_column")
+        new_geometry = new_table.get("geometry_column")
         if old_geometry != new_geometry:
             results.append(
                 f"{table_name} geometry_column changed from {old_geometry} to {new_geometry}"
