@@ -1,17 +1,20 @@
-from typing import Iterable
+from typing import Iterable, List, Dict, Set, Tuple
 
-from geopackage_validator.generate import TableDefinition
-from geopackage_validator.validations import validator
 from geopackage_validator.generate import generate_table_definitions
+from geopackage_validator.models import (
+    Named,
+    ColumnDefinition,
+    TableDefinition,
+    TablesDefinition,
+)
+from geopackage_validator.validations import validator
 
 
-LEGACY_COLUMN_TYPE_NAME = "data_type"
-COLUMN_TYPE_NAME = "type"
-
-
-def prepare_comparison(new_, old_):
-    new_dict = {item["name"]: item for item in new_}
-    old_dict = {item["name"]: item for item in old_}
+def prepare_comparison(
+    new_: List[Named], old_: List[Named]
+) -> Tuple[Dict[str, Named], Dict[str, Named], str, str, Set[str]]:
+    new_dict = {item.name: item for item in new_}
+    old_dict = {item.name: item for item in old_}
     missing = old_dict.keys() - new_dict.keys()
     added = new_dict.keys() - old_dict.keys()
     intersection = set(new_dict.keys()).intersection(set(old_dict.keys()))
@@ -19,14 +22,16 @@ def prepare_comparison(new_, old_):
 
 
 def compare_column_definitions(
-    new_columns, old_columns, table_name, type_name=COLUMN_TYPE_NAME
-):
-    assert (
-        old_columns is not None
-    ), f"table {table_name} in table definition misses columns"
+    new_columns: List[ColumnDefinition],
+    old_columns: List[ColumnDefinition],
+    table_name: str,
+) -> List[str]:
+    assert old_columns, f"table {table_name} in table definition misses columns"
     new_dict, old_dict, missing, added, intersection = prepare_comparison(
         new_columns, old_columns
     )
+    new_dict: Dict[str, ColumnDefinition]
+    old_dict: Dict[str, ColumnDefinition]
 
     result = []
     if missing:
@@ -35,26 +40,23 @@ def compare_column_definitions(
         result.append(f"table {table_name} has extra column(s): {added}")
 
     wrong_types = [
-        f"table {table_name}, column {k} changed type {old_dict[k][type_name]} to {new_dict[k][COLUMN_TYPE_NAME]}"
+        f"table {table_name}, column {k} changed type {old_dict[k].type} to {new_dict[k].type}"
         for k in intersection
-        if old_dict[k][type_name] != new_dict[k][COLUMN_TYPE_NAME]
+        if old_dict[k].type != new_dict[k].type
     ]
 
     return result + wrong_types
 
 
-def get_column_type_name(version):
-    version_tuple = tuple(int(v) for v in version.split("."))
-    if version_tuple <= (0, 5, 8):
-        return LEGACY_COLUMN_TYPE_NAME
-    return COLUMN_TYPE_NAME
-
-
-def compare_table_definitions(new_definition, old_definition, compare_columns=True):
+def compare_table_definitions(
+    new_definition: TablesDefinition,
+    old_definition: TablesDefinition,
+    compare_columns=True,
+) -> List[str]:
     results = []
 
     new_tables, old_tables, missing, added, intersection = prepare_comparison(
-        new_definition["tables"], old_definition["tables"]
+        new_definition.tables, old_definition.tables
     )
 
     if missing:
@@ -62,31 +64,25 @@ def compare_table_definitions(new_definition, old_definition, compare_columns=Tr
     if added:
         results.append(f"extra table(s): {added}")
 
-    new_projection = new_definition["projection"]
-    old_projection = old_definition.get("projection")
+    new_projection = new_definition.projection
+    old_projection = old_definition.projection
     if new_projection != old_projection:
         results.append(
             f"different projections: {new_projection} changed to {old_projection}"
         )
 
-    column_type_name = get_column_type_name(
-        old_definition.get("geopackage_validator_version", "0")
-    )
+    new_tables: Dict[str, TableDefinition]
+    old_tables: Dict[str, TableDefinition]
     for table_name in intersection:
         old_table = old_tables[table_name]
         new_table = new_tables[table_name]
-        old_geometry = old_table.get("geometry_column")
-        new_geometry = new_table.get("geometry_column")
-        if old_geometry != new_geometry:
+        if old_table.geometry_column != new_table.geometry_column:
             results.append(
-                f"{table_name} geometry_column changed from {old_geometry} to {new_geometry}"
+                f"{table_name} geometry_column changed from {old_table.geometry_column} to {new_table.geometry_column}"
             )
         if compare_columns:
             results += compare_column_definitions(
-                new_table["columns"],
-                old_table.get("columns"),
-                table_name,
-                column_type_name,
+                new_table.columns, old_table.columns, table_name
             )
 
     return results
@@ -106,7 +102,7 @@ class TableDefinitionValidator(validator.Validator):
         current_definitions = generate_table_definitions(self.dataset)
         return self.check_table_definitions(current_definitions)
 
-    def check_table_definitions(self, definitions_current: TableDefinition):
+    def check_table_definitions(self, definitions_current: TablesDefinition):
         assert definitions_current is not None
 
         if self.table_definitions is None:
@@ -129,7 +125,7 @@ class TableDefinitionValidatorV0(validator.Validator):
         current_definitions = generate_table_definitions(self.dataset)
         return self.check_table_definitions(current_definitions)
 
-    def check_table_definitions(self, definitions_current: TableDefinition):
+    def check_table_definitions(self, definitions_current: TablesDefinition):
         assert definitions_current is not None
 
         if self.table_definitions is None:

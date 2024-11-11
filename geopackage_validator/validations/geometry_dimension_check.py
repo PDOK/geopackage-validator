@@ -51,7 +51,7 @@ class GeometryDimensionValidator(validator.Validator):
     """It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary."""
 
     code = 19
-    level = validator.ValidationLevel.RECCOMENDATION
+    level = validator.ValidationLevel.RECOMMENDATION
     message = "Table: {table}, has features with {message}"
 
     def check(self) -> Iterable[str]:

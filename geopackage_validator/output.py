@@ -1,9 +1,10 @@
 import json
+from collections import OrderedDict
 from datetime import datetime
 from typing import Dict, List
-from collections import OrderedDict
 
 import yaml
+from pydantic import BaseModel
 
 from geopackage_validator import __version__
 
@@ -57,8 +58,18 @@ def log_output(
 
 
 def print_output(python_object, as_yaml, yaml_indent=2):
+    if isinstance(python_object, BaseModel):
+        return print_output_pydantic(python_object, as_yaml, yaml_indent)
     if as_yaml:
-        content = yaml.dump(python_object, indent=yaml_indent)
+        content = yaml.dump(python_object, indent=yaml_indent, sort_keys=False)
     else:
-        content = json.dumps(python_object, indent=4)
+        content = json.dumps(python_object, indent=4, sort_keys=False)
+    print(content)
+
+
+def print_output_pydantic(model: BaseModel, as_yaml: bool, yaml_indent=2):
+    content = model.model_dump_json(indent=4)
+    if as_yaml:
+        python_object = yaml.safe_load(content)
+        content = yaml.dump(python_object, indent=yaml_indent, sort_keys=False)
     print(content)

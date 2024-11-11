@@ -1,20 +1,20 @@
 import logging
-from typing import Dict, List, Union
-from collections import OrderedDict
+from typing import List
 
-from osgeo import ogr
 from osgeo.ogr import DataSource
 
-from geopackage_validator import utils
 from geopackage_validator import __version__
+from geopackage_validator import utils
+from geopackage_validator.models import (
+    ColumnDefinition,
+    TableDefinition,
+    TablesDefinition,
+)
 
 logger = logging.getLogger(__name__)
 
-ColumnDefinition = List[Dict[str, str]]
-TableDefinition = Dict[str, Union[int, Dict[str, ColumnDefinition]]]
 
-
-def columns_definition(table, geometry_column) -> ColumnDefinition:
+def columns_definition(table, geometry_column) -> List[ColumnDefinition]:
     layer_definition = table.GetLayerDefn()
 
     assert layer_definition, f'Invalid Layer {"" if not table else table.GetName()}'
@@ -28,26 +28,27 @@ def columns_definition(table, geometry_column) -> ColumnDefinition:
         for column_id in range(field_count)
     ]
 
-    fid_column = fid_column_definition(table)
+    fid_columns = fid_column_definition(table)
 
-    return fid_column + [geometry_column] + columns
+    return fid_columns + [geometry_column] + columns
 
 
-def fid_column_definition(table) -> ColumnDefinition:
+def fid_column_definition(table) -> List[ColumnDefinition]:
     name = table.GetFIDColumn()
     if not name:
         return []
-    return [{"name": name, "type": "INTEGER"}]
+    return [ColumnDefinition(name=name, type="INTEGER")]
 
 
-def generate_table_definitions(dataset: DataSource) -> TableDefinition:
+
+def generate_table_definitions(dataset: DataSource) -> TablesDefinition:
     projections = set()
     table_geometry_types = {
         table_name: geometry_type_name
         for table_name, _, geometry_type_name in utils.dataset_geometry_tables(dataset)
     }
 
-    table_list = []
+    table_list: List[TableDefinition] = []
     for table in dataset:
         geo_column_name = table.GetGeometryColumn()
         if geo_column_name == "":
@@ -59,12 +60,10 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
             "type": table_geometry_types[table_name],
         }
         table_list.append(
-            OrderedDict(
-                [
-                    ("name", table_name),
-                    ("geometry_column", geo_column_name),
-                    ("columns", columns_definition(table, geometry_column)),
-                ]
+            TableDefinition(
+                name=table_name,
+                geometry_column=geo_column_name,
+                columns=columns_definition(table, geometry_column),
             )
         )
 
@@ -72,18 +71,16 @@ def generate_table_definitions(dataset: DataSource) -> TableDefinition:
 
     assert len(projections) == 1, "Expected one projection per geopackage."
 
-    result = OrderedDict(
-        [
-            ("geopackage_validator_version", __version__),
-            ("projection", int(projections.pop())),
-            ("tables", table_list),
-        ]
+    result = TablesDefinition(
+        geopackage_validator_version=__version__,
+        projection=int(projections.pop()),
+        tables=table_list,
     )
 
     return result
 
 
-def generate_definitions_for_path(gpkg_path: str) -> TableDefinition:
+def generate_definitions_for_path(gpkg_path: str) -> TablesDefinition:
     """Starts the geopackage validation."""
     utils.check_gdal_version()
 

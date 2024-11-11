@@ -2,8 +2,8 @@ import json
 
 from click.testing import CliRunner
 
-from geopackage_validator.cli import cli
 from geopackage_validator import __version__
+from geopackage_validator.cli import cli
 
 
 def test_show_validations():
@@ -52,6 +52,8 @@ def test_generate_definitions_with_gpkg():
         ],
     }
 
+    if result.exit_code != 0:
+        print(result.output)
     assert result.exit_code == 0
     assert json.loads(result.output) == expected
 

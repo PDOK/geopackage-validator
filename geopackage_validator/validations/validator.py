@@ -9,7 +9,7 @@ class ValidationLevel(IntEnum):
     RQ = 1
     ERROR = 1
     RC = 2
-    RECCOMENDATION = 2
+    RECOMMENDATION = 2
 
 
 VALIDATION_LEVELS = {

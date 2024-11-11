@@ -1,4 +1,7 @@
-from geopackage_validator.generate import generate_definitions_for_path
+from geopackage_validator.generate import (
+    generate_definitions_for_path,
+)
+from geopackage_validator.models import TablesDefinition
 from geopackage_validator.validate import load_table_definitions
 from geopackage_validator.validations.table_definitions_check import (
     TableDefinitionValidator,
@@ -49,6 +52,7 @@ def test_table_definitions_check_incorrect_geometry():
             }
         ],
     }
+    current_definitions = TablesDefinition.model_validate(current_definitions)
 
     table_definitions = load_table_definitions(
         "tests/data/test_allcorrect_definition.json"
@@ -75,6 +79,7 @@ def test_table_definitions_check_incorrect_projection():
             }
         ],
     }
+    current_definitions = TablesDefinition.model_validate(current_definitions)
 
     table_definitions = load_table_definitions(
         "tests/data/test_allcorrect_definition.json"
@@ -105,6 +110,7 @@ def test_table_definitions_check_incorrect_column_name():
             }
         ],
     }
+    current_definitions = TablesDefinition.model_validate(current_definitions)
 
     table_definitions = load_table_definitions(
         "tests/data/test_allcorrect_definition.json"
@@ -131,6 +137,7 @@ def test_table_definitions_check_table_changed():
             }
         ],
     }
+    current_definitions = TablesDefinition.model_validate(current_definitions)
 
     table_definitions = load_table_definitions(
         "tests/data/test_allcorrect_definition.json"
@@ -157,6 +164,7 @@ def test_legacy_table_definitions_check_table_changed():
             }
         ],
     }
+    current_definitions = TablesDefinition.model_validate(current_definitions)
 
     table_definitions = load_table_definitions(
         "tests/data/test_allcorrect_definition.json"
