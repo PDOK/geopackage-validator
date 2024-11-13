@@ -1,5 +1,6 @@
 from geopackage_validator.generate import (
     generate_definitions_for_path,
+    get_datasource_for_path,
 )
 from geopackage_validator.models import TablesDefinition
 from geopackage_validator.validate import load_table_definitions
@@ -7,19 +8,6 @@ from geopackage_validator.validations.table_definitions_check import (
     TableDefinitionValidator,
     TableDefinitionValidatorV0,
 )
-
-
-def test_table_definitions_input_is_none():
-    current_definitions = generate_definitions_for_path(
-        "tests/data/test_allcorrect.gpkg"
-    )
-
-    diff = TableDefinitionValidator(
-        None, table_definitions=None
-    ).check_table_definitions(current_definitions)
-
-    assert len(diff) == 1
-    assert diff[0] == "Missing '--table-definitions-path' input"
 
 
 def test_table_definitions_check_correct():
@@ -35,7 +23,7 @@ def test_table_definitions_check_correct():
         None, table_definitions=table_definitions
     ).check_table_definitions(current_definitions)
 
-    assert len(diff) == 0
+    assert diff == []
 
 
 def test_table_definitions_check_incorrect_geometry():
@@ -178,3 +166,28 @@ def test_legacy_table_definitions_check_table_changed():
         "missing table(s): test_allcorrect",
         "extra table(s): test_different_table",
     ]
+
+
+def test_table_definitions_check_changed_indexes_and_fks():
+    datasource = get_datasource_for_path(
+        "tests/data/test_allcorrect_with_indexes_and_fks.gpkg"
+    )
+    table_definitions = load_table_definitions(
+        "tests/data/test_changed_indexes_and_fks_definition.yml"
+    )
+
+    diff = TableDefinitionValidator(
+        dataset=datasource, table_definitions=table_definitions
+    ).check()
+
+    assert set(diff) == {
+        'table test_allcorrect has extra ForeignKeyDefinition: { "table": "test_foreign", "columns": [ { "src": "foreign_id", "dst": "id" } ] }',
+        'table test_allcorrect has extra IndexDefinition: { "columns": [ "fid" ], "unique": true }',
+        'table test_allcorrect misses ForeignKeyDefinition: { "table": "unexisting", "columns": [ { "src": "foreign_id", "dst": "id" } ] }',
+        'table test_allcorrect misses IndexDefinition: { "columns": [ "foo" ], "unique": true }',
+        'table test_foreign has extra IndexDefinition: { "columns": [ "name" ], "unique": true }',
+        'table test_foreign has extra IndexDefinition: { "columns": [ "x", "y" ], "unique": false }',
+        'table test_foreign misses IndexDefinition: { "columns": [ "name" ], "unique": false }',
+        'table test_foreign misses IndexDefinition: { "columns": [ "x", "y" ], "unique": true }',
+        'table test_multi_fk has extra ForeignKeyDefinition: { "table": "test_allcorrect", "columns": [ { "src": "allcorrect_id", "dst": "fid" } ] }',
+    }

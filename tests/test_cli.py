@@ -1,5 +1,6 @@
 import json
 
+import pytest
 from click.testing import CliRunner
 
 from geopackage_validator import __version__
@@ -58,6 +59,130 @@ def test_generate_definitions_with_gpkg():
     assert json.loads(result.output) == expected
 
 
+@pytest.mark.parametrize(
+    "gpkg_path, expected",
+    [
+        (
+            "tests/data/test_allcorrect.gpkg",
+            {
+                "geopackage_validator_version": __version__,
+                "projection": 28992,
+                "tables": [
+                    {
+                        "name": "test_allcorrect",
+                        "geometry_column": "geom",
+                        "columns": [
+                            {"name": "fid", "type": "INTEGER"},
+                            {"name": "geom", "type": "POLYGON"},
+                        ],
+                        "indexes": [{"columns": ["fid"], "unique": True}],
+                        "foreign_keys": [],
+                    }
+                ],
+            },
+        ),
+        (
+            "tests/data/test_allcorrect_with_indexes_and_fks.gpkg",
+            {
+                "geopackage_validator_version": "0.0.0-dev",
+                "projection": 28992,
+                "tables": [
+                    {
+                        "name": "test_allcorrect",
+                        "geometry_column": "geom",
+                        "columns": [
+                            {"name": "fid", "type": "INTEGER"},  # fid
+                            {"name": "geom", "type": "POLYGON"},  # geom
+                            {"name": "foreign_id", "type": "INTEGER64"},
+                        ],
+                        "indexes": [
+                            {"columns": ["fid"], "unique": True},  # PK
+                        ],
+                        "foreign_keys": [
+                            {
+                                "table": "test_foreign",
+                                "columns": [{"src": "foreign_id", "dst": "id"}],
+                            }
+                        ],
+                    },
+                    {
+                        "name": "test_foreign",
+                        "geometry_column": "geom",
+                        "columns": [
+                            {"name": "id", "type": "INTEGER"},  # fid
+                            {"name": "geom", "type": "POINT"},  # geom
+                            {"name": "name", "type": "STRING"},
+                            {"name": "x", "type": "INTEGER64"},
+                            {"name": "y", "type": "INTEGER64"},
+                        ],
+                        "indexes": [
+                            {"columns": ["id"], "unique": True},  # PK
+                            {"columns": ["name"], "unique": True},  # n comes before x
+                            {"columns": ["x", "y"], "unique": False},
+                        ],
+                        "foreign_keys": [],
+                    },
+                    {
+                        "name": "test_multi_fk",
+                        "geometry_column": "geom",
+                        "columns": [
+                            {"name": "geom", "type": "POINT"},
+                            {"name": "allcorrect_id", "type": "INTEGER64"},
+                            {"name": "other_id", "type": "INTEGER64"},
+                            {"name": "other_name", "type": "STRING"},
+                        ],
+                        "indexes": [],
+                        "foreign_keys": [
+                            {
+                                "table": "test_allcorrect",
+                                "columns": [{"src": "allcorrect_id", "dst": "fid"}],
+                            },
+                            {
+                                "table": "test_other",
+                                "columns": [
+                                    {"src": "other_id", "dst": "id"},
+                                    {"src": "other_name", "dst": "name"},
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "name": "test_other",
+                        "geometry_column": "geom",
+                        "columns": [
+                            {"name": "id", "type": "INTEGER"},  # fid
+                            {"name": "geom", "type": "POINT"},  # geom
+                            {"name": "name", "type": "STRING"},
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {"columns": ["id"], "unique": True},  # PK
+                            {"columns": ["id", "name"], "unique": True},
+                        ],
+                    },
+                ],
+            },
+        ),
+    ],
+)
+def test_generate_definitions_with_indexes_and_fks(gpkg_path: str, expected: dict):
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "generate-definitions",
+            "--gpkg-path",
+            gpkg_path,
+            "--with-indexes-and-fks",
+        ],
+    )
+
+    if result.exit_code != 0:
+        print(result.output)
+    assert result.exit_code == 0
+    assert json.loads(result.output) == expected
+
+
 def test_generate_definitions_with_ndimension_geometries():
     runner = CliRunner()
     result = runner.invoke(
@@ -84,6 +209,14 @@ def test_generate_definitions_with_ndimension_geometries():
                 ],
             },
             {
+                "name": "test_dimensions3_correct",
+                "geometry_column": "geom",
+                "columns": [
+                    {"name": "fid", "type": "INTEGER"},
+                    {"name": "geom", "type": "POLYGON"},
+                ],
+            },
+            {
                 "name": "test_dimensions4",
                 "geometry_column": "geom",
                 "columns": [
@@ -93,14 +226,6 @@ def test_generate_definitions_with_ndimension_geometries():
             },
             {
                 "name": "test_dimensions4_correct",
-                "geometry_column": "geom",
-                "columns": [
-                    {"name": "fid", "type": "INTEGER"},
-                    {"name": "geom", "type": "POLYGON"},
-                ],
-            },
-            {
-                "name": "test_dimensions3_correct",
                 "geometry_column": "geom",
                 "columns": [
                     {"name": "fid", "type": "INTEGER"},

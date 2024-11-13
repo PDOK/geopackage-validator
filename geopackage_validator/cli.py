@@ -2,10 +2,10 @@
 """Main CLI entry for the Geopackage validator tool."""
 # Setup logging before package imports.
 import logging
-from datetime import datetime
-from pathlib import Path
 import sys
 import time
+from datetime import datetime
+from pathlib import Path
 
 import click
 import click_log
@@ -303,6 +303,13 @@ def geopackage_validator_command(
     help="Output yaml",
 )
 @click.option(
+    "--with-indexes-and-fks",
+    default=False,
+    required=False,
+    is_flag=True,
+    help="Include indexes (and unique constraints) and foreign keys in the definitions",
+)
+@click.option(
     "--s3-endpoint-no-protocol",
     envvar="S3_ENDPOINT_NO_PROTOCOL",
     show_envvar=True,
@@ -367,17 +374,18 @@ def geopackage_validator_command(
 )
 @click_log.simple_verbosity_option(logger)
 def geopackage_validator_command_generate_table_definitions(
-    gpkg_path,
-    yaml,
-    s3_endpoint_no_protocol,
-    s3_access_key,
-    s3_secret_key,
-    s3_bucket,
-    s3_key,
-    s3_secure,
-    s3_virtual_hosting,
-    s3_signing_region,
-    s3_no_sign_request,
+    gpkg_path: Path,
+    yaml: bool,
+    with_indexes_and_fks: bool,
+    s3_endpoint_no_protocol: str,
+    s3_access_key: str,
+    s3_secret_key: str,
+    s3_bucket: str,
+    s3_key: str,
+    s3_secure: bool,
+    s3_virtual_hosting: bool,
+    s3_signing_region: str,
+    s3_no_sign_request: bool,
 ):
     gpkg_path_not_exists = s3_endpoint_no_protocol is None and (
         gpkg_path is None
@@ -399,7 +407,9 @@ def geopackage_validator_command_generate_table_definitions(
                 s3_signing_region=s3_signing_region,
                 s3_no_sign_request=s3_no_sign_request,
             )
-            definitionlist = generate.generate_definitions_for_path(gpkg_path)
+            definitionlist = generate.generate_definitions_for_path(
+                gpkg_path, with_indexes_and_fks
+            )
         else:
             with s3.minio_resource(
                 s3_endpoint_no_protocol,
@@ -409,7 +419,9 @@ def geopackage_validator_command_generate_table_definitions(
                 s3_key,
                 s3_secure,
             ) as localfilename:
-                definitionlist = generate.generate_definitions_for_path(localfilename)
+                definitionlist = generate.generate_definitions_for_path(
+                    localfilename, with_indexes_and_fks
+                )
         output.print_output(definitionlist, yaml)
     except Exception:
         logger.exception("Error while generating table definitions")

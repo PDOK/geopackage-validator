@@ -1,0 +1,87 @@
+geopackage_validator_version: 0.0.0-dev
+projection: 28992
+tables:  # purposely shuffled. order is not validated
+- name: test_allcorrect
+  geometry_column: geom
+  columns:  # purposely shuffled. order is not validated
+  - name: geom
+    type: POLYGON
+  - name: foreign_id
+    type: INTEGER64
+  - name: fid
+    type: INTEGER
+  indexes:
+  - columns:
+    - foo # fid
+    unique: true
+  foreign_keys:
+  - table: unexisting # test_foreign
+    columns:
+    - src: foreign_id
+      dst: id
+- name: test_foreign
+  geometry_column: geom
+  columns:
+  - name: id
+    type: INTEGER
+  - name: geom
+    type: POINT
+  - name: name
+    type: STRING
+  - name: x
+    type: INTEGER64
+  - name: y
+    type: INTEGER64
+  indexes:
+  - columns:
+    - id
+    unique: true
+  - columns:
+    - name
+    unique: false # true
+  - columns:
+    - x
+    - y
+    unique: true # false
+  foreign_keys: []
+- name: test_other
+  geometry_column: geom
+  columns:
+  - name: id
+    type: INTEGER
+  - name: geom
+    type: POINT
+  - name: name
+    type: STRING
+  indexes:  # purposely shuffled. order is not validated
+  - columns:
+    - id
+    - name
+    unique: true
+  - columns:
+    - id
+    unique: true
+  foreign_keys: []
+- name: test_multi_fk
+  geometry_column: geom
+  columns:
+  - name: geom
+    type: POINT
+  - name: allcorrect_id
+    type: INTEGER64
+  - name: other_id
+    type: INTEGER64
+  - name: other_name
+    type: STRING
+  indexes: []
+  foreign_keys:
+#  - table: test_allcorrect
+#    columns:
+#    - src: allcorrect_id
+#      dst: fid
+  - table: test_other
+    columns:
+    - src: other_id
+      dst: id
+    - src: other_name
+      dst: name
