@@ -68,7 +68,7 @@ def print_output(python_object, as_yaml, yaml_indent=2):
 
 
 def print_output_pydantic(model: BaseModel, as_yaml: bool, yaml_indent=2):
-    content = model.model_dump_json(indent=4)
+    content = model.model_dump_json(indent=4, exclude_none=True)
     if as_yaml:
         python_object = yaml.safe_load(content)
         content = yaml.dump(python_object, indent=yaml_indent, sort_keys=False)

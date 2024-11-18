@@ -1,13 +1,14 @@
-import sys
+import json
 import os
+import sys
 import warnings
 from contextlib import contextmanager
 from functools import lru_cache
-
 from pathlib import Path
-import json
+from typing import List, Tuple, Iterable, Callable
 
 import yaml
+from osgeo.ogr import DataSource
 
 try:
     from osgeo import ogr, osr, gdal
@@ -41,7 +42,7 @@ GDAL_ENV_MAPPING = {
 }
 
 
-def open_dataset(filename=None, error_handler=None):
+def open_dataset(filename: str = None, error_handler: Callable = None) -> DataSource:
     if error_handler is not None:
         gdal.UseExceptions()
         gdal.PushErrorHandler(error_handler)
@@ -77,7 +78,7 @@ def check_gdal_version():
 
 
 @lru_cache(None)
-def dataset_geometry_tables(dataset):
+def dataset_geometry_tables(dataset: ogr.DataSource) -> List[Tuple[str, str, str]]:
     """
     Generate a list of geometry type names from the gpkg_geometry_columns table.
     """
@@ -110,3 +111,21 @@ def set_gdal_env(**kwargs):
                 v = gdal_argument_mapping.get(v, v)
             if gdal_env_parameter not in os.environ:
                 gdal.SetConfigOption(gdal_env_parameter, v)
+
+
+def group_by(
+    iterable: Iterable[any], grouper: Callable[[any], any]
+) -> Iterable[List[any]]:
+    first = True
+    current_id: any = None
+    group: List[any] = []
+    for item in iterable:
+        group_id = grouper(item)
+        if not first and group_id != current_id:
+            yield group
+            group = []
+        current_id = group_id
+        group.append(item)
+        first = False
+    if len(group) > 0:
+        yield group
