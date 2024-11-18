@@ -1,7 +1,7 @@
 import copy
 from typing import Optional, Tuple
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from semver import Version
 
 
@@ -10,31 +10,27 @@ class Named(BaseModel):
 
 
 class ColumnDefinition(Named):
-    class Config:
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
     type: str
 
 
 class IndexDefinition(BaseModel):
-    class Config:
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
     columns: Tuple[str, ...] = Field(min_length=1)
     unique: bool = False
 
 
 class ColumnMapping(BaseModel):
-    class Config:
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
     src: str
     dst: str
 
 
 class ForeignKeyDefinition(BaseModel):
-    class Config:
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
     @field_validator("columns")
     @classmethod
@@ -53,8 +49,7 @@ class ForeignKeyDefinition(BaseModel):
 
 
 class TableDefinition(Named):
-    class Config:
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
     geometry_column: str = "geom"
     columns: Tuple[ColumnDefinition, ...] = tuple()
@@ -67,8 +62,7 @@ class TableDefinition(Named):
 
 
 class TablesDefinition(BaseModel):
-    class Config:
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
     geopackage_validator_version: str = "0"
     projection: Optional[int]
