@@ -1,19 +1,20 @@
-from collections import OrderedDict
 import logging
 import sys
 import traceback
+from collections import OrderedDict
+from pathlib import Path
 
+import yaml
 from osgeo import gdal
 
-from geopackage_validator.generate import TableDefinition
+from geopackage_validator import utils
 from geopackage_validator import validations as validation
+from geopackage_validator.models import TablesDefinition, migrate_tables_definition
 from geopackage_validator.validations.validator import (
     Validator,
     ValidationLevel,
     format_result,
 )
-from geopackage_validator import utils
-
 
 logger = logging.getLogger(__name__)
 
@@ -149,7 +150,7 @@ def validate(
             if result is not None:
                 validation_results.append(result)
                 validation_error = True
-                success = success and validator.level == ValidationLevel.RECCOMENDATION
+                success = success and validator.level == ValidationLevel.RECOMMENDATION
         except Exception:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = [
@@ -228,5 +229,8 @@ def get_validator_classes():
     return sorted(validator_classes, key=lambda v: (v.level, v.code))
 
 
-def load_table_definitions(table_definitions_path) -> TableDefinition:
-    return utils.load_config(table_definitions_path)
+def load_table_definitions(table_definitions_path: str) -> TablesDefinition:
+    with Path(table_definitions_path).open("r") as table_definitions_file:
+        tables_definition_raw = yaml.safe_load(table_definitions_file)
+        tables_definition_raw = migrate_tables_definition(tables_definition_raw)
+        return TablesDefinition.model_validate(tables_definition_raw)

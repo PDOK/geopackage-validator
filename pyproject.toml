@@ -10,7 +10,6 @@ license = {text = "MIT"}
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -23,7 +22,9 @@ dependencies = [
     "click-log >=0.3",
     "gdal >=3.4",
     "minio",
+    "pydantic >= 2.9",
     "pyyaml",
+    "semver >= 3.0.2",
 ]
 requires-python = ">=3.6"
 

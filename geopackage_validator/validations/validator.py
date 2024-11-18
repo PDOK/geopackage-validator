@@ -2,6 +2,8 @@ from typing import Iterable, List, Dict
 from abc import ABC, abstractmethod
 from enum import IntEnum
 
+from osgeo.ogr import DataSource
+
 
 class ValidationLevel(IntEnum):
     UNKNOWN_ERROR = 0
@@ -9,7 +11,7 @@ class ValidationLevel(IntEnum):
     RQ = 1
     ERROR = 1
     RC = 2
-    RECCOMENDATION = 2
+    RECOMMENDATION = 2
 
 
 VALIDATION_LEVELS = {
@@ -58,7 +60,7 @@ class Validator(ABC):
     message: str
 
     def __init__(self, dataset, **kwargs):
-        self.dataset = dataset
+        self.dataset: DataSource = dataset
 
     def validate(self) -> Dict[str, List[str]]:
         """Run validation at geopackage."""

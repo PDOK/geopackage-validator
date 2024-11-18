@@ -8,7 +8,7 @@ class GeomColumnNameValidator(validator.Validator):
     """It is recommended to name all GEOMETRY type columns 'geom'."""
 
     code = 17
-    level = validator.ValidationLevel.RECCOMENDATION
+    level = validator.ValidationLevel.RECOMMENDATION
     message = "Found in table: {table_name}, column: {column_name}"
 
     def check(self) -> Iterable[str]:
@@ -28,7 +28,7 @@ class GeomColumnNameEqualValidator(validator.Validator):
     """It is recommended to give all GEOMETRY type columns the same name."""
 
     code = 18
-    level = validator.ValidationLevel.RECCOMENDATION
+    level = validator.ValidationLevel.RECOMMENDATION
     message = "Found column names are unequal: {column_names}"
 
     def check(self) -> Iterable[str]:
