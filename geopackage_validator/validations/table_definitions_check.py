@@ -135,14 +135,18 @@ def compare_table_definitions(
     return results
 
 
-def check_foreign_keys(datasource: DataSource, table_name: str) -> List[str]:
+def get_foreign_key_violations(datasource: DataSource) -> List[str]:
+    # This used to be a per-table operation. But it's not due to
+    # a bug in sqlite: https://sqlite.org/forum/info/30cd7db3d0b2f12e
+    # used in github ubuntu 20-04:
+    #   https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2004-Readme.md#installed-apt-packages
     messages: List[str] = []
     foreign_key_violations = datasource.ExecuteSQL(
-        f"select rowid, parent, fkid from pragma_foreign_key_check('{table_name}');"
+        f'select "table", rowid, parent, fkid from pragma_foreign_key_check();'
     )
-    for violation in foreign_key_violations:
+    for v in foreign_key_violations:
         messages.append(
-            f"foreign key violation in {table_name} for fk {violation['fkid']} to {violation['parent']} on row {violation['rowid']}"
+            f"foreign key violation in {v['table']} for fk {v['fkid']} to {v['parent']} on row {v['rowid']}"
         )
     return messages
 
@@ -185,8 +189,7 @@ class TableDefinitionValidator(validator.Validator):
         for table_definition in self.table_definitions.tables:
             if table_definition.foreign_keys is None:
                 messages += f"foreign keys checking is enabled but {table_definition.name} misses the list"
-            elif len(table_definition.foreign_keys) > 0:
-                messages += check_foreign_keys(self.dataset, table_definition.name)
+        messages += get_foreign_key_violations(self.dataset)
         return messages
 
 
