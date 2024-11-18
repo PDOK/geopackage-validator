@@ -191,3 +191,19 @@ def test_table_definitions_check_changed_indexes_and_fks():
         'table test_foreign misses IndexDefinition: { "columns": [ "x", "y" ], "unique": true }',
         'table test_multi_fk has extra ForeignKeyDefinition: { "table": "test_allcorrect", "columns": [ { "src": "allcorrect_id", "dst": "fid" } ] }',
     }
+
+
+def test_table_definitions_check_fk_violation():
+    datasource = get_datasource_for_path("tests/data/test_foreign_key_violation.gpkg")
+    table_definitions = load_table_definitions(
+        "tests/data/test_allcorrect_with_indexes_and_fks_definition.yml"
+    )
+
+    diff = TableDefinitionValidator(
+        dataset=datasource, table_definitions=table_definitions
+    ).check()
+
+    assert set(diff) == {
+        "foreign key violation in test_multi_fk for fk 0 to test_other on row 2",
+        "foreign key violation in test_multi_fk for fk 1 to test_allcorrect on row 2",
+    }
