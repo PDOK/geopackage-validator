@@ -168,9 +168,14 @@ def test_legacy_table_definitions_check_table_changed():
     ]
 
 
+def gdal_error_handler_print_err(err_level, err_no, err_msg):
+    print(f"GDAL error: err_level: {err_level}\nerr_no: {err_no}\nerr_msg: {err_msg}")
+
+
 def test_table_definitions_check_changed_indexes_and_fks():
     datasource = get_datasource_for_path(
-        "tests/data/test_allcorrect_with_indexes_and_fks.gpkg"
+        "tests/data/test_allcorrect_with_indexes_and_fks.gpkg",
+        gdal_error_handler_print_err,
     )
     table_definitions = load_table_definitions(
         "tests/data/test_changed_indexes_and_fks_definition.yml"
@@ -194,7 +199,9 @@ def test_table_definitions_check_changed_indexes_and_fks():
 
 
 def test_table_definitions_check_fk_violation():
-    datasource = get_datasource_for_path("tests/data/test_foreign_key_violation.gpkg")
+    datasource = get_datasource_for_path(
+        "tests/data/test_foreign_key_violation.gpkg", gdal_error_handler_print_err
+    )
     table_definitions = load_table_definitions(
         "tests/data/test_allcorrect_with_indexes_and_fks_definition.yml"
     )

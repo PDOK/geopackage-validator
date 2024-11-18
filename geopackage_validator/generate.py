@@ -172,10 +172,10 @@ def generate_table_definitions(
     return result
 
 
-def get_datasource_for_path(gpkg_path: str) -> DataSource:
+def get_datasource_for_path(gpkg_path: str, error_handler=None) -> DataSource:
     """Starts the geopackage validation."""
     utils.check_gdal_version()
-    return utils.open_dataset(gpkg_path)
+    return utils.open_dataset(gpkg_path, error_handler)
 
 
 def generate_definitions_for_path(
