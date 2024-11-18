@@ -78,7 +78,7 @@ def test_table_definitions_check_incorrect_projection():
     ).check_table_definitions(current_definitions)
 
     assert len(diff) == 1
-    assert diff[0] == "different projections: 4326 changed to 28992"
+    assert diff[0] == "different projections: 28992 changed to 4326"
 
 
 def test_table_definitions_check_incorrect_column_name():

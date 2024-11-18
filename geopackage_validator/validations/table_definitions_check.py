@@ -98,7 +98,7 @@ def compare_table_definitions(
     old_projection = old_definition.projection
     if new_projection != old_projection:
         results.append(
-            f"different projections: {new_projection} changed to {old_projection}"
+            f"different projections: {old_projection} changed to {new_projection}"
         )
 
     new_tables: Dict[str, TableDefinition]
