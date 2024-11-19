@@ -171,7 +171,7 @@ docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator geopackage-validator g
 
 ### Validate
 
-```bash
+```text
 Usage: geopackage-validator validate [OPTIONS]
 
   Geopackage validator validating a local file or a file from S3 storage.
@@ -298,7 +298,7 @@ docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path t
 
 Show all the possible validations that are executed in the validate command.
 
-```bash
+```text
 Usage: geopackage-validator show-validations [OPTIONS]
 
   Show all the possible validations that are executed in the validate
@@ -311,7 +311,7 @@ Options:
 
 ### Generate table definitions
 
-```bash
+```text
 Usage: geopackage-validator generate-definitions [OPTIONS]
 
   Generate table definition for a geopackage on local or S3 storage. Use the
@@ -353,6 +353,10 @@ Options:
                                   [env var: GPKG_PATH]
 
   --yaml                          Output yaml
+
+  --with-indexes-and-fks          Include indexes (and unique constraints) and
+                                  foreign keys in the definitions
+
   --s3-endpoint-no-protocol TEXT  Endpoint for the s3 service without protocol
                                   [env var: S3_ENDPOINT_NO_PROTOCOL]
 
