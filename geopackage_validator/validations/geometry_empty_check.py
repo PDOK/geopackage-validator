@@ -22,7 +22,7 @@ def query_geometry_empty(dataset, sql_template) -> Iterable[Tuple[str, str, str,
         dataset.ReleaseResultSet(validations)
 
 
-class ValidGeometryValidator(validator.Validator):
+class EmptyGeometryValidator(validator.Validator):
     """Geometries should not be empty."""
 
     code = 24
@@ -41,4 +41,5 @@ class ValidGeometryValidator(validator.Validator):
                 row_id=row_id,
             )
             for table_name, column_name, count, row_id in result
+            if count > 0
         ]
