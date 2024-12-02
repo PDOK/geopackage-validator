@@ -4,7 +4,7 @@
 
 Geopackages are a data format that have a deliberately broad application, so many of the requirements are dependend on your use.
 
-The PDOK geopackage validator is used by [PDOK](https://www.pdok.nl/). PDOK is part of the Dutch government. This geopackage validator is used to validate a [set of requirements](#what-does-it-do) to make sure geopackages adhere to our standardized ETL pipeline. It is possible to use this for your own purposes as described [here](https://github.com/PDOK/geopackage-validator/issues/115#issuecomment-1529488733). The validations will not change (except for bugfixes); **new validations are always added to the list**. In  case you are looking for a more generic validator. These do exist and can be found: 
+The PDOK geopackage validator is used by [PDOK](https://www.pdok.nl/). PDOK is part of the Dutch government. This geopackage validator is used to validate a [set of requirements](#what-does-it-do) to make sure geopackages adhere to our standardized ETL pipeline. It is possible to use this for your own purposes as described [here](https://github.com/PDOK/geopackage-validator/issues/115#issuecomment-1529488733). The validations will not change (except for bugfixes); **new validations are always added to the list**. In  case you are looking for a more generic validator. These do exist and can be found:
 
 - [teamengine](https://cite.opengeospatial.org/teamengine) (official OGC, Java)
   - [teamengine Github](https://github.com/opengeospatial/teamengine)
@@ -13,18 +13,18 @@ The PDOK geopackage validator is used by [PDOK](https://www.pdok.nl/). PDOK is p
 
 ## Table of Contents
 
-- [geopackage-validator](#geopackage-validator)
+- [geopackage-validator](#pdok-geopackage-validator)
   - [Table of Contents](#table-of-contents)
   - [What does it do](#what-does-it-do)
   - [Geopackage versions](#geopackage-versions)
   - [Installation](#installation)
     - [Docker](#docker-installation)
   - [Usage](#usage)
-    - [RQ8 Validation](#local-rq8-validation)
-    - [Show validations](#local-show-validations)
-    - [Generate table definitions](#local-generate-table-definitions)
+    - [RQ8 Validation](#rq8-validation)
+    - [Show validations](#show-validations)
+    - [Generate table definitions](#generate-table-definitions)
   - [Local development](#local-development)
-    - [Usage](#usage-1)
+    - [Docker run](#docker-run)
     - [Python console](#python-console)
     - [Code style](#code-style)
     - [Tests](#tests)
@@ -32,14 +32,15 @@ The PDOK geopackage validator is used by [PDOK](https://www.pdok.nl/). PDOK is p
 
 ## TL;DR Commands
 
-Either run through [docker](#docker) or [locally](#local). 
+Either run through [docker](#docker) or [locally](#local).
 
 ### Docker
+
 Validate a GeoPackage with the default set of validation rules:
 
 ```sh
 gpkg_path=relative/path/to/the.gpkg
-docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" 
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}"
 ```
 
 Validate a GeoPackage with the default set of validation rules including a schema:
@@ -47,15 +48,15 @@ Validate a GeoPackage with the default set of validation rules including a schem
 ```sh
 schema_path=relative/path/to/the/schema.json
 gpkg_path=relative/path/to/the.gpkg
-docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}" 
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}"
 ```
 
-Generate a schema: 
+Generate a schema:
 
 ```sh
 schema_path=relative/path/to/the/schema.json
 gpkg_path=relative/path/to/the.gpkg
-docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path" 
+docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path"
 ```
 
 ### Local
@@ -64,7 +65,7 @@ For a local setup we require/tested against python > 3.6 and gdal = 3.4.
 
 ```sh
 gpkg_path=relative/path/to/the.gpkg
-geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" 
+geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}"
 ```
 
 Validate a GeoPackage with the default set of validation rules including a schema:
@@ -72,15 +73,15 @@ Validate a GeoPackage with the default set of validation rules including a schem
 ```sh
 schema_path=relative/path/to/the/schema.json
 gpkg_path=relative/path/to/the.gpkg
-geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}" 
+geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}"
 ```
 
-Generate a schema: 
+Generate a schema:
 
 ```sh
 schema_path=relative/path/to/the/schema.json
 gpkg_path=relative/path/to/the.gpkg
-geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path" 
+geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path"
 ```
 
 ## What does it do
@@ -111,20 +112,22 @@ The current checks are (see also the 'show-validations' command):
 |       RQ21        | All layer and column names shall not be longer than 57 characters.                                                                                                                                                       |
 |       RQ22        | Only the following EPSG spatial reference systems are allowed: 28992, 3034, 3035, 3040, 3041, 3042, 3043, 3044, 3045, 3046, 3047, 3048, 3049, 3857, 4258, 4326, 4936, 4937, 5730, 7409.                                  |
 |       RQ23        | Geometry should be valid and simple.                                                                                                                                                                                     |
+|       RQ24        | Geometry should not be empty.                                                                                                                                                                                            |
 |       RC17        | It is recommended to name all GEOMETRY type columns 'geom'.                                                                                                                                                              |
 |       RC18        | It is recommended to give all GEOMETRY type columns the same name.                                                                                                                                                       |
 |       RC19        | It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary.                                                                                                          |
-|       RC20        | It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings.                                                     | 
+|       RC20        | It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings.                                                     |
 | UNKNOWN_WARNINGS  | It is recommended that the unexpected (GDAL) warnings are looked into.                                                                                                                                                   |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
-\** Since version 0.8.0 the recommendations are part of the same sequence as the requirements. From now on a check will always maintain the integer part of the code. Even if at a later time the validation type can shift between requirement and recommendation.  
+\** Since version 0.8.0 the recommendations are part of the same sequence as the requirements. From now on a check will always maintain the integer part of the code. Even if at a later time the validation type can shift between requirement and recommendation.
 
 An explanation in Dutch with a reason for each rule can be found [here](https://www.pdok.nl/voor-data-aanbieders#:~:text=Regels%20in%20detail).
 
 ## Geopackage versions
 
 The Geopackage validator support the following Geopackage versions:
+
 - 1.4
 - 1.3.1
 - 1.3
@@ -133,11 +136,12 @@ The Geopackage validator support the following Geopackage versions:
 ## Installation
 
 This package requires:
+
 - [GDAL](https://gdal.org/) version >= 3.2.1.
 - [Spatialite](https://www.gaia-gis.it/fossil/libspatialite/index) version >= 5.0.0
 - And python >= 3.8 to run.
 
-We recommend using the docker image. When above requirements are met the package can be installed using pip (`pip install pdok-geopackage-validator`).  
+We recommend using the docker image. When above requirements are met the package can be installed using pip (`pip install pdok-geopackage-validator`).
 
 ### Docker Installation
 
@@ -167,7 +171,7 @@ To validate RQ8 you have to generate definitions first.
 
 ```bash
 docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator geopackage-validator generate-definitions --gpkg-path /path/to/file.gpkg
-````
+```
 
 ### Validate
 
@@ -402,14 +406,14 @@ Options:
 
 ## Local development
 
-We advise using docker-compose for local development. This allows live editing and testing code with the correct gdal/ogr version with spatialite 5.0.0. 
-First build the local image with your machines user id and group id: 
+We advise using docker-compose for local development. This allows live editing and testing code with the correct gdal/ogr version with spatialite 5.0.0.
+First build the local image with your machines user id and group id:
 
 ```bash
 docker-compose build --build-arg USER_ID=`id -u` --build-arg GROUP_ID=`id -g`
 ```
 
-### Usage
+### Docker run
 
 There will be a script you can run like this:
 
@@ -422,7 +426,7 @@ to point the docker-compose to other files, you can add or edit the volumes in t
 
 ### Python console
 
-Ipython is available in the docker: 
+Ipython is available in the docker:
 
 ```bash
 docker-compose run --rm validator ipython
@@ -435,7 +439,7 @@ work on it, run the following command periodically:
 
 ```bash
 docker-compose run --rm validator black .
-``` 
+```
 
 ### Tests
 
