@@ -10,6 +10,9 @@ from geopackage_validator.validations.geometry_valid_check import (
     ValidGeometryValidator,
     ValidGeometryValidatorV0,
 )
+from geopackage_validator.validations.geometry_empty_check import (
+    EmptyGeometryValidator,
+)
 from geopackage_validator.validations.layerfeature_check import (
     OGRIndexValidator,
     NonEmptyLayerValidator,
@@ -62,6 +65,7 @@ __all__ = [
     "GpkgGeometryTypeNameValidator",
     "GeometryTypeEqualsGpkgDefinitionValidator",
     "PolygonWindingOrderValidator",
+    "EmptyGeometryValidator",
     # Recommendations
     "GeomColumnNameValidator",
     "GeomColumnNameEqualValidator",
