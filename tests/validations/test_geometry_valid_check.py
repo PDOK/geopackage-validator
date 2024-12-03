@@ -38,6 +38,7 @@ def test_with_gpkg_valid_simple():
     assert checks[0][3] == 1
     assert checks[0][4] == 1
 
+
 def test_with_gpkg_empty():
     # geometries that are empty are still considered valid
     dataset = open_dataset("tests/data/test_geometry_empty.gpkg")
