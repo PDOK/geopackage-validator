@@ -36,7 +36,7 @@ def test_with_gpkg_valid_simple():
     assert checks[0][1] == "geometry"
     assert checks[0][2] == "Self-intersection"
     assert checks[0][3] == 1
-    # assert checks[0][4] == 1
+    assert checks[0][4] == 1
 
 
 def test_with_gpkg_empty():
