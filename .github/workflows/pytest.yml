@@ -42,7 +42,7 @@ jobs:
         if [ "${{ matrix.os }}" = "ubuntu-20.04" ]
         then
           echo adding ubuntugis unstable
-          sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable  
+          sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable
         else
           echo adding ubuntugis stable
           sudo apt-add-repository ppa:ubuntugis/ppa
@@ -70,4 +70,4 @@ jobs:
         pytest -vv
     - name: Test with black
       run: |
-        black --check .
+        black --check --diff .

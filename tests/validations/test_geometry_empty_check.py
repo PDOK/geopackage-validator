@@ -10,7 +10,17 @@ def test_with_gpkg_empty():
     assert len(result) == 1
     assert (
         result[0]
-        == "Found empty geometry in table: stations, column geom, 45 times, example id 129"
+        == "Found empty geometry in table: test_geometry_empty, column geom, 45 times, example id 129"
+    )
+
+
+def test_with_gpkg_null():
+    dataset = open_dataset("tests/data/test_geometry_null.gpkg")
+    result = list(EmptyGeometryValidator(dataset).check())
+    assert len(result) == 1
+    assert (
+        result[0]
+        == "Found null geometry in table: test_geometry_null, column geometry, 2 times, example id 1"
     )
 
 

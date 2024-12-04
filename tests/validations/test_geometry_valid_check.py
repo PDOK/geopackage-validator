@@ -46,6 +46,13 @@ def test_with_gpkg_empty():
     assert len(checks) == 0
 
 
+def test_with_gpkg_null():
+    # geometries that are null slip through
+    dataset = open_dataset("tests/data/test_geometry_null.gpkg")
+    checks = list(query_geometry_valid(dataset, SQL_VALID_TEMPLATE))
+    assert len(checks) == 0
+
+
 def test_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_geometry_valid(dataset, SQL_VALID_TEMPLATE))
