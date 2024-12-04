@@ -15,7 +15,6 @@ def test_with_gpkg_empty():
 
 
 def test_with_gpkg_null():
-    # geometries that are null slip through
     dataset = open_dataset("tests/data/test_geometry_null.gpkg")
     result = list(EmptyGeometryValidator(dataset).check())
     assert len(result) == 1
