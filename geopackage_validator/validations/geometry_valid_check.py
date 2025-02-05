@@ -2,16 +2,28 @@ from typing import Iterable, Tuple
 from geopackage_validator.validations import validator
 from geopackage_validator import utils
 
-SQL_ONLY_VALID_TEMPLATE = """SELECT reason, count(reason) AS count, row_id
+SQL_VALID_TEMPLATE_V0 = """SELECT reason, count(reason) AS count, row_id
 FROM(
     SELECT
-        CASE INSTR(ST_IsValidReason("{column_name}"), '[')
+        CASE ST_IsValid("{column_name}")
             WHEN 0
-                THEN ST_IsValidReason("{column_name}")
-            ELSE substr(ST_IsValidReason("{column_name}"), 0, INSTR(ST_IsValidReason("{column_name}"), '['))
+                THEN
+                    CASE INSTR(ST_IsValidReason("{column_name}"), '[')
+                        WHEN 0
+                            THEN ST_IsValidReason("{column_name}")
+                        ELSE substr(ST_IsValidReason("{column_name}"), 0, INSTR(ST_IsValidReason("{column_name}"), '['))
+                    END
+                ELSE
+                    CASE
+                        WHEN IsValidGPB("{column_name}") = 0
+                            THEN 'Not GeoPackage geometry'
+                    END
         END AS reason,
         cast(rowid AS INTEGER) AS row_id
-    FROM "{table_name}" WHERE ST_IsValid("{column_name}") = 0
+    FROM "{table_name}"
+    WHERE
+        ST_IsValid("{column_name}") = 0 OR
+        (IsValidGPB("{column_name}") = 0  AND ST_IsEmpty("{column_name}") = 0) -- Empty geometry is considered valid
 )
 GROUP BY reason;"""
 
@@ -27,13 +39,19 @@ FROM(
                         ELSE substr(ST_IsValidReason("{column_name}"), 0, INSTR(ST_IsValidReason("{column_name}"), '['))
                     END
                 ELSE
-                    CASE ST_IsSimple("{column_name}")
-                        WHEN 0
+                    CASE
+                        WHEN ST_IsSimple("{column_name}") = 0
                             THEN 'Not Simple'
+                        WHEN IsValidGPB("{column_name}") = 0
+                            THEN 'Not GeoPackage geometry'
                     END
         END AS reason,
         cast(rowid AS INTEGER) AS row_id
-    FROM "{table_name}" WHERE ST_IsValid("{column_name}") = 0 OR ST_IsSimple("{column_name}") = 0
+    FROM "{table_name}"
+    WHERE
+        ST_IsValid("{column_name}") = 0 OR
+        ST_IsSimple("{column_name}") = 0 OR
+        (IsValidGPB("{column_name}") = 0  AND ST_IsEmpty("{column_name}") = 0) -- Empty geometry is considered valid
 )
 GROUP BY reason;"""
 
@@ -58,7 +76,7 @@ class ValidGeometryValidatorV0(validator.Validator):
     message = "Found invalid geometry in table: {table_name}, column {column_name}, reason: {reason}, {count} {count_label}, example id {row_id}"
 
     def check(self) -> Iterable[str]:
-        result = query_geometry_valid(self.dataset, SQL_ONLY_VALID_TEMPLATE)
+        result = query_geometry_valid(self.dataset, SQL_VALID_TEMPLATE_V0)
 
         return [
             self.message.format(
