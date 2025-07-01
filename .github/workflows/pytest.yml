@@ -23,12 +23,6 @@ jobs:
             gdal-version: '3.4'
           - os: ubuntu-22.04
             gdal-version: '3.8'
-          - os: ubuntu-20.04
-            python-version: '3.11'
-          - os: ubuntu-20.04
-            gdal-version: '3.6'
-          - os: ubuntu-20.04
-            gdal-version: '3.8'
     steps:
     - name: Checkout 🛎️
       uses: actions/checkout@v3
@@ -52,6 +46,7 @@ jobs:
         echo available libgdal-dev versions: $(apt-cache madison libgdal-dev | cut -f2 -d "|" | tr -d " ")
         export APT_GDAL_VERSION=$(apt-cache madison python3-gdal | grep ${{ matrix.gdal-version }} | head -n1 | cut -f2 -d "|" | tr -d " ")
         echo "using version ->${APT_GDAL_VERSION}<-"
+        echo gdal_version=$(echo "${APT_GDAL_VERSION}" | cut -f1 -d '+') >> $GITHUB_OUTPUT
         sudo apt-get install python3-gdal
     - name: Install dependencies for test
       run: |
