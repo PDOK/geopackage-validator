@@ -33,8 +33,6 @@ jobs:
     - name: install gdal
       id: gdal
       run: |
-        echo adding ubuntugis stable
-        sudo apt-add-repository ppa:ubuntugis/ppa
         sudo apt-get update || true # ignore erros becouse we can not install gdal from `ppa:ubuntugis/ppa` without apt errors
         echo available python3-gdal versions: $(apt-cache madison python3-gdal | cut -f2 -d "|" | tr -d " ")
         echo available libgdal-dev versions: $(apt-cache madison libgdal-dev | cut -f2 -d "|" | tr -d " ")
