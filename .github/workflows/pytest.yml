@@ -33,14 +33,8 @@ jobs:
     - name: install gdal
       id: gdal
       run: |
-        if [ "${{ matrix.os }}" = "ubuntu-20.04" ]
-        then
-          echo adding ubuntugis unstable
-          sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable
-        else
-          echo adding ubuntugis stable
-          sudo apt-add-repository ppa:ubuntugis/ppa
-        fi
+        echo adding ubuntugis stable
+        sudo apt-add-repository ppa:ubuntugis/ppa
         sudo apt-get update || true # ignore erros becouse we can not install gdal from `ppa:ubuntugis/ppa` without apt errors
         echo available python3-gdal versions: $(apt-cache madison python3-gdal | cut -f2 -d "|" | tr -d " ")
         echo available libgdal-dev versions: $(apt-cache madison libgdal-dev | cut -f2 -d "|" | tr -d " ")
@@ -56,7 +50,7 @@ jobs:
     - name: Install dependencies from config
       run: |
         # we need to pin GDAL here to match the python3-gdal
-        pip install GDAL==${{steps.gdal.outputs.gdal_version}}
+        pip3 install GDAL==${{steps.gdal.outputs.gdal_version}}
         pip3 install --no-cache-dir .[test]
     - name: Test with pytest
       run: |
