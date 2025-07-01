@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/pdok/geopackage-validator/actions/workflows/pytest.yml/badge.svg)](https://github.com/pdok/geopackage-validator/actions/workflows/pytest.yml)[![PyPI version](https://badge.fury.io/py/pdok-geopackage-validator.svg)](https://pypi.org/project/pdok-geopackage-validator/)
 
-Geopackages are a data format that have a deliberately broad application, so many of the requirements are dependend on your use.
+Geopackages are a data format that have a deliberately broad application, so many of the requirements are dependent on your use.
 
 The PDOK geopackage validator is used by [PDOK](https://www.pdok.nl/). PDOK is part of the Dutch government. This geopackage validator is used to validate a [set of requirements](#what-does-it-do) to make sure geopackages adhere to our standardized ETL pipeline. It is possible to use this for your own purposes as described [here](https://github.com/PDOK/geopackage-validator/issues/115#issuecomment-1529488733). The validations will not change (except for bugfixes); **new validations are always added to the list**. In  case you are looking for a more generic validator. These do exist and can be found:
 
