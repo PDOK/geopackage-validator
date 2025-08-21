@@ -8,15 +8,18 @@ from pathlib import Path
 from typing import List, Tuple, Iterable, Callable
 
 import yaml
-from osgeo.ogr import DataSource
 
+# for backwards compatability (datasource is removed from gdal per 3.10)
 try:
     from osgeo import ogr, osr, gdal
-
     assert ogr  # silence pyflakes
     assert osr  # silence pyflakes
     assert gdal  # silence pyflakes
+
+    from osgeo.gdal import Dataset as OSGeoDataset
+
 except (ImportError, AssertionError):
+    from osgeo.ogr import DataSource as OSGeoDataset
     sys.exit(
         "ERROR: cannot find GDAL/OGR modules, follow the instructions in the README to install these."
     )
@@ -42,7 +45,7 @@ GDAL_ENV_MAPPING = {
 }
 
 
-def open_dataset(filename: str = None, error_handler: Callable = None) -> DataSource:
+def open_dataset(filename: str = None, error_handler: Callable = None) -> OSGeoDataset:
     if error_handler is not None:
         gdal.UseExceptions()
         gdal.PushErrorHandler(error_handler)
@@ -56,11 +59,13 @@ def open_dataset(filename: str = None, error_handler: Callable = None) -> DataSo
         yield
         gdal.PushErrorHandler(error_handler)
 
+    ogr.UseExceptions()
+    gdal.UseExceptions()
     driver = ogr.GetDriverByName("GPKG")
 
     dataset = None
     try:
-        dataset = driver.Open(filename, 0)
+        dataset = driver.Open(filename)
     except Exception as e:
         error_handler(gdal.CE_Failure, 0, e.args[0])
 
@@ -78,7 +83,7 @@ def check_gdal_version():
 
 
 @lru_cache(None)
-def dataset_geometry_tables(dataset: ogr.DataSource) -> List[Tuple[str, str, str]]:
+def dataset_geometry_tables(dataset: OSGeoDataset) -> List[Tuple[str, str, str]]:
     """
     Generate a list of geometry type names from the gpkg_geometry_columns table.
     """

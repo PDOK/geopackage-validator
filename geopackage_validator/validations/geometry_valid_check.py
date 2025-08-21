@@ -56,7 +56,7 @@ FROM(
 GROUP BY reason;"""
 
 
-def query_geometry_valid(dataset, sql_template) -> Iterable[Tuple[str, str, str, int]]:
+def query_geometry_valid(dataset, sql_template) -> Iterable[Tuple[str, str, str, int, int]]:
     columns = utils.dataset_geometry_tables(dataset)
 
     for table_name, column_name, _ in columns:

@@ -52,7 +52,8 @@ def test_generate_definitions_with_gpkg():
             }
         ],
     }
-
+    print(result.output)
+    print(expected)
     if result.exit_code != 0:
         print(result.output)
     assert result.exit_code == 0

@@ -1,7 +1,11 @@
 from typing import Iterable, List, Dict, Set, Tuple
 
-from osgeo.ogr import DataSource
 from pydantic import BaseModel
+
+try:
+    from osgeo.gdal import Dataset as OSGeoDataset
+except ImportError:
+    from osgeo.ogr import DataSource as OSGeoDataset
 
 from geopackage_validator.generate import generate_table_definitions
 from geopackage_validator.models import (
@@ -135,7 +139,7 @@ def compare_table_definitions(
     return results
 
 
-def get_foreign_key_violations(datasource: DataSource) -> List[str]:
+def get_foreign_key_violations(datasource: OSGeoDataset) -> List[str]:
     # This used to be a per-table operation. But it's not due to
     # a bug in sqlite: https://sqlite.org/forum/info/30cd7db3d0b2f12e
     # used in github ubuntu 20-04:
