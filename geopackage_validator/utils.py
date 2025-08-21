@@ -15,11 +15,7 @@ try:
     assert ogr  # silence pyflakes
     assert osr  # silence pyflakes
     assert gdal  # silence pyflakes
-
-    from osgeo.gdal import Dataset as OSGeoDataset
-
 except (ImportError, AssertionError):
-    from osgeo.ogr import DataSource as OSGeoDataset
     sys.exit(
         "ERROR: cannot find GDAL/OGR modules, follow the instructions in the README to install these."
     )
@@ -45,7 +41,7 @@ GDAL_ENV_MAPPING = {
 }
 
 
-def open_dataset(filename: str = None, error_handler: Callable = None) -> OSGeoDataset:
+def open_dataset(filename: str = None, error_handler: Callable = None) -> gdal.Dataset:
     if error_handler is not None:
         gdal.UseExceptions()
         gdal.PushErrorHandler(error_handler)
@@ -83,7 +79,7 @@ def check_gdal_version():
 
 
 @lru_cache(None)
-def dataset_geometry_tables(dataset: OSGeoDataset) -> List[Tuple[str, str, str]]:
+def dataset_geometry_tables(dataset: gdal.Dataset) -> List[Tuple[str, str, str]]:
     """
     Generate a list of geometry type names from the gpkg_geometry_columns table.
     """

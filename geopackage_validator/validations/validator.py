@@ -1,11 +1,7 @@
 from typing import Iterable, List, Dict
 from abc import ABC, abstractmethod
 from enum import IntEnum
-
-try:
-    from osgeo.gdal import Dataset as OSGeoDataset
-except ImportError:
-    from osgeo.ogr import DataSource as OSGeoDataset
+from osgeo import gdal
 
 
 class ValidationLevel(IntEnum):
@@ -63,7 +59,7 @@ class Validator(ABC):
     message: str
 
     def __init__(self, dataset, **kwargs):
-        self.dataset: OSGeoDataset = dataset
+        self.dataset: gdal.Dataset = dataset
 
     def validate(self) -> Dict[str, List[str]]:
         """Run validation at geopackage."""
