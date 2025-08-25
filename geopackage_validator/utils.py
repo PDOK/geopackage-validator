@@ -12,6 +12,7 @@ import yaml
 # for backwards compatability (datasource is removed from gdal per 3.10)
 try:
     from osgeo import ogr, osr, gdal
+
     assert ogr  # silence pyflakes
     assert osr  # silence pyflakes
     assert gdal  # silence pyflakes
