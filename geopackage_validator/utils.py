@@ -55,8 +55,6 @@ def open_dataset(filename: str = None, error_handler: Callable = None) -> gdal.D
         yield
         gdal.PushErrorHandler(error_handler)
 
-    ogr.UseExceptions()
-    gdal.UseExceptions()
     driver = ogr.GetDriverByName("GPKG")
 
     dataset = None
