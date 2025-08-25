@@ -6,8 +6,7 @@ set -e
 
 pip install .[test]
 
-echo "🐍 Using Python: $(python --version)"
-echo "📦 Pip from: $(which pip)"
+echo "Using Python: $(python --version)"
 
 # run whatever was passed in (default: shell)
 exec "$@"
