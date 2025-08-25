@@ -41,7 +41,7 @@ def test_with_gpkg_valid_simple():
 
 
 def test_with_gpkg_empty():
-    # geometries that are empty are still considered valid
+    # geometries that are empty are considered invalid
     dataset = open_dataset("tests/data/test_geometry_empty.gpkg")
     checks = list(query_geometry_valid(dataset, SQL_VALID_TEMPLATE))
     assert len(checks) == 0

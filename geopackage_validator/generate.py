@@ -1,7 +1,6 @@
 import logging
 from typing import List, Optional, Dict
-
-from osgeo.ogr import DataSource, Layer
+from osgeo import ogr, gdal
 
 from geopackage_validator import __version__
 from geopackage_validator import utils
@@ -45,7 +44,7 @@ def fid_column_definition(table) -> List[ColumnDefinition]:
 
 
 def get_index_definitions(
-    dataset: DataSource, table_name: str
+    dataset: gdal.Dataset, table_name: str
 ) -> List[IndexDefinition]:
     index_definitions: List[IndexDefinition] = []
     index_list = dataset.ExecuteSQL(
@@ -71,7 +70,7 @@ def get_index_definitions(
     return index_definitions
 
 
-def get_pk_index(dataset: DataSource, table_name: str) -> Optional[IndexDefinition]:
+def get_pk_index(dataset: gdal.Dataset, table_name: str) -> Optional[IndexDefinition]:
     pk_columns = dataset.ExecuteSQL(
         f"select name from pragma_table_info('{table_name}') where pk;"
     )
@@ -81,7 +80,7 @@ def get_pk_index(dataset: DataSource, table_name: str) -> Optional[IndexDefiniti
     return IndexDefinition(columns=column_names, unique=True)
 
 
-def get_index_column_names(dataset: DataSource, index_name: str) -> List[str]:
+def get_index_column_names(dataset: gdal.Dataset, index_name: str) -> List[str]:
     index_info = dataset.ExecuteSQL(
         f"select name from pragma_index_info('{index_name}');"
     )
@@ -121,7 +120,7 @@ def get_foreign_key_definitions(dataset, table_name) -> List[ForeignKeyDefinitio
 
 
 def generate_table_definitions(
-    dataset: DataSource, with_indexes_and_fks: bool = False
+    dataset: gdal.Dataset, with_indexes_and_fks: bool = False
 ) -> TablesDefinition:
     projections = set()
     table_geometry_types = {
@@ -131,7 +130,7 @@ def generate_table_definitions(
 
     table_list: List[TableDefinition] = []
     for table in dataset:
-        table: Layer
+        table: ogr.Layer
         geo_column_name = table.GetGeometryColumn()
         if geo_column_name == "":
             continue
@@ -172,7 +171,7 @@ def generate_table_definitions(
     return result
 
 
-def get_datasource_for_path(gpkg_path: str, error_handler=None) -> DataSource:
+def get_datasource_for_path(gpkg_path: str, error_handler=None) -> gdal.Dataset:
     """Starts the geopackage validation."""
     utils.check_gdal_version()
     return utils.open_dataset(gpkg_path, error_handler)
