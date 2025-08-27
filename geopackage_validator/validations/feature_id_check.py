@@ -7,13 +7,14 @@ from geopackage_validator import utils
 
 def query_feature_id(dataset) -> Iterable[Tuple[str, int]]:
     tables = utils.dataset_geometry_tables(dataset)
-
+    # validates that there is a primary key with integer/int, mediumint, smallint & tinyint
+    query = """
+                SELECT '{table_name}' AS table_name, count(*) AS pk_present FROM pragma_table_info('{table_name}') 
+                    WHERE pk > 0 
+                    AND type LIKE '%INT%' 
+            """
     for table, _, _ in tables:
-        validations = dataset.ExecuteSQL(
-            "SELECT '{table_name}' as table_name, count(*) as pk_present FROM pragma_table_info('{table_name}') where pk > 0".format(
-                table_name=table
-            )
-        )
+        validations = dataset.ExecuteSQL(query.format(table_name=table))
         for table_name, count in validations:
             yield table_name, count
 
