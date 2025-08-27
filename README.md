@@ -117,6 +117,7 @@ The current checks are (see also the 'show-validations' command):
 |       RC18        | It is recommended to give all GEOMETRY type columns the same name.                                                                                                                                                       |
 |       RC19        | It is recommended to only use multidimensional geometry coordinates (elevation and measurement) when necessary.                                                                                                          |
 |       RC20        | It is recommended that all (MULTI)POLYGON geometries have a counter-clockwise orientation for their exterior ring, and a clockwise direction for all interior rings.                                                     |
+|       RC21        | It is recommended that feature IDs have an AUTOINCREMENT keyword.                                                                                                                                                        |
 | UNKNOWN_WARNINGS  | It is recommended that the unexpected (GDAL) warnings are looked into.                                                                                                                                                   |
 
 \* Legacy requirements are only executed with the validate command when explicitly requested in the validation set.  
