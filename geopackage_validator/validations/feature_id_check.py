@@ -20,6 +20,7 @@ def query_feature_id(dataset) -> Iterable[Tuple[str, int]]:
 
         dataset.ReleaseResultSet(validations)
 
+
 def query_sequence_for_autoincrement(dataset) -> Iterable[Tuple[str, int]]:
     tables = utils.dataset_geometry_tables(dataset)
     query = """
@@ -34,6 +35,7 @@ def query_sequence_for_autoincrement(dataset) -> Iterable[Tuple[str, int]]:
             yield table, count
 
         dataset.ReleaseResultSet(validations)
+
 
 class FeatureIdValidator(validator.Validator):
     """Tables should have a feature id column with unique index."""
@@ -55,6 +57,7 @@ class FeatureIdValidator(validator.Validator):
             if count != 1
         ]
 
+
 class FeatureIdAutoincrementValidator(validator.Validator):
     """It is recommended for a feature id to have an autoincrement primary key."""
 
@@ -67,12 +70,12 @@ class FeatureIdAutoincrementValidator(validator.Validator):
         return self.featureid_autoincrement_check(counts)
 
     @classmethod
-    def featureid_autoincrement_check(cls, counts: Iterable[Tuple[str, int]]) -> List[str]:
+    def featureid_autoincrement_check(
+        cls, counts: Iterable[Tuple[str, int]]
+    ) -> List[str]:
         assert counts is not None
         return [
             cls.message.format(table_name=table)
             for table, count in counts
             if count == 0
         ]
-
-
