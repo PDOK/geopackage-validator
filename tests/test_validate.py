@@ -40,7 +40,7 @@ def test_determine_validations_to_use_none():
         "RC18",
         "RC19",
         "RC20",
-        "RC21",
+        "RC25",
     ]
 
 
