@@ -61,7 +61,7 @@ class FeatureIdValidator(validator.Validator):
 class FeatureIdAutoincrementValidator(validator.Validator):
     """It is recommended for a feature id to have an autoincrement primary key."""
 
-    code = 21
+    code = 25
     level = validator.ValidationLevel.RECOMMENDATION
     message = "Found in table: {table_name}"
 
