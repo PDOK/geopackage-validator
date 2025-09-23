@@ -3,6 +3,7 @@ projection: 28992
 tables:  # purposely shuffled. order is not validated
 - name: test_allcorrect
   geometry_column: geom
+  data_type: features
   columns:  # purposely shuffled. order is not validated
   - name: geom
     type: POLYGON
@@ -21,6 +22,7 @@ tables:  # purposely shuffled. order is not validated
       dst: id
 - name: test_foreign
   geometry_column: geom
+  data_type: features
   columns:
   - name: id
     type: INTEGER
@@ -46,6 +48,7 @@ tables:  # purposely shuffled. order is not validated
   foreign_keys: []
 - name: test_other
   geometry_column: geom
+  data_type: features
   columns:
   - name: id
     type: INTEGER
@@ -64,6 +67,7 @@ tables:  # purposely shuffled. order is not validated
   foreign_keys: []
 - name: test_multi_fk
   geometry_column: geom
+  data_type: features
   columns:
   - name: geom
     type: POINT

@@ -4,6 +4,7 @@
     "tables": [{
         "name": "test_allcorrect_a",
         "geometry_column": "geom",
+        "data_type": "features",
         "columns": [
             {
                 "name": "fid",
@@ -18,6 +19,7 @@
     {
         "name": "test_allcorrect_b",
         "geometry_column": "geom",
+        "data_type": "features",
         "columns": [
             {
                 "name": "fid",

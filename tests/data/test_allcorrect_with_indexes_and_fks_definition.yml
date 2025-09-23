@@ -3,6 +3,7 @@ projection: 28992
 tables:
 - name: test_allcorrect
   geometry_column: geom
+  data_type: features
   columns:
   - name: fid
     type: INTEGER
@@ -21,6 +22,7 @@ tables:
       dst: id
 - name: test_foreign
   geometry_column: geom
+  data_type: features
   columns:
   - name: id
     type: INTEGER
@@ -46,6 +48,7 @@ tables:
   foreign_keys: []
 - name: test_multi_fk
   geometry_column: geom
+  data_type: features
   columns:
   - name: geom
     type: POINT
@@ -69,6 +72,7 @@ tables:
       dst: name
 - name: test_other
   geometry_column: geom
+  data_type: features
   columns:
   - name: id
     type: INTEGER

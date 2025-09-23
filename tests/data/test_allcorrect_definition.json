@@ -4,6 +4,7 @@
     "tables": [{
         "name": "test_allcorrect",
         "geometry_column": "geom",
+        "data_type": "features",
         "columns": [
             {
                 "name": "fid",

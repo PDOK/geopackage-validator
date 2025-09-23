@@ -62,6 +62,7 @@ class ForeignKeyDefinition(BaseModel):
 class TableDefinition(Named):
     model_config = ConfigDict(frozen=True)
     geometry_column: str = ""
+    data_type: DataType = DataType.FEATURES
     columns: Tuple[ColumnDefinition, ...] = tuple()
     """Ordered as in the table (left to right), but with FID and geometry columns always first.
     (This order is not validated.)"""
@@ -69,7 +70,6 @@ class TableDefinition(Named):
     """None means: don't validate. Empty list means: there should be no indexes."""
     foreign_keys: Optional[Tuple[ForeignKeyDefinition, ...]] = None
     """None means: don't validate. Empty list means: there should be no foreign keys."""
-    data_type: DataType = DataType.FEATURES
 
 
 class TablesDefinition(BaseModel):
