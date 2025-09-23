@@ -6,7 +6,9 @@ from geopackage_validator.constants import SNAKE_CASE_REGEX
 
 
 def query_layernames(dataset) -> List[str]:
-    return [table_name for table_name, dataset in get_table_names_from_contents(dataset)]
+    return [
+        table_name for table_name, dataset in get_table_names_from_contents(dataset)
+    ]
 
 
 class LayerNameValidator(validator.Validator):

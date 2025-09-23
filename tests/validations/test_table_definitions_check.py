@@ -28,8 +28,7 @@ def test_table_definitions_check_correct():
 
 def test_table_definitions_attribute_check_correct():
     current_definitions = generate_definitions_for_path(
-        "tests/data/test_correct_attribute_with_many_to_many.gpkg",
-        True
+        "tests/data/test_correct_attribute_with_many_to_many.gpkg", True
     )
 
     table_definitions = load_table_definitions(
