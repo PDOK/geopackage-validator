@@ -166,7 +166,7 @@ def generate_table_definitions(
             columns=columns,
             indexes=indexes,
             foreign_keys=foreign_keys,
-            data_type=DataType.from_str(data_type_column) #todo: data_type maken
+            data_type=DataType.from_str(data_type_column),  # todo: data_type maken
         )
         dataset.ReleaseResultSet(table)
         table_list.append(table_def)
@@ -185,14 +185,18 @@ def get_datasource_for_path(gpkg_path: str, error_handler=None) -> gdal.Dataset:
     utils.check_gdal_version()
     return utils.open_dataset(gpkg_path, error_handler)
 
+
 def get_table_names_from_contents(ds: gdal.Dataset) -> List[Tuple[str, str]]:
     """This method returns a list of table names from the gpkg_contents table, instead of just features"""
     layer_names: List[(str, str)] = []
     layer: Layer = ds.ExecuteSQL("SELECT table_name, data_type FROM gpkg_contents;")
     for layer_listing in layer:
-        layer_names.append((layer_listing["table_name"], layer_listing.GetField("data_type")))
+        layer_names.append(
+            (layer_listing["table_name"], layer_listing.GetField("data_type"))
+        )
     ds.ReleaseResultSet(layer)
     return layer_names
+
 
 def generate_definitions_for_path(
     gpkg_path: str, with_indexes_and_fks: bool = False

@@ -29,6 +29,7 @@ class ColumnMapping(BaseModel):
     src: str
     dst: str
 
+
 class DataType(Enum):
     FEATURES = "features"
     ATTRIBUTES = "attributes"
@@ -39,6 +40,7 @@ class DataType(Enum):
             return DataType(s)
         except ValueError:
             raise ValueError(f"Invalid item type: {s}")
+
 
 class ForeignKeyDefinition(BaseModel):
     model_config = ConfigDict(frozen=True)
