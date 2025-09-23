@@ -166,7 +166,7 @@ def generate_table_definitions(
             columns=columns,
             indexes=indexes,
             foreign_keys=foreign_keys,
-            data_type=DataType.from_str(data_type_column),  # todo: data_type maken
+            data_type=DataType.from_str(data_type_column),
         )
         dataset.ReleaseResultSet(table)
         table_list.append(table_def)
