@@ -25,6 +25,20 @@ def test_table_definitions_check_correct():
 
     assert diff == []
 
+def test_table_definitions_attribute_check_correct():
+    current_definitions = generate_definitions_for_path(
+        "tests/data/test_correct_attribute_with_many_to_many.gpkg"
+    )
+
+    table_definitions = load_table_definitions(
+        "tests/data/test_correct_attribute_with_many_to_many.json"
+    )
+
+    diff = TableDefinitionValidator(
+        None, table_definitions=table_definitions
+    ).check_table_definitions(current_definitions)
+
+    assert diff == []
 
 def test_table_definitions_check_incorrect_geometry():
     current_definitions = {

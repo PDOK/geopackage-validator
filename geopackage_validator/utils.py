@@ -43,8 +43,8 @@ GDAL_ENV_MAPPING = {
 
 
 def open_dataset(filename: str = None, error_handler: Callable = None) -> gdal.Dataset:
+    gdal.UseExceptions()
     if error_handler is not None:
-        gdal.UseExceptions()
         gdal.PushErrorHandler(error_handler)
 
     @contextmanager

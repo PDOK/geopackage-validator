@@ -35,10 +35,9 @@ def validators_to_use(
 ):
     validator_classes = get_validator_classes()
     if validation_codes == "ALL" or (validations_path is None and not validation_codes):
+        rq_drop_list = DROP_LEGACY_RQ_FROM_ALL
         if not is_rq8_requested:
             rq_drop_list = DROP_LEGACY_RQ_FROM_ALL + [RQ8]
-        else:
-            rq_drop_list = DROP_LEGACY_RQ_FROM_ALL
 
         return [v for v in validator_classes if v.validation_code not in rq_drop_list]
 
@@ -191,7 +190,6 @@ def validate(
             trace=errHandler.gdal_warning_traces,
         )
         validation_results.append(output)
-
     return (
         initial_gdal_errors + validation_results,
         get_validation_codes(validators),
