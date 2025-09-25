@@ -9,10 +9,10 @@ class AttributeNoGeometryValidator(validator.Validator):
 
     def check(self) -> List[str]:
         query = """
-                SELECT gc.table_name \
-                FROM gpkg_contents AS gc \
+                SELECT gc.table_name
+                FROM gpkg_contents AS gc
                          JOIN gpkg_geometry_columns AS ggc ON gc.table_name = ggc.table_name
-                WHERE gc.data_type = 'attributes'; \
+                WHERE gc.data_type = 'attributes';
                 """
         attribute_table_with_geom_column = self.dataset.ExecuteSQL(query)
         return (
