@@ -9,7 +9,7 @@ class AttributeNoGeometryValidator(validator.Validator):
     level = validator.ValidationLevel.ERROR
     message = "Found geometry column in non-geometry table: {table_name}"
 
-    def check(self) -> list[str]:
+    def check(self) -> List[str]:
         query = """
                 SELECT gc.table_name \
                 FROM gpkg_contents AS gc \
