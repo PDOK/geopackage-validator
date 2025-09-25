@@ -1,4 +1,4 @@
-from build.lib.geopackage_validator.utils import open_dataset
+from geopackage_validator.utils import open_dataset
 from geopackage_validator.validations import AttributeNoGeometryValidator
 
 

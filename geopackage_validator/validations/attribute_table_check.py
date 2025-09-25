@@ -1,6 +1,4 @@
-from typing import Iterable, Tuple, List
-
-from osgeo import gdal
+from typing import List
 from geopackage_validator.validations import validator
 
 
