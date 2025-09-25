@@ -3,6 +3,7 @@ from typing import Iterable, Tuple
 from osgeo import gdal
 from geopackage_validator.validations import validator
 
+
 class AttributeNoGeometryValidator(validator.Validator):
     code = 26
     level = validator.ValidationLevel.ERROR
@@ -16,8 +17,11 @@ class AttributeNoGeometryValidator(validator.Validator):
                 WHERE gc.data_type = 'attributes'; \
                 """
         attribute_table_with_geom_column = self.dataset.ExecuteSQL(query)
-        return [
-            self.message.format(table_name=attr[0])
-            for attr in attribute_table_with_geom_column
-        ] if attribute_table_with_geom_column else []
-
+        return (
+            [
+                self.message.format(table_name=attr[0])
+                for attr in attribute_table_with_geom_column
+            ]
+            if attribute_table_with_geom_column
+            else []
+        )

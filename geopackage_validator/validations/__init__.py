@@ -1,4 +1,6 @@
-from geopackage_validator.validations.attribute_table_check import AttributeNoGeometryValidator
+from geopackage_validator.validations.attribute_table_check import (
+    AttributeNoGeometryValidator,
+)
 from geopackage_validator.validations.columnname_check import ColumnNameValidator
 from geopackage_validator.validations.db_views_check import ViewsValidator
 from geopackage_validator.validations.feature_id_check import (

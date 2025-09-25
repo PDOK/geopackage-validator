@@ -131,6 +131,7 @@ def group_by(
     if len(group) > 0:
         yield group
 
+
 def get_table_names_from_contents(ds: gdal.Dataset) -> List[Tuple[str, str]]:
     """This method returns a list of table names from the gpkg_contents table, instead of just features"""
     layer_names: List[(str, str)] = []
