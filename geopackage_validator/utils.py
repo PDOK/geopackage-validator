@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List, Tuple, Iterable, Callable
 
 import yaml
+from osgeo import ogr
 
 # for backwards compatability (datasource is removed from gdal per 3.10)
 try:
@@ -129,3 +130,14 @@ def group_by(
         first = False
     if len(group) > 0:
         yield group
+
+def get_table_names_from_contents(ds: gdal.Dataset) -> List[Tuple[str, str]]:
+    """This method returns a list of table names from the gpkg_contents table, instead of just features"""
+    layer_names: List[(str, str)] = []
+    layer: ogr.Layer = ds.ExecuteSQL("SELECT table_name, data_type FROM gpkg_contents;")
+    for layer_listing in layer:
+        layer_names.append(
+            (layer_listing.GetField("table_name"), layer_listing.GetField("data_type"))
+        )
+    ds.ReleaseResultSet(layer)
+    return layer_names

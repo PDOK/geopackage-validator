@@ -14,7 +14,7 @@ from geopackage_validator.models import (
     TablesDefinition,
     DataType,
 )
-from geopackage_validator.utils import group_by
+from geopackage_validator.utils import group_by, get_table_names_from_contents
 
 logger = logging.getLogger(__name__)
 
@@ -184,18 +184,6 @@ def get_datasource_for_path(gpkg_path: str, error_handler=None) -> gdal.Dataset:
     """Starts the geopackage validation."""
     utils.check_gdal_version()
     return utils.open_dataset(gpkg_path, error_handler)
-
-
-def get_table_names_from_contents(ds: gdal.Dataset) -> List[Tuple[str, str]]:
-    """This method returns a list of table names from the gpkg_contents table, instead of just features"""
-    layer_names: List[(str, str)] = []
-    layer: Layer = ds.ExecuteSQL("SELECT table_name, data_type FROM gpkg_contents;")
-    for layer_listing in layer:
-        layer_names.append(
-            (layer_listing["table_name"], layer_listing.GetField("data_type"))
-        )
-    ds.ReleaseResultSet(layer)
-    return layer_names
 
 
 def generate_definitions_for_path(
