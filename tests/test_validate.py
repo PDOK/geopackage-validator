@@ -36,6 +36,7 @@ def test_determine_validations_to_use_none():
         "RQ22",
         "RQ23",
         "RQ24",
+        "RQ26",
         "RC17",
         "RC18",
         "RC19",
@@ -90,7 +91,10 @@ def test_validate_single_validation():
     )
     assert not success
     assert len(results) == 1
-    assert results[0]["locations"] == ["Error layer: test_LAYERNAME"]
+    assert results[0]["locations"] == [
+        "Error layer: test_LAYERNAME",
+        "Error layer: test_ATTRIBUTE_LAYER",
+    ]
 
 
 def test_validate_single_validation_no_error():
@@ -106,7 +110,10 @@ def test_validate_all_validations_no_error():
         gpkg_path="tests/data/test_layername.gpkg", validations="ALL"
     )
     assert len(results) == 2
-    assert results[0]["locations"] == ["Error layer: test_LAYERNAME"]
+    assert results[0]["locations"] == [
+        "Error layer: test_LAYERNAME",
+        "Error layer: test_ATTRIBUTE_LAYER",
+    ]
     assert results[1]["locations"] == [
         "Found in table: test_LAYERNAME, column: geometry"
     ]

@@ -1,4 +1,5 @@
 import copy
+from enum import Enum
 from typing import Optional, Tuple
 
 from pydantic import BaseModel, Field, field_validator, ConfigDict
@@ -29,6 +30,18 @@ class ColumnMapping(BaseModel):
     dst: str
 
 
+class DataType(Enum):
+    FEATURES = "features"
+    ATTRIBUTES = "attributes"
+
+    @staticmethod
+    def from_str(s: str) -> "DataType":
+        try:
+            return DataType(s)
+        except ValueError:
+            raise ValueError(f"Invalid item type: {s}")
+
+
 class ForeignKeyDefinition(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -50,8 +63,8 @@ class ForeignKeyDefinition(BaseModel):
 
 class TableDefinition(Named):
     model_config = ConfigDict(frozen=True)
-
-    geometry_column: str = "geom"
+    geometry_column: str = ""
+    data_type: DataType = DataType.FEATURES
     columns: Tuple[ColumnDefinition, ...] = tuple()
     """Ordered as in the table (left to right), but with FID and geometry columns always first.
     (This order is not validated.)"""

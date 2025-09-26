@@ -45,6 +45,7 @@ def test_generate_definitions_with_gpkg():
             {
                 "name": "test_allcorrect",
                 "geometry_column": "geom",
+                "data_type": "features",
                 "columns": [
                     {"name": "fid", "type": "INTEGER"},
                     {"name": "geom", "type": "POLYGON"},
@@ -71,6 +72,7 @@ def test_generate_definitions_with_gpkg():
                     {
                         "name": "test_allcorrect",
                         "geometry_column": "geom",
+                        "data_type": "features",
                         "columns": [
                             {"name": "fid", "type": "INTEGER"},
                             {"name": "geom", "type": "POLYGON"},
@@ -90,6 +92,7 @@ def test_generate_definitions_with_gpkg():
                     {
                         "name": "test_allcorrect",
                         "geometry_column": "geom",
+                        "data_type": "features",
                         "columns": [
                             {"name": "fid", "type": "INTEGER"},  # fid
                             {"name": "geom", "type": "POLYGON"},  # geom
@@ -108,6 +111,7 @@ def test_generate_definitions_with_gpkg():
                     {
                         "name": "test_foreign",
                         "geometry_column": "geom",
+                        "data_type": "features",
                         "columns": [
                             {"name": "id", "type": "INTEGER"},  # fid
                             {"name": "geom", "type": "POINT"},  # geom
@@ -125,6 +129,7 @@ def test_generate_definitions_with_gpkg():
                     {
                         "name": "test_multi_fk",
                         "geometry_column": "geom",
+                        "data_type": "features",
                         "columns": [
                             {"name": "geom", "type": "POINT"},
                             {"name": "allcorrect_id", "type": "INTEGER64"},
@@ -149,6 +154,7 @@ def test_generate_definitions_with_gpkg():
                     {
                         "name": "test_other",
                         "geometry_column": "geom",
+                        "data_type": "features",
                         "columns": [
                             {"name": "id", "type": "INTEGER"},  # fid
                             {"name": "geom", "type": "POINT"},  # geom
@@ -195,6 +201,7 @@ def test_generate_definitions_with_ndimension_geometries():
             {
                 "name": "test_dimensions",
                 "geometry_column": "geom",
+                "data_type": "features",
                 "columns": [
                     {"name": "fid", "type": "INTEGER"},
                     {"name": "geom", "type": "POLYGON"},
@@ -203,6 +210,7 @@ def test_generate_definitions_with_ndimension_geometries():
             {
                 "name": "test_dimensions3",
                 "geometry_column": "geom",
+                "data_type": "features",
                 "columns": [
                     {"name": "fid", "type": "INTEGER"},
                     {"name": "geom", "type": "POLYGON"},
@@ -211,6 +219,7 @@ def test_generate_definitions_with_ndimension_geometries():
             {
                 "name": "test_dimensions3_correct",
                 "geometry_column": "geom",
+                "data_type": "features",
                 "columns": [
                     {"name": "fid", "type": "INTEGER"},
                     {"name": "geom", "type": "POLYGON"},
@@ -219,6 +228,7 @@ def test_generate_definitions_with_ndimension_geometries():
             {
                 "name": "test_dimensions4",
                 "geometry_column": "geom",
+                "data_type": "features",
                 "columns": [
                     {"name": "fid", "type": "INTEGER"},
                     {"name": "geom", "type": "POLYGON"},
@@ -227,6 +237,7 @@ def test_generate_definitions_with_ndimension_geometries():
             {
                 "name": "test_dimensions4_correct",
                 "geometry_column": "geom",
+                "data_type": "features",
                 "columns": [
                     {"name": "fid", "type": "INTEGER"},
                     {"name": "geom", "type": "POLYGON"},
@@ -244,6 +255,7 @@ projection: 28992
 tables:
 - name: test_allcorrect
   geometry_column: geom
+  data_type: features
   columns:
   - name: fid
     type: INTEGER

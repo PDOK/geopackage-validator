@@ -1,6 +1,7 @@
 import logging
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 from osgeo import ogr, gdal
+from osgeo.ogr import Layer, Feature
 
 from geopackage_validator import __version__
 from geopackage_validator import utils
@@ -11,8 +12,9 @@ from geopackage_validator.models import (
     IndexDefinition,
     TableDefinition,
     TablesDefinition,
+    DataType,
 )
-from geopackage_validator.utils import group_by
+from geopackage_validator.utils import group_by, get_table_names_from_contents
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +35,12 @@ def column_definitions(table, geometry_column) -> List[ColumnDefinition]:
 
     fid_columns = fid_column_definition(table)
 
-    return fid_columns + [geometry_column] + columns
+    result = fid_columns.copy()
+    if geometry_column is not None:
+        result += [geometry_column]
+    if len(columns):
+        result += columns
+    return result
 
 
 def fid_column_definition(table) -> List[ColumnDefinition]:
@@ -129,17 +136,22 @@ def generate_table_definitions(
     }
 
     table_list: List[TableDefinition] = []
-    for table in dataset:
-        table: ogr.Layer
-        geo_column_name = table.GetGeometryColumn()
-        if geo_column_name == "":
-            continue
-
-        table_name = table.GetName()
-        geometry_column = {
-            "name": geo_column_name,
-            "type": table_geometry_types[table_name],
-        }
+    for table_name, data_type_column in get_table_names_from_contents(dataset):
+        table = dataset.ExecuteSQL(f"SELECT * FROM '{table_name}';")
+        data_type = DataType.from_str(data_type_column)
+        geometry_column = None
+        geo_column_name = ""
+        if data_type == DataType.FEATURES:
+            geo_column_name = table.GetGeometryColumn()
+            projections.add(table.GetSpatialRef().GetAuthorityCode(None))
+            # Only set default geo column name when it's a feature and there's no name set
+            if geo_column_name == "":
+                geo_column_name = "geom"
+            else:
+                geometry_column = {
+                    "name": geo_column_name,
+                    "type": table_geometry_types[table_name],
+                }
         columns = tuple(column_definitions(table, geometry_column))
 
         indexes = None
@@ -148,18 +160,16 @@ def generate_table_definitions(
             indexes = tuple(get_index_definitions(dataset, table_name))
             foreign_keys = tuple(get_foreign_key_definitions(dataset, table_name))
 
-        table_list.append(
-            TableDefinition(
-                name=table_name,
-                geometry_column=geo_column_name,
-                columns=columns,
-                indexes=indexes,
-                foreign_keys=foreign_keys,
-            )
+        table_def = TableDefinition(
+            name=table_name,
+            geometry_column=geo_column_name,
+            columns=columns,
+            indexes=indexes,
+            foreign_keys=foreign_keys,
+            data_type=DataType.from_str(data_type_column),
         )
-
-        projections.add(table.GetSpatialRef().GetAuthorityCode(None))
-
+        dataset.ReleaseResultSet(table)
+        table_list.append(table_def)
     assert len(projections) == 1, "Expected one projection per geopackage."
 
     result = TablesDefinition(
@@ -167,7 +177,6 @@ def generate_table_definitions(
         projection=int(projections.pop()),
         tables=tuple(sorted(table_list, key=lambda t: t.name)),
     )
-
     return result
 
 

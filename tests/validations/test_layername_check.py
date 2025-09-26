@@ -34,8 +34,9 @@ def test_lowercaselayername_with_capitals():
 def test_with_gpkg():
     dataset = open_dataset("tests/data/test_layername.gpkg")
     checks = list(query_layernames(dataset))
-    assert len(checks) == 1
+    assert len(checks) == 2
     assert checks[0] == "test_LAYERNAME"
+    assert checks[1] == "test_ATTRIBUTE_LAYER"
 
 
 def test_with_gpkg_allcorrect():

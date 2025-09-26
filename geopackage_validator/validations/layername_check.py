@@ -1,11 +1,14 @@
 from typing import Iterable, List
 
+from geopackage_validator.generate import get_table_names_from_contents
 from geopackage_validator.validations import validator
 from geopackage_validator.constants import SNAKE_CASE_REGEX
 
 
 def query_layernames(dataset) -> List[str]:
-    return [layer.GetName() for layer in dataset]
+    return [
+        table_name for table_name, dataset in get_table_names_from_contents(dataset)
+    ]
 
 
 class LayerNameValidator(validator.Validator):

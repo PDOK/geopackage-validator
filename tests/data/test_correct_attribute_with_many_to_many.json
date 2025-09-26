@@ -1,0 +1,93 @@
+{
+    "geopackage_validator_version": "0.5.9",
+    "projection": 28992,
+    "tables": [
+        {
+            "name": "test_allcorrect_a",
+            "geometry_column": "geom",
+            "data_type": "features",
+            "columns": [
+                {
+                    "name": "fid",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "geom",
+                    "type": "POLYGON"
+                }
+            ],
+            "indexes": [
+                {
+                    "columns": [
+                        "fid"
+                    ],
+                    "unique": true
+                }
+            ],
+            "foreign_keys": []
+        },
+        {
+            "name": "test_allcorrect_b",
+            "geometry_column": "geom",
+            "data_type": "features",
+            "columns": [
+                {
+                    "name": "fid",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "geom",
+                    "type": "POLYGON"
+                }
+            ],
+            "indexes": [
+                {
+                    "columns": [
+                        "fid"
+                    ],
+                    "unique": true
+                }
+            ],
+            "foreign_keys": []
+        },
+        {
+            "name": "test_attributes",
+            "geometry_column": "",
+            "data_type": "attributes",
+            "columns": [
+                {
+                    "name": "reference_a",
+                    "type": "INTEGER64"
+                },
+                {
+                    "name": "reference_b",
+                    "type": "INTEGER64"
+                }
+            ],
+            "indexes": [
+                {
+                    "columns": [
+                        "reference_a",
+                        "reference_b"
+                    ],
+                    "unique": true
+                }
+            ],
+            "foreign_keys": [
+                {
+                    "table": "test_allcorrect_b",
+                    "columns": [
+                        {
+                            "src": "reference_a",
+                            "dst": "fid"
+                        },
+                        {
+                            "src": "reference_b",
+                            "dst": "fid"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
