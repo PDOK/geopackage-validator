@@ -92,8 +92,8 @@ def compare_table_definitions(
         results.append(f"missing table(s): {missing}")
     if added:
         # Added for schema's that don't define attribute tables yet, change back if schema's changed too
-        added_arr = added.split(",")
-        filtered_tables = [table.strip() for table in added_arr if new_tables[table.strip()].data_type != DataType.ATTRIBUTES]
+        added_arr = added.split(", ")
+        filtered_tables = ', '.join([table for table in added_arr if new_tables[table].data_type != DataType.ATTRIBUTES])
         if filtered_tables:
             results.append(f"extra table(s): {filtered_tables}")
 
