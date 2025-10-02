@@ -3,6 +3,8 @@ from geopackage_validator.validations import validator
 
 
 class AttributeNoGeometryValidator(validator.Validator):
+    """Attribute type tables should not have a geometry column."""
+
     code = 26
     level = validator.ValidationLevel.ERROR
     message = "Found geometry column in non-geometry table: {table_name}"
