@@ -7,7 +7,8 @@ from geopackage_validator.models import (
     Named,
     ColumnDefinition,
     TableDefinition,
-    TablesDefinition, DataType,
+    TablesDefinition,
+    DataType,
 )
 from geopackage_validator.validations import validator
 
@@ -93,7 +94,13 @@ def compare_table_definitions(
     if added:
         # Added for schema's that don't define attribute tables yet, change back if schema's changed too
         added_arr = added.split(", ")
-        filtered_tables = ', '.join([table for table in added_arr if new_tables[table].data_type != DataType.ATTRIBUTES])
+        filtered_tables = ", ".join(
+            [
+                table
+                for table in added_arr
+                if new_tables[table].data_type != DataType.ATTRIBUTES
+            ]
+        )
         if filtered_tables:
             results.append(f"extra table(s): {filtered_tables}")
 
