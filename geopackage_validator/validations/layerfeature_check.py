@@ -12,7 +12,7 @@ def query_layerfeature_counts(dataset) -> Iterable[Tuple[str, int, int]]:
         (dt,) = data_type.GetNextFeature()
         dataset.ReleaseResultSet(data_type)
         data_type = DataType.from_str(dt)
-        if data_type != DataType.FEATURES:
+        if data_type != DataType.FEATURES or dt is None:
             continue
 
         layer_name = layer.GetName()
