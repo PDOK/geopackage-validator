@@ -9,9 +9,14 @@ def query_layerfeature_counts(dataset) -> Iterable[Tuple[str, int, int]]:
         data_type = dataset.ExecuteSQL(
             f'SELECT data_type FROM gpkg_contents WHERE table_name="{layer.GetName()}"'
         )
-        (dt,) = data_type.GetNextFeature()
+
+        dt = data_type.GetNextFeature()
+        if dt is None:
+            continue
+
         dataset.ReleaseResultSet(data_type)
-        data_type = DataType.from_str(dt)
+        data_type = DataType.from_str(dt[0])
+
         if data_type != DataType.FEATURES:
             continue
 
