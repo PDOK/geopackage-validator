@@ -126,6 +126,8 @@ The current checks are (see also the 'show-validations' command):
 
 An explanation in Dutch with a reason for each rule can be found [here](https://www.pdok.nl/voor-data-aanbieders#:~:text=Regels%20in%20detail).
 
+**Note to PDOK developers:** make sure to update the Kangaroo webinterface when adding a new validation.
+
 ## Geopackage versions
 
 The Geopackage validator support the following Geopackage versions:
