@@ -19,6 +19,7 @@ from geopackage_validator import s3
 from geopackage_validator import output
 from geopackage_validator import validate
 from geopackage_validator import utils
+from geopackage_validator.validations.validator import ValidationLevel, format_result
 
 
 @click.group()
@@ -423,6 +424,17 @@ def geopackage_validator_command_generate_table_definitions(
                     localfilename, with_indexes_and_fks
                 )
         output.print_output(definitionlist, yaml)
+    except generate.GeneratorError as e:
+        output.print_output(
+            format_result(
+                validation_code="GDAL_ERROR",
+                validation_description=str(e),
+                level=ValidationLevel.UNKNOWN_ERROR,
+                trace=e.trace,
+            ),
+            yaml,
+        )
+        sys.exit(1)
     except Exception:
         logger.exception("Error while generating table definitions")
         sys.exit(1)
