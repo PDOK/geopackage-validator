@@ -43,6 +43,19 @@ GDAL_ENV_MAPPING = {
 }
 
 
+class GdalErrorHandler(object):
+    def __init__(self):
+        self.gdal_error_traces = []
+        self.gdal_warning_traces = []
+
+    def handler(self, err_level, err_no, err_msg):
+        trace = err_msg.replace("\n", " ")
+        if err_level == gdal.CE_Warning:
+            self.gdal_warning_traces.append(trace)
+        else:
+            self.gdal_error_traces.append(trace)
+
+
 def open_dataset(filename: str = None, error_handler: Callable = None) -> gdal.Dataset:
     if error_handler is not None:
         gdal.UseExceptions()

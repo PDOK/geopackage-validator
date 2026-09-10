@@ -33,6 +33,25 @@ def test_generate_definitions_error_s3():
     assert "S3 access key has to be given" in result.output
 
 
+def test_generate_definitions_with_broken_gpkg_reports_gdal_error():
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "generate-definitions",
+            "--gpkg-path",
+            "tests/data/test_broken_geopackage.gpkg",
+        ],
+    )
+    assert result.exit_code == 1
+    output = json.loads(result.output)
+    assert output["validation_code"] == "GDAL_ERROR"
+    assert output["validation_description"] == "Could not open gpkg."
+    assert output["locations"] == [
+        "At least one of the required GeoPackage tables, gpkg_spatial_ref_sys or gpkg_contents, is missing"
+    ]
+
+
 def test_generate_definitions_with_gpkg():
     runner = CliRunner()
     result = runner.invoke(

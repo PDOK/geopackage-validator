@@ -5,7 +5,6 @@ from collections import OrderedDict
 from pathlib import Path
 
 import yaml
-from osgeo import gdal
 
 from geopackage_validator import utils
 from geopackage_validator import validations as validation
@@ -77,17 +76,7 @@ def validators_to_use(
     return [validator_dict[code] for code in codes]
 
 
-class GdalErrorHandler(object):
-    def __init__(self):
-        self.gdal_error_traces = []
-        self.gdal_warning_traces = []
-
-    def handler(self, err_level, err_no, err_msg):
-        trace = err_msg.replace("\n", " ")
-        if err_level == gdal.CE_Warning:
-            self.gdal_warning_traces.append(trace)
-        else:
-            self.gdal_error_traces.append(trace)
+GdalErrorHandler = utils.GdalErrorHandler
 
 
 def validate(

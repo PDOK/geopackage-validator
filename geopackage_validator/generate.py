@@ -19,6 +19,17 @@ from geopackage_validator.utils import group_by, get_table_names_from_contents
 logger = logging.getLogger(__name__)
 
 
+class GeneratorError(Exception):
+    """Raised when table definitions could not be generated, e.g. because the
+    geopackage could not be opened or is corrupt. Carries any GDAL error
+    traces so callers can report a clear, structured error instead of a bare
+    traceback."""
+
+    def __init__(self, message: str, trace: Optional[List[str]] = None):
+        super().__init__(message)
+        self.trace = trace or []
+
+
 def column_definitions(table, geometry_column) -> List[ColumnDefinition]:
     layer_definition = table.GetLayerDefn()
 
@@ -189,6 +200,10 @@ def get_datasource_for_path(gpkg_path: str, error_handler=None) -> gdal.Dataset:
 def generate_definitions_for_path(
     gpkg_path: str, with_indexes_and_fks: bool = False
 ) -> TablesDefinition:
-    return generate_table_definitions(
-        get_datasource_for_path(gpkg_path), with_indexes_and_fks
-    )
+    error_handler = utils.GdalErrorHandler()
+    dataset = get_datasource_for_path(gpkg_path, error_handler.handler)
+    if dataset is None:
+        raise GeneratorError(
+            "Could not open gpkg.", trace=error_handler.gdal_error_traces
+        )
+    return generate_table_definitions(dataset, with_indexes_and_fks)
