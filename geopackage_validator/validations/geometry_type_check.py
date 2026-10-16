@@ -34,7 +34,7 @@ SQL_TEMPLATE_TABLE_GEOMETRY_TYPES = """SELECT
     , count("{column_name}") AS count
     , cast(rowid AS INTEGER) AS row_id
 FROM "{table_name}"
-WHERE geom_type != '{expected_geometry}'
+WHERE geom_type != UPPER('{expected_geometry}')
 GROUP BY geom_type;"""
 
 
@@ -113,7 +113,7 @@ class GpkgGeometryTypeNameValidator(validator.Validator):
         return [
             cls.message.format(table=table, geometry_type=geometry_type)
             for table, _, geometry_type in geometry_type_names
-            if geometry_type not in VALID_GEOMETRIES
+            if geometry_type.upper() not in VALID_GEOMETRIES
         ]
 
 
