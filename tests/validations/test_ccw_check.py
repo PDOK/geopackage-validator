@@ -15,3 +15,12 @@ def test_ccw_with_gpkg_allcorrect():
     dataset = open_dataset("tests/data/test_allcorrect.gpkg")
     checks = list(query_ccw(dataset))
     assert len(checks) == 0
+
+
+def test_ccw_with_gpkg_mixed_case_geometry_type():
+    dataset = open_dataset("tests/data/test_geometry_valid_mixed_case.gpkg")
+    checks = list(query_ccw(dataset))
+    assert len(checks) == 1
+    assert checks[0][0] == "test_geometry_valid"
+    assert checks[0][1] == 1
+    assert checks[0][2] == 1
