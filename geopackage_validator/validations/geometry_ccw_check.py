@@ -6,7 +6,7 @@ from geopackage_validator.validations import validator
 def query_ccw(dataset) -> Iterable[Tuple[str, str]]:
     columns = dataset.ExecuteSQL(
         "SELECT table_name, column_name FROM gpkg_geometry_columns "
-        "  WHERE geometry_type_name in ('POLYGON', 'MULTIPOLYGON');"
+        "  WHERE UPPER(geometry_type_name) in ('POLYGON', 'MULTIPOLYGON');"
     )
 
     for table_name, column_name in columns:
