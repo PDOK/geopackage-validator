@@ -59,6 +59,15 @@ def test_rq14_with_gpkg_geometry_type_valid_check():
     assert len(result) == 0
 
 
+def test_rq14_with_gpkg_geometry_type_mixed_case_valid_check():
+    dataset = open_dataset("tests/data/test_allcorrect_mixed_case.gpkg")
+    geometry_type_names = dataset_geometry_tables(dataset)
+    result = GpkgGeometryTypeNameValidator(dataset).gpkg_geometry_valid_check(
+        geometry_type_names
+    )
+    assert len(result) == 0
+
+
 def test_rq14_with_gpkg_geometry_type_invalid_check():
     dataset = open_dataset("tests/data/test_geometry_type.gpkg")
     geometry_type_names = dataset_geometry_tables(dataset)
@@ -78,6 +87,12 @@ def test_rq15_with_gpkg_geometry_type_equals_gpkg_definition_valid_check():
     assert len(result) == 0
 
 
+def test_rq15_with_gpkg_geometry_type_mixed_case_valid_check():
+    dataset = open_dataset("tests/data/test_allcorrect_mixed_case.gpkg")
+    result = list(GeometryTypeEqualsGpkgDefinitionValidator(dataset).check())
+    assert len(result) == 0
+
+
 def test_rq15_with_gpkg_geometry_type_equals_gpkg_definition_invalid_check():
     dataset = open_dataset("tests/data/test_geometry_type.gpkg")
     result = list(GeometryTypeEqualsGpkgDefinitionValidator(dataset).check())
@@ -86,18 +101,3 @@ def test_rq15_with_gpkg_geometry_type_equals_gpkg_definition_invalid_check():
         result[0]
         == "Error layer: test_geometry_type, found geometry: GEOMETRYCOLLECTION that should be COMPOUNDCURVE, 1 time, example id: 1"
     )
-
-
-def test_rq14_with_gpkg_geometry_type_mixed_case_valid_check():
-    dataset = open_dataset("tests/data/test_allcorrect_mixed_case.gpkg")
-    geometry_type_names = dataset_geometry_tables(dataset)
-    result = GpkgGeometryTypeNameValidator(dataset).gpkg_geometry_valid_check(
-        geometry_type_names
-    )
-    assert len(result) == 0
-
-
-def test_rq15_with_gpkg_geometry_type_mixed_case_valid_check():
-    dataset = open_dataset("tests/data/test_allcorrect_mixed_case.gpkg")
-    result = list(GeometryTypeEqualsGpkgDefinitionValidator(dataset).check())
-    assert len(result) == 0
