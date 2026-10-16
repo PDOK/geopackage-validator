@@ -52,7 +52,7 @@ def query_unexpected_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
 
         if validations is not None:
             for (geometry_type, count, row_id) in validations:
-                yield table_name, geometry_type, count, row_id, expected_geometry
+                yield table_name, geometry_type, count, row_id, expected_geometry.upper()
 
         dataset.ReleaseResultSet(validations)
 
