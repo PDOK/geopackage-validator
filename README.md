@@ -40,7 +40,7 @@ Validate a GeoPackage with the default set of validation rules:
 
 ```sh
 gpkg_path=relative/path/to/the.gpkg
-docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}"
+docker run -v "$PWD":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}"
 ```
 
 Validate a GeoPackage with the default set of validation rules including a schema:
@@ -48,7 +48,7 @@ Validate a GeoPackage with the default set of validation rules including a schem
 ```sh
 schema_path=relative/path/to/the/schema.json
 gpkg_path=relative/path/to/the.gpkg
-docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}"
+docker run -v "$PWD":/gpkg --rm pdok/geopackage-validator validate --gpkg-path "/gpkg/${gpkg_path}" --table-definitions-path "/gpkg/${schema_path}"
 ```
 
 Generate a schema:
@@ -56,7 +56,7 @@ Generate a schema:
 ```sh
 schema_path=relative/path/to/the/schema.json
 gpkg_path=relative/path/to/the.gpkg
-docker run -v "$(pwd)":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path"
+docker run -v "$PWD":/gpkg --rm pdok/geopackage-validator generate-definitions --gpkg-path "/gpkg/${gpkg_path}" > "$schema_path"
 ```
 
 ### Local
@@ -164,7 +164,7 @@ docker build -t pdok/geopackage-validator .
 The command is directly called so subcommands can be run in the container directly:
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
+docker run -v "$PWD":/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
 
 ## Usage
@@ -174,7 +174,7 @@ docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/g
 To validate RQ8 you have to generate definitions first.
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator geopackage-validator generate-definitions --gpkg-path /path/to/file.gpkg
+docker run -v "$PWD":/gpkg --rm pdok/geopackage-validator geopackage-validator generate-definitions --gpkg-path /path/to/file.gpkg
 ```
 
 ### Validate
@@ -285,7 +285,7 @@ Options:
 Examples:
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
+docker run -v "$PWD":/gpkg --rm pdok/geopackage-validator validate -t /path/to/generated_definitions.json --gpkg-path /gpkg/tests/data/test_allcorrect.gpkg
 ```
 
 Run with specific validations only
@@ -293,13 +293,13 @@ Run with specific validations only
 Specified in file:
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-path tests/validationsets/example-validation-set.json
+docker run -v "$PWD":/gpkg --rm pdok/geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations-path tests/validationsets/example-validation-set.json
 ```
 
 Or specified on command line:
 
 ```bash
-docker run -v ${PWD}:/gpkg --rm pdok/geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations RQ1,RQ2,RQ3
+docker run -v "$PWD":/gpkg --rm pdok/geopackage-validator validate --gpkg-path tests/data/test_allcorrect.gpkg --validations RQ1,RQ2,RQ3
 ```
 
 ### Show validations
@@ -414,7 +414,7 @@ We advise using docker-compose for local development. This allows live editing a
 First build the local image with your machines user id and group id:
 
 ```bash
-docker-compose build --build-arg USER_ID=`id -u` --build-arg GROUP_ID=`id -g`
+docker-compose build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
 ```
 
 ### Docker run
