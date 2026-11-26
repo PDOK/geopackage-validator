@@ -74,7 +74,7 @@ def open_dataset(filename: str = None, error_handler: Callable = None) -> gdal.D
 
     dataset = None
     try:
-        dataset = driver.Open(filename)
+        dataset = driver.Open(filename, update=False)
     except Exception as e:
         error_handler(gdal.CE_Failure, 0, e.args[0])
 
@@ -166,8 +166,12 @@ def quote_sqlite_identifier(value: str) -> str:
 
 
 def escape_sqlite_string(value: str) -> str:
+    if "\x00" in value:
+        raise ValueError("SQL string literals cannot contain NUL characters")
     return value.replace("'", "''")
 
 
 def escape_sqlite_identifier(value: str) -> str:
+    if "\x00" in value:
+        raise ValueError("SQL identifiers cannot contain NUL characters")
     return value.replace('"', '""')

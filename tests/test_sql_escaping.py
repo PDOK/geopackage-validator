@@ -1,3 +1,5 @@
+import pytest
+
 from geopackage_validator import utils
 from geopackage_validator.validations.columnname_check import query_columnames
 from geopackage_validator.validations.geometry_dimension_check import query_dimensions
@@ -21,6 +23,16 @@ def test_quote_sqlite_string():
 
 def test_quote_sqlite_identifier():
     assert utils.quote_sqlite_identifier('a"b') == '"a""b"'
+
+
+def test_quote_sqlite_string_rejects_nul():
+    with pytest.raises(ValueError, match="NUL"):
+        utils.quote_sqlite_string("a\x00b")
+
+
+def test_quote_sqlite_identifier_rejects_nul():
+    with pytest.raises(ValueError, match="NUL"):
+        utils.quote_sqlite_identifier("a\x00b")
 
 
 def test_query_columnnames_escapes_table_name(monkeypatch):
