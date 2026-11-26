@@ -67,7 +67,7 @@ def get_index_definitions(
     index_definitions: List[IndexDefinition] = []
     table_name_quoted = utils.quote_sqlite_string(table_name)
     index_list = dataset.ExecuteSQL(
-        f"select name, \"unique\", origin from pragma_index_list({table_name_quoted});"
+        f'select name, "unique", origin from pragma_index_list({table_name_quoted});'
     )
     pk_in_index_list = False
     for index_listing in index_list:

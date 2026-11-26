@@ -14,7 +14,9 @@ def query_feature_id(dataset) -> Iterable[Tuple[str, int]]:
                 SELECT count(*) AS pk_present FROM pragma_table_info({table_name}) 
                     WHERE pk > 0 
                     AND type LIKE '%INT%' 
-            """.format(table_name=table_name_quoted)
+            """.format(
+            table_name=table_name_quoted
+        )
         validations = dataset.ExecuteSQL(query)
         for (count,) in validations:
             yield table, count
@@ -30,7 +32,9 @@ def query_sequence_for_autoincrement(dataset) -> Iterable[Tuple[str, int]]:
             SELECT count(*) AS has_autoincrement
             FROM sqlite_sequence
             WHERE name = {table_name}
-            """.format(table_name=table_name_quoted)
+            """.format(
+            table_name=table_name_quoted
+        )
         validations = dataset.ExecuteSQL(query)
         for (count,) in validations:
             yield table, count

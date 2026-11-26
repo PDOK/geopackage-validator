@@ -24,9 +24,7 @@ def rtree_valid_check_query(dataset) -> Iterable[str]:
         with dataset.silence_gdal():
             index_name = f"rtree_{index[0]}_{index[1]}"
             index_name_quoted = utils.quote_sqlite_string(index_name)
-            validations = dataset.ExecuteSQL(
-                f"select rtreecheck({index_name_quoted});"
-            )
+            validations = dataset.ExecuteSQL(f"select rtreecheck({index_name_quoted});")
 
             if validations is None:
                 yield index[0]
