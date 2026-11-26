@@ -8,30 +8,35 @@ from geopackage_validator import utils
 def query_feature_id(dataset) -> Iterable[Tuple[str, int]]:
     tables = utils.dataset_geometry_tables(dataset)
     # validates that there is a primary key with integer/int, mediumint, smallint & tinyint
-    query = """
-                SELECT '{table_name}' AS table_name, count(*) AS pk_present FROM pragma_table_info('{table_name}') 
+    for table, _, _ in tables:
+        table_name_quoted = utils.quote_sqlite_string(table)
+        query = """
+                SELECT count(*) AS pk_present FROM pragma_table_info({table_name}) 
                     WHERE pk > 0 
                     AND type LIKE '%INT%' 
-            """
-    for table, _, _ in tables:
-        validations = dataset.ExecuteSQL(query.format(table_name=table))
-        for table_name, count in validations:
-            yield table_name, count
+            """.format(
+            table_name=table_name_quoted
+        )
+        validations = dataset.ExecuteSQL(query)
+        for (count,) in validations:
+            yield table, count
 
         dataset.ReleaseResultSet(validations)
 
 
 def query_sequence_for_autoincrement(dataset) -> Iterable[Tuple[str, int]]:
     tables = utils.dataset_geometry_tables(dataset)
-    query = """
-            SELECT '{table_name}' AS table_name, count(*) AS has_autoincrement
-            FROM sqlite_sequence
-            WHERE name = '{table_name}'
-            """
-
     for table, _, _ in tables:
-        validations = dataset.ExecuteSQL(query.format(table_name=table))
-        for table_name, count in validations:
+        table_name_quoted = utils.quote_sqlite_string(table)
+        query = """
+            SELECT count(*) AS has_autoincrement
+            FROM sqlite_sequence
+            WHERE name = {table_name}
+            """.format(
+            table_name=table_name_quoted
+        )
+        validations = dataset.ExecuteSQL(query)
+        for (count,) in validations:
             yield table, count
 
         dataset.ReleaseResultSet(validations)

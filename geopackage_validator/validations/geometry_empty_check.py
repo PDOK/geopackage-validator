@@ -23,8 +23,12 @@ def query_geometry_empty(
     columns = utils.dataset_geometry_tables(dataset)
 
     for table_name, column_name, _ in columns:
+        table_name_escaped = utils.escape_sqlite_identifier(table_name)
+        column_name_escaped = utils.escape_sqlite_identifier(column_name)
         validations = dataset.ExecuteSQL(
-            sql_template.format(table_name=table_name, column_name=column_name)
+            sql_template.format(
+                table_name=table_name_escaped, column_name=column_name_escaped
+            )
         )
         for type, count, row_id in validations:
             yield table_name, column_name, type, count, row_id

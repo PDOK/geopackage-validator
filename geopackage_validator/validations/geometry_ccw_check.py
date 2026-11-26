@@ -1,5 +1,6 @@
 from typing import Iterable, Tuple
 
+from geopackage_validator import utils
 from geopackage_validator.validations import validator
 
 
@@ -10,9 +11,11 @@ def query_ccw(dataset) -> Iterable[Tuple[str, str]]:
     )
 
     for table_name, column_name in columns:
+        table_name_quoted = utils.quote_sqlite_identifier(table_name)
+        column_name_quoted = utils.quote_sqlite_identifier(column_name)
         sql = (
-            f'SELECT cast(rowid AS INTEGER) AS row_id, count("{column_name}") as amount '
-            f'FROM "{table_name}" WHERE NOT ST_IsPolygonCCW("{column_name}");'
+            f"SELECT cast(rowid AS INTEGER) AS row_id, count({column_name_quoted}) as amount "
+            f"FROM {table_name_quoted} WHERE NOT ST_IsPolygonCCW({column_name_quoted});"
         )
         validations = dataset.ExecuteSQL(sql)
 

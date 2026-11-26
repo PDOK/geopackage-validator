@@ -22,7 +22,7 @@ FROM(
         cast(rowid AS INTEGER) AS row_id
     FROM "{table_name}"
     WHERE
-        ST_IsValid("{column_name}") = 0 OR
+        (ST_IsValid("{column_name}") = 0 AND ST_IsEmpty("{column_name}") = 0) OR
         (IsValidGPB("{column_name}") = 0  AND ST_IsEmpty("{column_name}") = 0) -- Empty geometry is considered valid
 )
 GROUP BY reason;"""
@@ -40,7 +40,7 @@ FROM(
                     END
                 ELSE
                     CASE
-                        WHEN ST_IsSimple("{column_name}") = 0
+                        WHEN ST_IsSimple("{column_name}") = 0 AND ST_IsEmpty("{column_name}") = 0
                             THEN 'Not Simple'
                         WHEN IsValidGPB("{column_name}") = 0
                             THEN 'Not GeoPackage geometry'
@@ -49,8 +49,8 @@ FROM(
         cast(rowid AS INTEGER) AS row_id
     FROM "{table_name}"
     WHERE
-        ST_IsValid("{column_name}") = 0 OR
-        ST_IsSimple("{column_name}") = 0 OR
+        (ST_IsValid("{column_name}") = 0 AND ST_IsEmpty("{column_name}") = 0) OR
+        (ST_IsSimple("{column_name}") = 0 AND ST_IsEmpty("{column_name}") = 0) OR
         (IsValidGPB("{column_name}") = 0  AND ST_IsEmpty("{column_name}") = 0) -- Empty geometry is considered valid
 )
 GROUP BY reason;"""
@@ -62,8 +62,12 @@ def query_geometry_valid(
     columns = utils.dataset_geometry_tables(dataset)
 
     for table_name, column_name, _ in columns:
+        table_name_escaped = utils.escape_sqlite_identifier(table_name)
+        column_name_escaped = utils.escape_sqlite_identifier(column_name)
         validations = dataset.ExecuteSQL(
-            sql_template.format(table_name=table_name, column_name=column_name)
+            sql_template.format(
+                table_name=table_name_escaped, column_name=column_name_escaped
+            )
         )
         for reason, count, row_id in validations:
             yield table_name, column_name, reason, count, row_id

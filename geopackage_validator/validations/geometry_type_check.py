@@ -42,10 +42,13 @@ def query_unexpected_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
     geometry_types = utils.dataset_geometry_tables(dataset)
 
     for table_name, column_name, expected_geometry in geometry_types:
+        table_name_escaped = utils.escape_sqlite_identifier(table_name)
+        column_name_escaped = utils.escape_sqlite_identifier(column_name)
+        expected_geometry_escaped = utils.escape_sqlite_string(expected_geometry)
         sql = SQL_TEMPLATE_TABLE_GEOMETRY_TYPES.format(
-            table_name=table_name,
-            column_name=column_name,
-            expected_geometry=expected_geometry,
+            table_name=table_name_escaped,
+            column_name=column_name_escaped,
+            expected_geometry=expected_geometry_escaped,
         )
 
         validations = dataset.ExecuteSQL(sql)

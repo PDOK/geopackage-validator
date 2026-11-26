@@ -9,8 +9,9 @@ def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
     tables = utils.dataset_geometry_tables(dataset)
 
     for table, _, _ in tables:
+        table_name_quoted = utils.quote_sqlite_string(table)
         columns = dataset.ExecuteSQL(
-            "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table)
+            "PRAGMA TABLE_INFO({table_name});".format(table_name=table_name_quoted)
         )
 
         for _, column, *_ in columns:

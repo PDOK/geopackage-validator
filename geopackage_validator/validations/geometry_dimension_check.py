@@ -22,8 +22,12 @@ def query_dimensions(dataset) -> Iterable[Tuple[str, str]]:
     tables = utils.dataset_geometry_tables(dataset)
 
     for table_name, column_name, _ in tables:
+        table_name_escaped = utils.escape_sqlite_identifier(table_name)
+        column_name_escaped = utils.escape_sqlite_identifier(column_name)
         validations = dataset.ExecuteSQL(
-            DIMENSION_QUERY.format(table_name=table_name, geom_column_name=column_name)
+            DIMENSION_QUERY.format(
+                table_name=table_name_escaped, geom_column_name=column_name_escaped
+            )
         )
         validation_list = (
             []
