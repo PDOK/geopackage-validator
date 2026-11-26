@@ -20,7 +20,7 @@ def query_ccw(dataset) -> Iterable[Tuple[str, str]]:
         validations = dataset.ExecuteSQL(sql)
 
         if validations is not None:
-            for (row_id, count) in validations:
+            for row_id, count in validations:
                 if count > 0:
                     yield table_name, row_id, count
 

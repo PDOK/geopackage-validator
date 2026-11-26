@@ -27,7 +27,9 @@ from geopackage_validator.validations.geometry_valid_check import (
     SQL_VALID_TEMPLATE_V0,
     query_geometry_valid,
 )
-from geopackage_validator.validations.layerfeature_check import query_layerfeature_counts
+from geopackage_validator.validations.layerfeature_check import (
+    query_layerfeature_counts,
+)
 from geopackage_validator.validations.name_length_check import query_names
 from geopackage_validator.validations.rtree_valid_check import rtree_valid_check_query
 
@@ -71,7 +73,9 @@ def quoted_dataset(tmp_path):
             f"(id INTEGER PRIMARY KEY, parent_id INTEGER REFERENCES {quote_identifier(TABLE)}(fid))"
         )
         connection.execute("CREATE TABLE decoy (valid TEXT)")
-        connection.execute(f"CREATE TABLE {quote_identifier(PRAGMA_TABLE)} (BadName TEXT)")
+        connection.execute(
+            f"CREATE TABLE {quote_identifier(PRAGMA_TABLE)} (BadName TEXT)"
+        )
         connection.execute(
             f"CREATE TABLE {quote_identifier(FEATURE_ID_TABLE)} (id TEXT)"
         )
@@ -186,7 +190,9 @@ def test_layer_count_injection_cannot_count_another_table(tmp_path):
 
     counts = dict(
         (name, (count, ogr_count))
-        for name, count, ogr_count in query_layerfeature_counts(utils.open_dataset(path))
+        for name, count, ogr_count in query_layerfeature_counts(
+            utils.open_dataset(path)
+        )
     )
     assert counts["test_allcorrect"] == (1, 1)
     assert counts[table] == (0, 0)

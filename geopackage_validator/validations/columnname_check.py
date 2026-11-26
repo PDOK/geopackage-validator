@@ -10,9 +10,7 @@ def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
     tables = utils.dataset_geometry_tables(dataset)
 
     for table, _, _ in tables:
-        columns = dataset.ExecuteSQL(
-            f"PRAGMA TABLE_INFO({quote_literal(table)});"
-        )
+        columns = dataset.ExecuteSQL(f"PRAGMA TABLE_INFO({quote_literal(table)});")
 
         for _, column, *_ in columns:
             yield table, column
