@@ -155,3 +155,19 @@ def get_table_names_from_contents(ds: gdal.Dataset) -> List[Tuple[str, str]]:
         )
     ds.ReleaseResultSet(layer)
     return layer_names
+
+
+def quote_sqlite_string(value: str) -> str:
+    return "'" + escape_sqlite_string(value) + "'"
+
+
+def quote_sqlite_identifier(value: str) -> str:
+    return '"' + escape_sqlite_identifier(value) + '"'
+
+
+def escape_sqlite_string(value: str) -> str:
+    return value.replace("'", "''")
+
+
+def escape_sqlite_identifier(value: str) -> str:
+    return value.replace('"', '""')

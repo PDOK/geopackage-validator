@@ -12,7 +12,8 @@ def query_names(dataset) -> Iterable[Tuple[str, str, int]]:
 
     for table, _, _ in tables:
         yield "table", table, len(table)
-        columns = dataset.ExecuteSQL(f"PRAGMA TABLE_INFO('{table}');")
+        table_name_quoted = utils.quote_sqlite_string(table)
+        columns = dataset.ExecuteSQL(f"PRAGMA TABLE_INFO({table_name_quoted});")
 
         for _, column, *_ in columns:
             yield "column", f"{column} (table: {table})", len(column)

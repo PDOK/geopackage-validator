@@ -65,8 +65,9 @@ def get_index_definitions(
     dataset: gdal.Dataset, table_name: str
 ) -> List[IndexDefinition]:
     index_definitions: List[IndexDefinition] = []
+    table_name_quoted = utils.quote_sqlite_string(table_name)
     index_list = dataset.ExecuteSQL(
-        f"select name, \"unique\", origin from pragma_index_list('{table_name}');"
+        f"select name, \"unique\", origin from pragma_index_list({table_name_quoted});"
     )
     pk_in_index_list = False
     for index_listing in index_list:
@@ -89,8 +90,9 @@ def get_index_definitions(
 
 
 def get_pk_index(dataset: gdal.Dataset, table_name: str) -> Optional[IndexDefinition]:
+    table_name_quoted = utils.quote_sqlite_string(table_name)
     pk_columns = dataset.ExecuteSQL(
-        f"select name from pragma_table_info('{table_name}') where pk;"
+        f"select name from pragma_table_info({table_name_quoted}) where pk;"
     )
     column_names = tuple(r["name"] for r in pk_columns)
     if len(column_names) == 0:
@@ -99,8 +101,9 @@ def get_pk_index(dataset: gdal.Dataset, table_name: str) -> Optional[IndexDefini
 
 
 def get_index_column_names(dataset: gdal.Dataset, index_name: str) -> List[str]:
+    index_name_quoted = utils.quote_sqlite_string(index_name)
     index_info = dataset.ExecuteSQL(
-        f"select name from pragma_index_info('{index_name}');"
+        f"select name from pragma_index_info({index_name_quoted});"
     )
     column_names: List[str] = [r["name"] for r in index_info]
     dataset.ReleaseResultSet(index_info)
@@ -108,8 +111,9 @@ def get_index_column_names(dataset: gdal.Dataset, index_name: str) -> List[str]:
 
 
 def get_foreign_key_definitions(dataset, table_name) -> List[ForeignKeyDefinition]:
+    table_name_quoted = utils.quote_sqlite_string(table_name)
     foreign_key_list = dataset.ExecuteSQL(
-        f'select id, seq, "table", "from", "to" from pragma_foreign_key_list(\'{table_name}\');'
+        f'select id, seq, "table", "from", "to" from pragma_foreign_key_list({table_name_quoted});'
     )
     foreign_key_definitions: List[ForeignKeyDefinition] = []
     for foreign_key_listing in group_by(foreign_key_list, lambda r: r["id"]):
@@ -148,7 +152,8 @@ def generate_table_definitions(
 
     table_list: List[TableDefinition] = []
     for table_name, data_type_column in get_table_names_from_contents(dataset):
-        table = dataset.ExecuteSQL(f"SELECT * FROM '{table_name}';")
+        table_name_quoted = utils.quote_sqlite_identifier(table_name)
+        table = dataset.ExecuteSQL(f"SELECT * FROM {table_name_quoted};")
         data_type = DataType.from_str(data_type_column)
         geometry_column = None
         geo_column_name = ""

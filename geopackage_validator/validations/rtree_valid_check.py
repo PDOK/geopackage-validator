@@ -1,5 +1,6 @@
 from typing import Iterable
 
+from geopackage_validator import utils
 from geopackage_validator.validations import validator
 
 
@@ -21,10 +22,10 @@ def rtree_valid_check_query(dataset) -> Iterable[str]:
     )
     for index in indexes:
         with dataset.silence_gdal():
+            index_name = f"rtree_{index[0]}_{index[1]}"
+            index_name_quoted = utils.quote_sqlite_string(index_name)
             validations = dataset.ExecuteSQL(
-                'select rtreecheck("{index_name}");'.format(
-                    index_name="rtree_" + index[0] + "_" + index[1]
-                )
+                f"select rtreecheck({index_name_quoted});"
             )
 
             if validations is None:

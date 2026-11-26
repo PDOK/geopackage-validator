@@ -1,13 +1,16 @@
 from typing import Iterable, Tuple
 
+from geopackage_validator import utils
 from geopackage_validator.models import DataType
 from geopackage_validator.validations import validator
 
 
 def query_layerfeature_counts(dataset) -> Iterable[Tuple[str, int, int]]:
     for layer in dataset:
+        layer_name = layer.GetName()
+        layer_name_literal = utils.quote_sqlite_string(layer_name)
         data_type = dataset.ExecuteSQL(
-            f'SELECT data_type FROM gpkg_contents WHERE table_name="{layer.GetName()}"'
+            f"SELECT data_type FROM gpkg_contents WHERE table_name={layer_name_literal}"
         )
 
         dt = data_type.GetNextFeature()
@@ -20,10 +23,10 @@ def query_layerfeature_counts(dataset) -> Iterable[Tuple[str, int, int]]:
         if data_type != DataType.FEATURES:
             continue
 
-        layer_name = layer.GetName()
+        layer_name_quoted = utils.quote_sqlite_identifier(layer_name)
 
         table_featurecount = dataset.ExecuteSQL(
-            'SELECT count(*) from "{table_name}"'.format(table_name=layer_name)
+            "SELECT count(*) from {table_name}".format(table_name=layer_name_quoted)
         )
         (table_count,) = table_featurecount.GetNextFeature()
 
