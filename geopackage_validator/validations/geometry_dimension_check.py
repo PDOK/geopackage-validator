@@ -2,15 +2,16 @@ from typing import Iterable, Tuple
 
 from geopackage_validator.validations import validator
 from geopackage_validator import utils
+from geopackage_validator.sql import quote_identifier
 
 
 DIMENSION_QUERY = """
 SELECT DISTINCT
-    (ST_MinZ("{geom_column_name}") == 0 AND ST_MaxZ("{geom_column_name}") == 0) as z_check,
-    (ST_MinM("{geom_column_name}") IS NOT NULL AND
-     ST_MinM("{geom_column_name}") == 0 AND ST_MaxM("{geom_column_name}") == 0) as m_check,
-     st_ndims("{geom_column_name}") as ndims
-FROM "{table_name}" where st_ndims("{geom_column_name}") > 2;
+    (ST_MinZ({geom_column_name}) == 0 AND ST_MaxZ({geom_column_name}) == 0) as z_check,
+    (ST_MinM({geom_column_name}) IS NOT NULL AND
+     ST_MinM({geom_column_name}) == 0 AND ST_MaxM({geom_column_name}) == 0) as m_check,
+     st_ndims({geom_column_name}) as ndims
+FROM {table_name} where st_ndims({geom_column_name}) > 2;
 """
 
 MEASUREMENT_COORDINATE_MESSAGE = "a measurement (M) dimension that are all 0."
@@ -23,7 +24,10 @@ def query_dimensions(dataset) -> Iterable[Tuple[str, str]]:
 
     for table_name, column_name, _ in tables:
         validations = dataset.ExecuteSQL(
-            DIMENSION_QUERY.format(table_name=table_name, geom_column_name=column_name)
+            DIMENSION_QUERY.format(
+                table_name=quote_identifier(table_name),
+                geom_column_name=quote_identifier(column_name),
+            )
         )
         validation_list = (
             []

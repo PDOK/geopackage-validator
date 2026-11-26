@@ -3,6 +3,7 @@ from typing import Iterable, Tuple
 from geopackage_validator.constants import VALID_GEOMETRIES, MAX_VALIDATION_ITERATIONS
 from geopackage_validator.validations import validator
 from geopackage_validator import utils
+from geopackage_validator.sql import quote_identifier, quote_literal
 
 
 def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
@@ -26,15 +27,15 @@ def query_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
 
 
 SQL_TEMPLATE_TABLE_GEOMETRY_TYPES = """SELECT
-    CASE ST_AsText("{column_name}")
+    CASE ST_AsText({column_name})
         WHEN 'GEOMETRYCOLLECTION()'
             THEN 'GEOMETRYCOLLECTION'
-        ELSE ST_GEOMETRYTYPE("{column_name}")
+        ELSE ST_GEOMETRYTYPE({column_name})
     END AS geom_type
-    , count("{column_name}") AS count
+    , count({column_name}) AS count
     , cast(rowid AS INTEGER) AS row_id
-FROM "{table_name}"
-WHERE geom_type != '{expected_geometry}'
+FROM {table_name}
+WHERE geom_type != {expected_geometry}
 GROUP BY geom_type;"""
 
 
@@ -43,9 +44,9 @@ def query_unexpected_geometry_types(dataset) -> Iterable[Tuple[str, str]]:
 
     for table_name, column_name, expected_geometry in geometry_types:
         sql = SQL_TEMPLATE_TABLE_GEOMETRY_TYPES.format(
-            table_name=table_name,
-            column_name=column_name,
-            expected_geometry=expected_geometry,
+            table_name=quote_identifier(table_name),
+            column_name=quote_identifier(column_name),
+            expected_geometry=quote_literal(expected_geometry),
         )
 
         validations = dataset.ExecuteSQL(sql)

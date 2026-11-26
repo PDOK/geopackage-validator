@@ -15,6 +15,7 @@ from geopackage_validator.models import (
     DataType,
 )
 from geopackage_validator.utils import group_by, get_table_names_from_contents
+from geopackage_validator.sql import quote_identifier, quote_literal
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ def get_index_definitions(
 ) -> List[IndexDefinition]:
     index_definitions: List[IndexDefinition] = []
     index_list = dataset.ExecuteSQL(
-        f"select name, \"unique\", origin from pragma_index_list('{table_name}');"
+        f'select name, "unique", origin from pragma_index_list({quote_literal(table_name)});'
     )
     pk_in_index_list = False
     for index_listing in index_list:
@@ -90,7 +91,7 @@ def get_index_definitions(
 
 def get_pk_index(dataset: gdal.Dataset, table_name: str) -> Optional[IndexDefinition]:
     pk_columns = dataset.ExecuteSQL(
-        f"select name from pragma_table_info('{table_name}') where pk;"
+        f"select name from pragma_table_info({quote_literal(table_name)}) where pk;"
     )
     column_names = tuple(r["name"] for r in pk_columns)
     if len(column_names) == 0:
@@ -100,7 +101,7 @@ def get_pk_index(dataset: gdal.Dataset, table_name: str) -> Optional[IndexDefini
 
 def get_index_column_names(dataset: gdal.Dataset, index_name: str) -> List[str]:
     index_info = dataset.ExecuteSQL(
-        f"select name from pragma_index_info('{index_name}');"
+        f"select name from pragma_index_info({quote_literal(index_name)});"
     )
     column_names: List[str] = [r["name"] for r in index_info]
     dataset.ReleaseResultSet(index_info)
@@ -109,7 +110,7 @@ def get_index_column_names(dataset: gdal.Dataset, index_name: str) -> List[str]:
 
 def get_foreign_key_definitions(dataset, table_name) -> List[ForeignKeyDefinition]:
     foreign_key_list = dataset.ExecuteSQL(
-        f'select id, seq, "table", "from", "to" from pragma_foreign_key_list(\'{table_name}\');'
+        f'select id, seq, "table", "from", "to" from pragma_foreign_key_list({quote_literal(table_name)});'
     )
     foreign_key_definitions: List[ForeignKeyDefinition] = []
     for foreign_key_listing in group_by(foreign_key_list, lambda r: r["id"]):
@@ -148,7 +149,7 @@ def generate_table_definitions(
 
     table_list: List[TableDefinition] = []
     for table_name, data_type_column in get_table_names_from_contents(dataset):
-        table = dataset.ExecuteSQL(f"SELECT * FROM '{table_name}';")
+        table = dataset.ExecuteSQL(f"SELECT * FROM {quote_identifier(table_name)};")
         data_type = DataType.from_str(data_type_column)
         geometry_column = None
         geo_column_name = ""

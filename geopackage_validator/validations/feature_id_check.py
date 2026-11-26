@@ -3,18 +3,19 @@ from typing import Iterable, Tuple, List
 from geopackage_validator.validations import validator
 
 from geopackage_validator import utils
+from geopackage_validator.sql import quote_literal
 
 
 def query_feature_id(dataset) -> Iterable[Tuple[str, int]]:
     tables = utils.dataset_geometry_tables(dataset)
     # validates that there is a primary key with integer/int, mediumint, smallint & tinyint
     query = """
-                SELECT '{table_name}' AS table_name, count(*) AS pk_present FROM pragma_table_info('{table_name}') 
+                SELECT {table_name} AS table_name, count(*) AS pk_present FROM pragma_table_info({table_name})
                     WHERE pk > 0 
                     AND type LIKE '%INT%' 
             """
     for table, _, _ in tables:
-        validations = dataset.ExecuteSQL(query.format(table_name=table))
+        validations = dataset.ExecuteSQL(query.format(table_name=quote_literal(table)))
         for table_name, count in validations:
             yield table_name, count
 
@@ -24,13 +25,13 @@ def query_feature_id(dataset) -> Iterable[Tuple[str, int]]:
 def query_sequence_for_autoincrement(dataset) -> Iterable[Tuple[str, int]]:
     tables = utils.dataset_geometry_tables(dataset)
     query = """
-            SELECT '{table_name}' AS table_name, count(*) AS has_autoincrement
+            SELECT {table_name} AS table_name, count(*) AS has_autoincrement
             FROM sqlite_sequence
-            WHERE name = '{table_name}'
+            WHERE name = {table_name}
             """
 
     for table, _, _ in tables:
-        validations = dataset.ExecuteSQL(query.format(table_name=table))
+        validations = dataset.ExecuteSQL(query.format(table_name=quote_literal(table)))
         for table_name, count in validations:
             yield table, count
 

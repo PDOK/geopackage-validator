@@ -1,57 +1,58 @@
 from typing import Iterable, Tuple
 from geopackage_validator.validations import validator
 from geopackage_validator import utils
+from geopackage_validator.sql import quote_identifier
 
 SQL_VALID_TEMPLATE_V0 = """SELECT reason, count(reason) AS count, row_id
 FROM(
     SELECT
-        CASE ST_IsValid("{column_name}")
+        CASE ST_IsValid({column_name})
             WHEN 0
                 THEN
-                    CASE INSTR(ST_IsValidReason("{column_name}"), '[')
+                    CASE INSTR(ST_IsValidReason({column_name}), '[')
                         WHEN 0
-                            THEN ST_IsValidReason("{column_name}")
-                        ELSE substr(ST_IsValidReason("{column_name}"), 0, INSTR(ST_IsValidReason("{column_name}"), '['))
+                            THEN ST_IsValidReason({column_name})
+                        ELSE substr(ST_IsValidReason({column_name}), 0, INSTR(ST_IsValidReason({column_name}), '['))
                     END
                 ELSE
                     CASE
-                        WHEN IsValidGPB("{column_name}") = 0
+                        WHEN IsValidGPB({column_name}) = 0
                             THEN 'Not GeoPackage geometry'
                     END
         END AS reason,
         cast(rowid AS INTEGER) AS row_id
-    FROM "{table_name}"
+    FROM {table_name}
     WHERE
-        ST_IsValid("{column_name}") = 0 OR
-        (IsValidGPB("{column_name}") = 0  AND ST_IsEmpty("{column_name}") = 0) -- Empty geometry is considered valid
+        ST_IsValid({column_name}) = 0 OR
+        (IsValidGPB({column_name}) = 0  AND ST_IsEmpty({column_name}) = 0) -- Empty geometry is considered valid
 )
 GROUP BY reason;"""
 
 SQL_VALID_TEMPLATE = """SELECT reason, count(reason) AS count, row_id
 FROM(
     SELECT
-        CASE ST_IsValid("{column_name}")
+        CASE ST_IsValid({column_name})
             WHEN 0
                 THEN
-                    CASE INSTR(ST_IsValidReason("{column_name}"), '[')
+                    CASE INSTR(ST_IsValidReason({column_name}), '[')
                         WHEN 0
-                            THEN ST_IsValidReason("{column_name}")
-                        ELSE substr(ST_IsValidReason("{column_name}"), 0, INSTR(ST_IsValidReason("{column_name}"), '['))
+                            THEN ST_IsValidReason({column_name})
+                        ELSE substr(ST_IsValidReason({column_name}), 0, INSTR(ST_IsValidReason({column_name}), '['))
                     END
                 ELSE
                     CASE
-                        WHEN ST_IsSimple("{column_name}") = 0
+                        WHEN ST_IsSimple({column_name}) = 0
                             THEN 'Not Simple'
-                        WHEN IsValidGPB("{column_name}") = 0
+                        WHEN IsValidGPB({column_name}) = 0
                             THEN 'Not GeoPackage geometry'
                     END
         END AS reason,
         cast(rowid AS INTEGER) AS row_id
-    FROM "{table_name}"
+    FROM {table_name}
     WHERE
-        ST_IsValid("{column_name}") = 0 OR
-        ST_IsSimple("{column_name}") = 0 OR
-        (IsValidGPB("{column_name}") = 0  AND ST_IsEmpty("{column_name}") = 0) -- Empty geometry is considered valid
+        ST_IsValid({column_name}) = 0 OR
+        ST_IsSimple({column_name}) = 0 OR
+        (IsValidGPB({column_name}) = 0  AND ST_IsEmpty({column_name}) = 0) -- Empty geometry is considered valid
 )
 GROUP BY reason;"""
 
@@ -63,7 +64,10 @@ def query_geometry_valid(
 
     for table_name, column_name, _ in columns:
         validations = dataset.ExecuteSQL(
-            sql_template.format(table_name=table_name, column_name=column_name)
+            sql_template.format(
+                table_name=quote_identifier(table_name),
+                column_name=quote_identifier(column_name),
+            )
         )
         for reason, count, row_id in validations:
             yield table_name, column_name, reason, count, row_id

@@ -2,6 +2,7 @@ from typing import Iterable, Tuple, List
 
 from geopackage_validator.validations import validator
 from geopackage_validator import utils
+from geopackage_validator.sql import quote_literal
 
 LEGACY_MAX_LENGTH = 53
 MAX_LENGTH = 57
@@ -12,7 +13,7 @@ def query_names(dataset) -> Iterable[Tuple[str, str, int]]:
 
     for table, _, _ in tables:
         yield "table", table, len(table)
-        columns = dataset.ExecuteSQL(f"PRAGMA TABLE_INFO('{table}');")
+        columns = dataset.ExecuteSQL(f"PRAGMA TABLE_INFO({quote_literal(table)});")
 
         for _, column, *_ in columns:
             yield "column", f"{column} (table: {table})", len(column)

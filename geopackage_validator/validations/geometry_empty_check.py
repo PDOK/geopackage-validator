@@ -1,18 +1,19 @@
 from typing import Iterable, Tuple
 from geopackage_validator.validations import validator
 from geopackage_validator import utils
+from geopackage_validator.sql import quote_identifier
 
 SQL_EMPTY_TEMPLATE = """SELECT type, count(type) AS count, row_id
 FROM(
     SELECT
         CASE
-            WHEN ST_IsEmpty("{column_name}") = 1
+            WHEN ST_IsEmpty({column_name}) = 1
                 THEN 'empty'
-            WHEN "{column_name}" IS NULL
+            WHEN {column_name} IS NULL
                 THEN 'null'
         END AS type,
         cast(rowid AS INTEGER) AS row_id
-    FROM "{table_name}" WHERE ST_IsEmpty("{column_name}") = 1 OR "{column_name}" IS NULL
+    FROM {table_name} WHERE ST_IsEmpty({column_name}) = 1 OR {column_name} IS NULL
 )
 GROUP BY type;"""
 
@@ -24,7 +25,10 @@ def query_geometry_empty(
 
     for table_name, column_name, _ in columns:
         validations = dataset.ExecuteSQL(
-            sql_template.format(table_name=table_name, column_name=column_name)
+            sql_template.format(
+                table_name=quote_identifier(table_name),
+                column_name=quote_identifier(column_name),
+            )
         )
         for type, count, row_id in validations:
             yield table_name, column_name, type, count, row_id

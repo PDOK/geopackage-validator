@@ -3,6 +3,7 @@ from typing import Iterable, Tuple, List
 from geopackage_validator.constants import SNAKE_CASE_REGEX
 from geopackage_validator.validations import validator
 from geopackage_validator import utils
+from geopackage_validator.sql import quote_literal
 
 
 def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
@@ -10,7 +11,7 @@ def query_columnames(dataset) -> Iterable[Tuple[str, str]]:
 
     for table, _, _ in tables:
         columns = dataset.ExecuteSQL(
-            "PRAGMA TABLE_INFO('{table_name}');".format(table_name=table)
+            f"PRAGMA TABLE_INFO({quote_literal(table)});"
         )
 
         for _, column, *_ in columns:

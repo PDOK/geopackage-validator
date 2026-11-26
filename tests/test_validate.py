@@ -145,6 +145,6 @@ def test_validate_all_properly_closes_all_gpkg_connections():
     assert len(results) == 0
 
     driver = ogr.GetDriverByName("GPKG")
-    gpkg_src = driver.Open(filename, update=True)
+    gpkg_src = driver.Open(filename, update=False)
     error_code = gpkg_src.DeleteLayer(0)
     assert error_code == 0

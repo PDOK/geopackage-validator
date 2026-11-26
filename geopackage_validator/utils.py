@@ -74,7 +74,7 @@ def open_dataset(filename: str = None, error_handler: Callable = None) -> gdal.D
 
     dataset = None
     try:
-        dataset = driver.Open(filename)
+        dataset = driver.Open(filename, update=False)
     except Exception as e:
         error_handler(gdal.CE_Failure, 0, e.args[0])
 
